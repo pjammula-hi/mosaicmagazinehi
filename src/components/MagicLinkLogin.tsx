@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
-import { Mail, Check, AlertCircle } from 'lucide-react';
+import { Mail, Check, AlertCircle, Sparkles } from 'lucide-react';
+import { BrutalButton, BrutalAlert } from './BrutalUI';
 
 interface MagicLinkLoginProps {
   onLogin: (token: string, user: any) => void;
@@ -98,28 +99,25 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
 
       const checkData = await checkResponse.json();
 
-      if (!checkResponse.ok) {
-        throw new Error(checkData.error || 'User not found or inactive. Please contact your administrator.');
+      if (!checkResponse.ok || !checkData.exists) {
+        throw new Error('This email is not registered. Please contact an administrator.');
       }
 
-      // User exists, send magic link via Supabase Auth
-      // Use production URL if available, otherwise fall back to current origin
-      const redirectUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-      
-      const { error: signInError } = await supabase.auth.signInWithOtp({
+      // Only proceed with magic link if user exists
+      const { error: magicLinkError } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: window.location.origin,
         }
       });
 
-      if (signInError) {
-        throw signInError;
+      if (magicLinkError) {
+        throw magicLinkError;
       }
 
       setMagicLinkSent(true);
     } catch (err: any) {
-      console.error('[MagicLink] Request error:', err);
+      console.error('Magic link error:', err);
       setError(err.message || 'Failed to send magic link. Please try again.');
     } finally {
       setLoading(false);
@@ -128,85 +126,126 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
 
   if (magicLinkSent) {
     return (
-      <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-8 border border-white/20">
-        <div className="flex items-center justify-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
-            <Check className="w-8 h-8 text-white" />
+      <div className="bg-white border-4 border-black p-8 brutal-shadow -rotate-1">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-400 border-4 border-black mb-4 brutal-shadow-sm rotate-6">
+            <Check className="w-8 h-8 text-black" strokeWidth={3} />
           </div>
+          
+          <h2 className="text-2xl text-black font-black uppercase mb-4">Check Your Email!</h2>
+          
+          <div className="bg-cyan-300 border-4 border-black p-4 brutal-shadow-sm mb-6 rotate-1">
+            <p className="text-black font-bold text-sm">
+              We sent a magic link to:
+            </p>
+            <p className="text-black font-black text-base mt-1">
+              {email}
+            </p>
+          </div>
+          
+          <div className="space-y-3 text-left mb-6">
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 rotate-12 font-black text-xs">
+                1
+              </div>
+              <p className="text-black font-bold text-sm">
+                Check your inbox for an email from Mosaic Magazine
+              </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 -rotate-12 font-black text-xs">
+                2
+              </div>
+              <p className="text-black font-bold text-sm">
+                Click the magic link in the email
+              </p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-6 h-6 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 rotate-6 font-black text-xs">
+                3
+              </div>
+              <p className="text-black font-bold text-sm">
+                You'll be automatically logged in!
+              </p>
+            </div>
+          </div>
+
+          <BrutalButton 
+            onClick={() => {
+              setMagicLinkSent(false);
+              setEmail('');
+            }}
+            variant="secondary"
+          >
+            Send to Different Email
+          </BrutalButton>
         </div>
-
-        <h2 className="text-3xl text-white text-center mb-4">Check Your Email</h2>
-        <p className="text-gray-300 text-center mb-6">
-          We've sent a magic link to <span className="font-semibold text-white">{email}</span>.
-          Click the link in your email to access Mosaic Magazine.
-        </p>
-
-        <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 mb-6">
-          <p className="text-sm text-green-200 text-center">
-            <strong className="text-green-100">✓ Magic link sent successfully!</strong>
-            <br />
-            Please check your inbox and spam folder.
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            setMagicLinkSent(false);
-            setEmail('');
-          }}
-          className="w-full text-purple-300 hover:text-purple-200 text-sm transition-colors"
-        >
-          ← Send another link
-        </button>
       </div>
     );
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-8 border border-white/20">
+    <div className="bg-white border-4 border-black p-8 brutal-shadow -rotate-1">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mb-4 shadow-lg">
-          <Mail className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-cyan-400 border-4 border-black mb-4 brutal-shadow-sm rotate-6">
+          <Sparkles className="w-8 h-8 text-black" strokeWidth={3} />
         </div>
-        <h2 className="text-3xl text-white mb-2">Reader Access</h2>
-        <p className="text-gray-300 text-sm">Students, Teachers & Guardians</p>
+        <h2 className="text-3xl text-black font-black uppercase mb-2">Reader Login</h2>
+        <div className="inline-block bg-cyan-300 px-3 py-1 border-3 border-black">
+          <p className="text-black text-xs font-black uppercase tracking-wider">Students & Teachers</p>
+        </div>
       </div>
-
-      <p className="text-gray-300 text-center mb-6">
-        Enter your registered email to receive a magic link
-      </p>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-300 flex-shrink-0 mt-0.5" />
-            <p className="text-red-200 text-sm">{error}</p>
-          </div>
+          <BrutalAlert type="error" icon={AlertCircle} rotate={1}>
+            <p className="text-sm">{error}</p>
+          </BrutalAlert>
         )}
 
+        <div className="bg-yellow-300 border-4 border-black p-4 brutal-shadow-sm -rotate-1 mb-6">
+          <div className="flex items-start gap-3">
+            <Mail className="w-5 h-5 text-black flex-shrink-0 mt-0.5" strokeWidth={3} />
+            <div>
+              <p className="text-black font-black text-xs uppercase mb-1">No Password Needed!</p>
+              <p className="text-black font-bold text-xs">
+                Enter your email and we'll send you a magic link to login instantly.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div>
-          <label htmlFor="email" className="block text-sm mb-2 text-gray-200 font-medium">
+          <label htmlFor="magic-email" className="block text-sm mb-2 text-black font-black uppercase tracking-wide">
             Email Address
           </label>
           <input
-            id="email"
+            id="magic-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm transition-all"
+            className="w-full px-4 py-3 bg-white border-4 border-black text-black font-bold brutal-shadow focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all"
             placeholder="student@nycstudents.net"
           />
         </div>
 
-        <button
+        <BrutalButton
           type="submit"
           disabled={loading}
-          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl font-medium"
+          variant="secondary"
+          icon={Mail}
+          className="w-full"
         >
           {loading ? 'Sending...' : 'Send Magic Link'}
-        </button>
+        </BrutalButton>
       </form>
+
+      <div className="mt-6 text-center">
+        <p className="text-gray-700 text-xs font-bold">
+          First time? Contact your teacher or an administrator to get registered.
+        </p>
+      </div>
     </div>
   );
 }

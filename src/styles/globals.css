@@ -227,3 +227,53 @@ html {
 .animate-fade-in {
   animation: fade-in 0.5s ease-out;
 }
+
+/* Neo-Brutalism Utilities */
+.brutal-shadow {
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.brutal-shadow-sm {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.brutal-shadow-lg {
+  box-shadow: 12px 12px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.brutal-shadow-cyan {
+  box-shadow: 8px 8px 0px 0px rgb(34, 211, 238);
+}
+
+.brutal-shadow-yellow {
+  box-shadow: 8px 8px 0px 0px rgb(250, 204, 21);
+}
+
+.brutal-shadow-green {
+  box-shadow: 8px 8px 0px 0px rgb(34, 197, 94);
+}
+
+.brutal-shadow-purple {
+  box-shadow: 8px 8px 0px 0px rgb(168, 85, 247);
+}
+
+.brutal-shadow-red {
+  box-shadow: 8px 8px 0px 0px rgb(239, 68, 68);
+}
+
+.brutal-shadow-pink {
+  box-shadow: 8px 8px 0px 0px rgb(236, 72, 153);
+}
+
+.brutal-border {
+  border: 4px solid black;
+}
+
+.brutal-hover {
+  transition: all 0.2s ease;
+}
+
+.brutal-hover:hover {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}

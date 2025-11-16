@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
-import { LogIn, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { LogIn, AlertCircle, Eye, EyeOff, Shield } from 'lucide-react';
 import { ForgotPassword } from './ForgotPassword';
+import { BrutalButton, BrutalInput, BrutalAlert } from './BrutalUI';
 
 interface LoginProps {
   onLogin: (token: string, user: any) => void;
@@ -69,35 +70,35 @@ export function Login({ onLogin }: LoginProps) {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-xl shadow-2xl p-8 border border-white/20">
+    <div className="bg-white border-4 border-black p-8 brutal-shadow rotate-1">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mb-4 shadow-lg">
-          <LogIn className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-red-400 border-4 border-black mb-4 brutal-shadow-sm -rotate-6">
+          <Shield className="w-8 h-8 text-black" strokeWidth={3} />
         </div>
-        <h2 className="text-3xl text-white mb-2">Staff Access</h2>
-        <p className="text-gray-300 text-sm">Admin & Editor Portal</p>
+        <h2 className="text-3xl text-black font-black uppercase mb-2">Staff Access</h2>
+        <div className="inline-block bg-yellow-300 px-3 py-1 border-3 border-black">
+          <p className="text-black text-xs font-black uppercase tracking-wider">Admin & Editor Portal</p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-300 flex-shrink-0 mt-0.5" />
-            <p className="text-red-200 text-sm">{error}</p>
-          </div>
+          <BrutalAlert type="error" icon={AlertCircle} rotate={-1}>
+            <p className="text-sm">{error}</p>
+          </BrutalAlert>
         )}
 
         {daysRemaining !== null && daysRemaining > 0 && (
-          <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-yellow-300 flex-shrink-0 mt-0.5" />
-            <p className="text-yellow-200 text-sm">
+          <BrutalAlert type="warning" icon={AlertCircle} rotate={1}>
+            <p className="text-sm">
               Your password will expire in {daysRemaining} day{daysRemaining !== 1 ? 's' : ''}. 
               Please change it after logging in.
             </p>
-          </div>
+          </BrutalAlert>
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm mb-2 text-gray-200 font-medium">
+          <label htmlFor="email" className="block text-sm mb-2 text-black font-black uppercase tracking-wide">
             Email Address
           </label>
           <input
@@ -106,20 +107,20 @@ export function Login({ onLogin }: LoginProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm transition-all"
+            className="w-full px-4 py-3 bg-white border-4 border-black text-black font-bold brutal-shadow focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all"
             placeholder="admin@schools.nyc.gov"
           />
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="password" className="block text-sm text-gray-200 font-medium">
+            <label htmlFor="password" className="block text-sm text-black font-black uppercase tracking-wide">
               Password
             </label>
             <button
               type="button"
               onClick={() => setShowForgotPassword(true)}
-              className="text-sm text-purple-300 hover:text-purple-200 transition-colors"
+              className="text-sm text-black underline hover:no-underline font-bold transition-all"
             >
               Forgot Password?
             </button>
@@ -134,26 +135,27 @@ export function Login({ onLogin }: LoginProps) {
               onCopy={(e) => e.preventDefault()}
               onCut={(e) => e.preventDefault()}
               required
-              className="w-full px-4 py-3 pr-12 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 backdrop-blur-sm transition-all"
+              className="w-full px-4 py-3 pr-12 bg-white border-4 border-black text-black font-bold brutal-shadow focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all"
               placeholder="••••••••"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-black hover:text-gray-700 transition-colors"
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? <EyeOff className="w-5 h-5" strokeWidth={3} /> : <Eye className="w-5 h-5" strokeWidth={3} />}
             </button>
           </div>
         </div>
 
-        <button
+        <BrutalButton
           type="submit"
           disabled={loading}
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl font-medium"
+          variant="primary"
+          className="w-full"
         >
           {loading ? 'Logging in...' : 'Sign In'}
-        </button>
+        </BrutalButton>
       </form>
     </div>
   );

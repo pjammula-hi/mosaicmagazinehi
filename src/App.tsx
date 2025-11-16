@@ -267,19 +267,14 @@ export default function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500 rounded-full blur-3xl"></div>
+      <div className="min-h-screen bg-white relative overflow-hidden">
+        {/* Neo-Brutalist Background Pattern */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400 border-4 border-black rotate-12 brutal-shadow"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-400 border-4 border-black -rotate-12 brutal-shadow"></div>
+          <div className="absolute top-1/2 left-1/4 w-60 h-60 bg-pink-400 border-4 border-black rotate-45 brutal-shadow"></div>
+          <div className="absolute bottom-1/4 left-1/2 w-64 h-64 bg-purple-400 border-4 border-black -rotate-6 brutal-shadow"></div>
         </div>
-
-        {/* Magazine Card on left side */}
-        <MagazineCard
-          position="left"
-          {...holidayIssue}
-        />
 
         <div className="relative z-10 container mx-auto px-4 py-12">
           <div className="max-w-md mx-auto">
@@ -287,35 +282,34 @@ export default function App() {
             <div className="text-center mb-12">
               {/* Logo */}
               <div className="flex justify-center mb-6" onClick={handleLogoClick}>
-                <div className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20 shadow-2xl cursor-pointer hover:scale-105 transition-transform">
+                <div className="bg-black p-4 border-4 border-black rotate-3 cursor-pointer brutal-shadow brutal-hover">
                   <StackedTilesLogo size={80} className="cursor-pointer" />
                 </div>
               </div>
               
-              {/* Title with gradient */}
+              {/* Title */}
               <h1 
                 onClick={handleLogoClick}
-                className="text-6xl mb-3 select-none cursor-pointer tracking-tight"
+                className="text-6xl mb-3 select-none cursor-pointer tracking-tight text-black font-black uppercase"
                 style={{
-                  background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  fontWeight: '800',
-                  filter: 'drop-shadow(0 4px 20px rgba(139, 92, 246, 0.5))',
+                  textShadow: '4px 4px 0px rgba(251, 191, 36, 1)',
                 }}
               >
-                Mosaic Magazine
+                MOSAIC
               </h1>
-              <p className="text-gray-300 text-sm tracking-wider uppercase mb-1">Celebrating Student Creativity</p>
-              <p className="text-gray-400 text-xs">Student & Teacher Publishing Platform</p>
+              <div className="inline-block bg-yellow-400 px-4 py-2 border-4 border-black -rotate-1 brutal-shadow-sm mb-3">
+                <p className="text-black text-sm font-black uppercase tracking-wider">Celebrating Student Creativity</p>
+              </div>
+              <p className="text-gray-700 text-xs font-bold uppercase tracking-wide">Student & Teacher Publishing Platform</p>
               
               {/* Unlock notification - only shows after 5 clicks */}
               {justUnlocked && (
                 <div className="mt-4 animate-fade-in">
-                  <p className="text-sm text-emerald-300 bg-emerald-500/20 px-4 py-2 rounded-full inline-block border border-emerald-500/50">
-                    🔓 Admin access unlocked
-                  </p>
+                  <div className="inline-block bg-green-400 px-4 py-2 border-4 border-black rotate-1 brutal-shadow">
+                    <p className="text-black text-sm font-black uppercase">
+                      🔓 Admin Access Unlocked
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -348,23 +342,24 @@ export default function App() {
             )}
 
             {/* Design Mockups Link */}
-            <div className="mt-8 pt-6 border-t border-white/10 text-center">
+            <div className="mt-8 pt-6 text-center">
               <button
                 onClick={() => {
                   window.location.hash = '#mockups';
                 }}
-                className="text-gray-400 hover:text-white text-sm transition-colors inline-flex items-center gap-2"
+                className="bg-cyan-400 text-black px-4 py-2 border-4 border-black brutal-shadow-sm brutal-hover font-black uppercase text-xs"
               >
-                <span>🎨</span>
-                <span>View Design Mockups</span>
+                🎨 View Design Mockups
               </button>
             </div>
           </div>
         </div>
 
         {/* Footer branding */}
-        <div className="absolute bottom-6 left-0 right-0 text-center">
-          <p className="text-gray-500 text-xs">NYC Home Instruction Schools</p>
+        <div className="absolute bottom-6 left-0 right-0 text-center z-10">
+          <div className="inline-block bg-black px-4 py-2 border-4 border-black rotate-1">
+            <p className="text-yellow-400 text-xs font-black uppercase tracking-wider">NYC Home Instruction Schools</p>
+          </div>
         </div>
       </div>
     );

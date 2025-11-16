@@ -6,14 +6,14 @@ import {
   BookOpen, 
   LogOut, 
   Plus,
-  Check,
-  X,
-  Eye,
-  Edit,
-  Upload,
+  Zap,
+  Flame,
+  Star,
   Mail,
   Settings,
-  Users
+  Users,
+  Eye,
+  AlertCircle
 } from 'lucide-react';
 import { EnhancedSubmissionManager } from './EnhancedSubmissionManager';
 import { IssueManager } from './IssueManager';
@@ -22,7 +22,7 @@ import { ReaderDashboard } from './ReaderDashboard';
 import { CommunicationsDashboard } from './CommunicationsDashboard';
 import { TypeManager } from './TypeManager';
 import { ContributorStatusManager } from './ContributorStatusManager';
-import { StackedTilesLogo } from './logos/MosaicLogos';
+import { BrutalButton, BrutalStat, BrutalHeader, BrutalCard, BrutalBadge } from './BrutalUI';
 
 interface EditorDashboardProps {
   user: any;
@@ -36,7 +36,8 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
   const [stats, setStats] = useState({
     pendingSubmissions: 0,
     pendingComments: 0,
-    totalIssues: 0
+    totalIssues: 0,
+    totalContributors: 0
   });
 
   useEffect(() => {
@@ -77,7 +78,19 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
       const issuesData = await issuesRes.json();
       const totalIssues = issuesData.issues?.length || 0;
 
-      setStats({ pendingSubmissions, pendingComments, totalIssues });
+      // Fetch users for contributor count
+      const usersRes = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/users`,
+        {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        }
+      );
+      const usersData = await usersRes.json();
+      const totalContributors = usersData.users?.filter(
+        (u: any) => u.role === 'student' || u.role === 'teacher'
+      ).length || 0;
+
+      setStats({ pendingSubmissions, pendingComments, totalIssues, totalContributors });
     } catch (err) {
       console.error('Error fetching stats:', err);
     }
@@ -86,214 +99,186 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
   if (showReaderView) {
     return (
       <div>
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <button
-            onClick={() => setShowReaderView(false)}
-            className="text-purple-600 hover:text-purple-700"
-          >
-            ← Back to Editorial Dashboard
-          </button>
+        <div className="bg-gradient-to-r from-purple-400 to-pink-400 border-b-4 border-black px-6 py-4">
+          <BrutalButton onClick={() => setShowReaderView(false)} variant="primary" size="sm">
+            ← Back to Editor Zone
+          </BrutalButton>
         </div>
         <ReaderDashboard user={user} authToken={authToken} onLogout={onLogout} />
       </div>
     );
   }
 
+  const tabs = [
+    { id: 'submissions', label: 'Submissions', icon: FileText, badge: stats.pendingSubmissions },
+    { id: 'issues', label: 'Issues', icon: BookOpen, badge: 0 },
+    { id: 'comments', label: 'Comments', icon: MessageSquare, badge: stats.pendingComments },
+    { id: 'communications', label: 'Communications', icon: Mail, badge: 0 },
+    { id: 'types', label: 'Content Types', icon: Settings, badge: 0 },
+    { id: 'contributors', label: 'Contributors', icon: Users, badge: 0 },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-6 py-4">
+      <div className="border-b-4 border-black bg-gradient-to-r from-purple-400 to-pink-400 p-6">
+        <div className="container mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <StackedTilesLogo size={60} />
+              <div className="w-14 h-14 bg-black border-4 border-black rotate-3 flex items-center justify-center">
+                <Zap className="w-7 h-7 text-yellow-400" strokeWidth={3} />
+              </div>
               <div>
-                <h1 className="text-3xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Mosaic Magazine HI
+                <h1 className="text-black tracking-tight" style={{ fontSize: '28px', fontWeight: '900', textTransform: 'uppercase' }}>
+                  MOSAIC
                 </h1>
-                <p className="text-gray-600 text-sm">Editorial Dashboard</p>
+                <p className="text-black" style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '0.1em' }}>
+                  MAGAZINE HI
+                </p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowReaderView(true)}
-                className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-              >
+
+            <div className="flex items-center gap-3">
+              <BrutalButton onClick={() => setShowReaderView(true)} variant="secondary" size="sm" icon={Eye}>
                 Reader View
-              </button>
-              <div className="text-right">
-                <p className="text-sm">{user.fullName}</p>
-                <p className="text-xs text-gray-500">{user.role}</p>
-              </div>
-              <button
+              </BrutalButton>
+              <div 
+                className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 border-4 border-black -rotate-6 flex items-center justify-center cursor-pointer brutal-shadow-sm brutal-hover"
                 onClick={onLogout}
-                className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg"
+                title="Logout"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-6 h-6 text-black" strokeWidth={3} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto p-8">
+        {/* Page Title */}
+        <div className="mb-8">
+          <BrutalHeader color="yellow" rotate={-1}>
+            EDITOR ZONE
+          </BrutalHeader>
+          
+          {stats.pendingSubmissions > 0 && (
+            <div className="flex items-center gap-2 mt-4">
+              <Flame className="w-6 h-6 text-red-500" />
+              <p className="text-black font-black" style={{ fontSize: '16px' }}>
+                {stats.pendingSubmissions} SUBMISSION{stats.pendingSubmissions !== 1 ? 'S' : ''} NEED YOUR ATTENTION!
+              </p>
+            </div>
+          )}
+          
+          <div className="mt-4">
+            <p className="text-gray-700 font-bold">
+              Welcome back, {user.fullName}
+            </p>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <BrutalStat 
+            label="SUBMISSIONS" 
+            value={stats.pendingSubmissions} 
+            color="cyan" 
+            icon={FileText}
+            rotate={-2}
+          />
+          <BrutalStat 
+            label="PENDING COMMENTS" 
+            value={stats.pendingComments} 
+            color="yellow" 
+            icon={MessageSquare}
+            rotate={2}
+          />
+          <BrutalStat 
+            label="TOTAL ISSUES" 
+            value={stats.totalIssues} 
+            color="green" 
+            icon={BookOpen}
+            rotate={-1}
+          />
+          <BrutalStat 
+            label="CONTRIBUTORS" 
+            value={stats.totalContributors} 
+            color="purple" 
+            icon={Users}
+            rotate={1}
+          />
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="mb-8 flex flex-wrap gap-3">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`
+                  px-6 py-3 border-4 border-black font-black uppercase text-sm
+                  flex items-center gap-2
+                  brutal-shadow brutal-hover
+                  ${isActive 
+                    ? 'bg-yellow-400 text-black' 
+                    : 'bg-white text-black hover:bg-gray-100'
+                  }
+                `}
+              >
+                <Icon className="w-4 h-4" strokeWidth={3} />
+                {tab.label}
+                {tab.badge > 0 && (
+                  <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full border-2 border-black font-black">
+                    {tab.badge}
+                  </span>
+                )}
               </button>
-            </div>
-          </div>
+            );
+          })}
         </div>
-      </div>
 
-      {/* Stats Cards */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-        <div className="container mx-auto px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Pending Submissions</p>
-                  <p className="text-3xl mt-1">{stats.pendingSubmissions}</p>
-                </div>
-                <FileText className="w-10 h-10 opacity-80" />
-              </div>
+        {/* Tab Content */}
+        <div>
+          {activeTab === 'submissions' && (
+            <div>
+              <EnhancedSubmissionManager authToken={authToken} />
             </div>
+          )}
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Pending Comments</p>
-                  <p className="text-3xl mt-1">{stats.pendingComments}</p>
-                </div>
-                <MessageSquare className="w-10 h-10 opacity-80" />
-              </div>
+          {activeTab === 'issues' && (
+            <div>
+              <IssueManager authToken={authToken} />
             </div>
+          )}
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Total Issues</p>
-                  <p className="text-3xl mt-1">{stats.totalIssues}</p>
-                </div>
-                <BookOpen className="w-10 h-10 opacity-80" />
-              </div>
+          {activeTab === 'comments' && (
+            <div>
+              <CommentModeration authToken={authToken} />
             </div>
-          </div>
+          )}
+
+          {activeTab === 'communications' && (
+            <div>
+              <CommunicationsDashboard authToken={authToken} />
+            </div>
+          )}
+
+          {activeTab === 'types' && (
+            <div>
+              <TypeManager authToken={authToken} />
+            </div>
+          )}
+
+          {activeTab === 'contributors' && (
+            <div>
+              <ContributorStatusManager authToken={authToken} />
+            </div>
+          )}
         </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-6">
-          <div className="flex gap-8">
-            <button
-              onClick={() => setActiveTab('submissions')}
-              className={`py-4 px-2 border-b-2 transition-colors ${
-                activeTab === 'submissions'
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Submissions
-                {stats.pendingSubmissions > 0 && (
-                  <span className="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
-                    {stats.pendingSubmissions}
-                  </span>
-                )}
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('issues')}
-              className={`py-4 px-2 border-b-2 transition-colors ${
-                activeTab === 'issues'
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5" />
-                Issues
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('comments')}
-              className={`py-4 px-2 border-b-2 transition-colors ${
-                activeTab === 'comments'
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5" />
-                Comment Moderation
-                {stats.pendingComments > 0 && (
-                  <span className="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
-                    {stats.pendingComments}
-                  </span>
-                )}
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('communications')}
-              className={`py-4 px-2 border-b-2 transition-colors ${
-                activeTab === 'communications'
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Mail className="w-5 h-5" />
-                Communications
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('types')}
-              className={`py-4 px-2 border-b-2 transition-colors ${
-                activeTab === 'types'
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                Content Types
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('contributors')}
-              className={`py-4 px-2 border-b-2 transition-colors ${
-                activeTab === 'contributors'
-                  ? 'border-purple-600 text-purple-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Contributor Status
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="container mx-auto px-6 py-8">
-        {activeTab === 'submissions' && (
-          <EnhancedSubmissionManager authToken={authToken} onUpdate={fetchStats} />
-        )}
-        {activeTab === 'issues' && (
-          <IssueManager authToken={authToken} onUpdate={fetchStats} />
-        )}
-        {activeTab === 'comments' && (
-          <CommentModeration authToken={authToken} onUpdate={fetchStats} />
-        )}
-        {activeTab === 'communications' && (
-          <CommunicationsDashboard authToken={authToken} />
-        )}
-        {activeTab === 'types' && (
-          <TypeManager authToken={authToken} />
-        )}
-        {activeTab === 'contributors' && (
-          <ContributorStatusManager authToken={authToken} />
-        )}
       </div>
     </div>
   );
