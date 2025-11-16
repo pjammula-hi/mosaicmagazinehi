@@ -63,6 +63,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
     description: ''
   });
   const [isSubmissionEditMode, setIsSubmissionEditMode] = useState(false);
+  const [hasAuthor, setHasAuthor] = useState(true);
 
   const [manualSubmission, setManualSubmission] = useState({
     type: '',
@@ -472,6 +473,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
         });
         setDocumentFile(null);
         setImageFile(null);
+        setHasAuthor(true); // Reset to default
         setShowManualUpload(false);
         fetchSubmissions();
         onUpdate();
@@ -1179,46 +1181,88 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
               />
             </div>
 
-            <div>
-              <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Author Name</label>
-              <input
-                type="text"
-                value={manualSubmission.authorName}
-                onChange={(e) => setManualSubmission({ ...manualSubmission, authorName: e.target.value })}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Author Email</label>
-              <input
-                type="email"
-                value={manualSubmission.authorEmail}
-                onChange={(e) => setManualSubmission({ ...manualSubmission, authorEmail: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
-              />
-            </div>
-
+            {/* Has Author Toggle */}
             <div className="md:col-span-2">
-              <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Contributor Status</label>
-              <select
-                value={manualSubmission.contributorStatus}
-                onChange={(e) => setManualSubmission({ ...manualSubmission, contributorStatus: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
-                required
-              >
-                {contributorStatuses.length === 0 ? (
-                  <option value="">Loading statuses...</option>
-                ) : (
-                  contributorStatuses.map((status) => (
-                    <option key={status.value} value={status.value}>
-                      {status.label}
-                    </option>
-                  ))
-                )}
-              </select>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={hasAuthor}
+                    onChange={(e) => {
+                      setHasAuthor(e.target.checked);
+                      // Clear author fields if "No Author" is selected
+                      if (!e.target.checked) {
+                        setManualSubmission({ 
+                          ...manualSubmission, 
+                          authorName: 'N/A',
+                          authorEmail: '',
+                          contributorStatus: contributorStatuses.length > 0 ? contributorStatuses[0].value : 'student'
+                        });
+                      } else {
+                        setManualSubmission({ 
+                          ...manualSubmission, 
+                          authorName: '',
+                          authorEmail: ''
+                        });
+                      }
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-purple-600 transition-colors"></div>
+                  <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"></div>
+                </div>
+                <span className="text-sm text-gray-700 font-sans-modern font-semibold">
+                  Has Author? <span className="text-gray-500 font-normal">(For credits, staff pages, etc. toggle off if no specific author)</span>
+                </span>
+              </label>
             </div>
+
+            {hasAuthor && (
+              <>
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Author Name</label>
+                  <input
+                    type="text"
+                    value={manualSubmission.authorName}
+                    onChange={(e) => setManualSubmission({ ...manualSubmission, authorName: e.target.value })}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Author Email</label>
+                  <input
+                    type="email"
+                    value={manualSubmission.authorEmail}
+                    onChange={(e) => setManualSubmission({ ...manualSubmission, authorEmail: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                  />
+                </div>
+              </>
+            )}
+
+            {hasAuthor && (
+              <div className="md:col-span-2">
+                <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Contributor Status</label>
+                <select
+                  value={manualSubmission.contributorStatus}
+                  onChange={(e) => setManualSubmission({ ...manualSubmission, contributorStatus: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                  required
+                >
+                  {contributorStatuses.length === 0 ? (
+                    <option value="">Loading statuses...</option>
+                  ) : (
+                    contributorStatuses.map((status) => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+            )}
 
             <div className="md:col-span-2">
               <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Content</label>
@@ -1673,61 +1717,63 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
                     disabled={viewMode === 'trash'}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 disabled:bg-gray-100"
                   >
-                    <option value="">No Issue</option>
-                    {issues.filter(i => i.status === 'draft').map(issue => (
+                    <option value="">✓ No Issue</option>
+                    {issues.map(issue => (
                       <option key={issue.id} value={issue.id}>
-                        Issue #{issue.number} - {issue.title}
+                        Issue #{issue.number} - {issue.title} ({issue.status})
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              {selectedStatus === 'accepted' && selectedIssue && (
-                <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200 space-y-4">
-                  <h4 className="font-sans-modern font-semibold text-green-900">Publication Metadata</h4>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Page Number (optional)</label>
-                      <input
-                        type="number"
-                        value={pageNumber}
-                        onChange={(e) => setPageNumber(e.target.value)}
-                        placeholder="e.g., 5"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Issue Number</label>
-                      <select
-                        value={selectedIssue}
-                        onChange={(e) => setSelectedIssue(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600"
-                      >
-                        <option value="">Select Issue</option>
-                        {issues.filter(i => i.status === 'draft').map(issue => (
-                          <option key={issue.id} value={issue.id}>
-                            Issue #{issue.number} - {issue.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+              {/* Publication Metadata - Always visible */}
+              <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200 space-y-4">
+                <h4 className="font-sans-modern font-semibold text-green-900">Publication Metadata</h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Page Number (optional)</label>
+                    <input
+                      type="number"
+                      value={pageNumber}
+                      onChange={(e) => setPageNumber(e.target.value)}
+                      placeholder="e.g., 3"
+                      disabled={viewMode === 'trash'}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 disabled:bg-gray-100"
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Short Description (optional)</label>
-                    <textarea
-                      value={shortDescription}
-                      onChange={(e) => setShortDescription(e.target.value)}
-                      rows={3}
-                      placeholder="Brief description for the issue..."
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600"
-                    />
+                    <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Issue Number</label>
+                    <select
+                      value={selectedIssue}
+                      onChange={(e) => setSelectedIssue(e.target.value)}
+                      disabled={viewMode === 'trash'}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 disabled:bg-gray-100"
+                    >
+                      <option value="">Select Issue</option>
+                      {issues.map(issue => (
+                        <option key={issue.id} value={issue.id}>
+                          Issue #{issue.number} - {issue.title}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
-              )}
+
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700 font-sans-modern">Short Description (optional)</label>
+                  <textarea
+                    value={shortDescription}
+                    onChange={(e) => setShortDescription(e.target.value)}
+                    rows={3}
+                    placeholder="Brief description for the issue..."
+                    disabled={viewMode === 'trash'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 disabled:bg-gray-100"
+                  />
+                </div>
+              </div>
 
               <div>
                 <label className="block text-sm mb-2 text-gray-700 font-sans-modern font-semibold">Editor Notes</label>

@@ -79,39 +79,6 @@ export function AuditLogViewer({ token }: AuditLogViewerProps) {
     setError('');
     
     try {
-      // First, test authentication with debug endpoint
-      console.log('[AuditLogViewer] Testing auth with debug endpoint...');
-      const debugResponse = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/debug-auth`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-      const debugData = await debugResponse.json();
-      console.log('[AuditLogViewer] Debug auth response:', debugData);
-
-      if (!debugData.success && !debugData.authenticated) {
-        console.error('[AuditLogViewer] Auth test failed. Debug data:', debugData);
-        
-        // Session expired - clear storage and prompt for re-login
-        if (debugData.message && (
-          debugData.message.includes('expired') || 
-          debugData.message.includes('invalid') ||
-          debugData.message.includes('JWT')
-        )) {
-          alert('Your session has expired. Please log in again.');
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
-          window.location.reload();
-          return;
-        }
-        
-        throw new Error('Authentication test failed: ' + (debugData.message || 'Invalid or expired session. Please log out and log in again.'));
-      }
-
-      // Now fetch the actual logs
       const params = new URLSearchParams({
         limit: limit.toString()
       });
@@ -132,7 +99,7 @@ export function AuditLogViewer({ token }: AuditLogViewerProps) {
         params.append('endDate', filterEndDate);
       }
 
-      console.log('[AuditLogViewer] Fetching audit logs with token:', token?.substring(0, 20) + '...');
+      console.log('[AuditLogViewer] Fetching audit logs...');
       
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/admin/audit-logs?${params}`,
@@ -145,24 +112,33 @@ export function AuditLogViewer({ token }: AuditLogViewerProps) {
 
       const data = await response.json();
       console.log('[AuditLogViewer] Response status:', response.status);
-      console.log('[AuditLogViewer] Response data:', data);
 
       if (!response.ok) {
+        // Handle authentication errors
+        if (response.status === 401) {
+          throw new Error('Your session has expired or is invalid. Please log out and log in again.');
+        }
         throw new Error(data.error || 'Failed to fetch audit logs');
       }
 
       setLogs(data.logs || []);
-      console.log('[AuditLogViewer] Loaded logs count:', data.logs?.length || 0);
+      console.log('[AuditLogViewer] Loaded', data.logs?.length || 0, 'audit log entries');
     } catch (err: any) {
       console.error('[AuditLogViewer] Error fetching audit logs:', err);
-      setError(err.message || 'Failed to fetch audit logs');
+      setError(err.message || 'Failed to fetch audit logs. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchLogs();
+    // Only fetch if we have a valid token
+    if (token) {
+      fetchLogs();
+    } else {
+      setError('No authentication token provided');
+      setLoading(false);
+    }
   }, []);
 
   const handleApplyFilters = () => {

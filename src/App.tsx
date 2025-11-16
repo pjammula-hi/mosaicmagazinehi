@@ -9,6 +9,7 @@ import { InitialSetup } from './components/InitialSetup';
 import { PasswordExpiryModal } from './components/PasswordExpiryModal';
 import { LogoShowcase, StackedTilesLogo } from './components/logos/MosaicLogos';
 import { MagazineCard, holidayIssue } from './components/MagazineCard';
+import DesignMockupSelector from './components/DesignMockupSelector';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -22,8 +23,15 @@ export default function App() {
   const [showPasswordExpiry, setShowPasswordExpiry] = useState(false);
   const [passwordExpiryData, setPasswordExpiryData] = useState<{ daysRemaining: number; isExpired: boolean } | null>(null);
   const [showLogos, setShowLogos] = useState(false);
+  const [showMockups, setShowMockups] = useState(false);
 
   useEffect(() => {
+    // Check if URL is for design mockups
+    if (window.location.pathname === '/mockups' || window.location.hash === '#mockups') {
+      setShowMockups(true);
+      setLoading(false);
+      return;
+    }
     // Check if URL is for logo showcase
     if (window.location.pathname === '/logos' || window.location.hash === '#logos') {
       setShowLogos(true);
@@ -168,6 +176,27 @@ export default function App() {
       }
     }, 2000);
   };
+
+  // Design mockups mode
+  if (showMockups) {
+    return (
+      <div>
+        <DesignMockupSelector />
+        <div className="fixed top-4 left-4 z-[100]">
+          <button
+            onClick={() => {
+              setShowMockups(false);
+              window.history.pushState({}, '', '/');
+              checkSetupStatus();
+            }}
+            className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+          >
+            ← Back to App
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Logo showcase mode
   if (showLogos) {

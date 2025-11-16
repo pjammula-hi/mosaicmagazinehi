@@ -365,12 +365,33 @@ app.post('/make-server-2c0f842e/login', async (c) => {
       return c.json({ error: 'Failed to create session' }, 500);
     }
 
+    // Check password expiry for admin/editor
+    let passwordExpired = false;
+    let daysRemaining = 90;
+    
+    if (user.role === 'admin' || user.role === 'editor') {
+      const lastChange = user.lastPasswordChange ? new Date(user.lastPasswordChange) : null;
+      const now = new Date();
+      
+      if (lastChange) {
+        const daysSinceChange = Math.floor((now.getTime() - lastChange.getTime()) / (1000 * 60 * 60 * 24));
+        daysRemaining = Math.max(0, 90 - daysSinceChange);
+        passwordExpired = daysRemaining <= 0;
+      } else {
+        passwordExpired = true;
+        daysRemaining = 0;
+      }
+    }
+
     console.log('[Login] Login successful for:', email);
 
     return c.json({
       success: true,
       user,
-      token: authData.session.access_token
+      accessToken: authData.session.access_token,
+      token: authData.session.access_token, // Keep for backward compatibility
+      passwordExpired,
+      daysRemaining
     });
   } catch (error) {
     console.error('[Login] Error:', error);
