@@ -3786,12 +3786,6 @@
   }
 
   @media (hover: hover) {
-    .hover\:text-gray-300:hover {
-      color: var(--color-gray-300);
-    }
-  }
-
-  @media (hover: hover) {
     .hover\:text-gray-600:hover {
       color: var(--color-gray-600);
     }

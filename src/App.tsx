@@ -461,6 +461,20 @@ export default function App() {
               </div>
               <p className="text-gray-700 text-xs font-bold uppercase tracking-wide">Student & Teacher Publishing Platform</p>
               
+              {/* Click progress indicator - only shows when clicking */}
+              {logoClickCount > 0 && logoClickCount < 5 && !showBackdoor && (
+                <div className="mt-4 animate-fade-in">
+                  <div className="inline-flex gap-2">
+                    {[...Array(5)].map((_, i) => (
+                      <div 
+                        key={i}
+                        className={`w-3 h-3 border-2 border-black ${i < logoClickCount ? 'bg-yellow-400' : 'bg-white'}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+              
               {/* Unlock notification - only shows after 5 clicks */}
               {justUnlocked && (
                 <div className="mt-4 animate-fade-in">
@@ -492,9 +506,9 @@ export default function App() {
                 {showBackdoor && (
                   <button
                     onClick={() => setShowAdminLogin(true)}
-                    className="mt-6 w-full text-center text-gray-400 hover:text-gray-300 text-sm animate-fade-in transition-colors"
+                    className="mt-6 w-full bg-purple-400 text-black px-6 py-3 border-4 border-black brutal-shadow brutal-hover font-black uppercase text-sm animate-fade-in -rotate-1"
                   >
-                    Admin/Editor Login →
+                    🔑 Staff Access (Admin/Editor)
                   </button>
                 )}
               </div>
