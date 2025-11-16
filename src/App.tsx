@@ -23,6 +23,11 @@ export default function App() {
   const [passwordExpiryData, setPasswordExpiryData] = useState<{ daysRemaining: number; isExpired: boolean } | null>(null);
   const [showLogos, setShowLogos] = useState(false);
 
+  // Set browser tab title
+  useEffect(() => {
+    document.title = 'Mosaic Magazine HI';
+  }, []);
+
   useEffect(() => {
     const handleHashChange = () => {
       console.log('[App] Hash changed to:', window.location.hash);
