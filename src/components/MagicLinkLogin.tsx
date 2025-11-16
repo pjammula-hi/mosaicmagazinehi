@@ -143,30 +143,67 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
             </p>
           </div>
           
-          <div className="space-y-3 text-left mb-6">
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 rotate-12 font-black text-xs">
-                1
+          <div className="space-y-4 text-left mb-6">
+            {/* Post-it Note 1 */}
+            <div className="relative bg-yellow-300 border-3 border-black p-4 brutal-shadow-sm rotate-1">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 rotate-12 font-black text-sm">
+                  1
+                </div>
+                <p className="text-black font-bold text-sm mt-1">
+                  Check your inbox for an email from Mosaic Magazine
+                </p>
               </div>
-              <p className="text-black font-bold text-sm">
-                Check your inbox for an email from Mosaic Magazine
-              </p>
+              {/* Doodle: Envelope icon sketch */}
+              <svg className="absolute bottom-2 right-2 opacity-40" width="24" height="20" viewBox="0 0 24 20" fill="none">
+                <path d="M2 3 L12 10 L22 3 M2 3 L2 17 L22 17 L22 3 Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 -rotate-12 font-black text-xs">
-                2
+
+            {/* Post-it Note 2 */}
+            <div className="relative bg-yellow-300 border-3 border-black p-4 brutal-shadow-sm -rotate-2">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 -rotate-12 font-black text-sm">
+                  2
+                </div>
+                <p className="text-black font-bold text-sm mt-1">
+                  Click the magic link in the email
+                </p>
               </div>
-              <p className="text-black font-bold text-sm">
-                Click the magic link in the email
-              </p>
+              {/* Doodle: Cursor/pointer sketch */}
+              <svg className="absolute bottom-2 right-2 opacity-40" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M3 3 L3 17 L8 13 L11 19 L13 18 L10 12 L17 12 Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {/* Arrow pointing */}
+              <svg className="absolute top-1 right-8 opacity-30" width="30" height="20" viewBox="0 0 30 20">
+                <path d="M2 10 Q 10 5 18 10 L 18 10 L 15 7 M 18 10 L 15 13" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              </svg>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 rotate-6 font-black text-xs">
-                3
+
+            {/* Post-it Note 3 */}
+            <div className="relative bg-yellow-300 border-3 border-black p-4 brutal-shadow-sm rotate-2">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-yellow-400 border-2 border-black flex items-center justify-center flex-shrink-0 rotate-6 font-black text-sm">
+                  3
+                </div>
+                <p className="text-black font-bold text-sm mt-1">
+                  You'll be automatically logged in!
+                </p>
               </div>
-              <p className="text-black font-bold text-sm">
-                You'll be automatically logged in!
-              </p>
+              {/* Doodle: Celebration stars */}
+              <svg className="absolute bottom-2 right-2 opacity-40" width="28" height="24" viewBox="0 0 28 24" fill="none">
+                <path d="M8 12 L9 14 L11 15 L9 16 L8 18 L7 16 L5 15 L7 14 Z" fill="black"/>
+                <path d="M18 6 L19 8 L21 9 L19 10 L18 12 L17 10 L15 9 L17 8 Z" fill="black"/>
+                <path d="M20 16 L20.5 17 L21.5 17.5 L20.5 18 L20 19 L19.5 18 L18.5 17.5 L19.5 17 Z" fill="black"/>
+              </svg>
+              {/* Checkmark doodle */}
+              <svg className="absolute top-2 right-3 opacity-30" width="20" height="20" viewBox="0 0 20 20">
+                <path d="M3 10 L8 15 L17 3" stroke="black" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {/* Underline scribble */}
+              <svg className="absolute bottom-6 left-12 opacity-20" width="120" height="8" viewBox="0 0 120 8">
+                <path d="M2 4 Q 30 2 60 4 T 118 4" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              </svg>
             </div>
           </div>
 

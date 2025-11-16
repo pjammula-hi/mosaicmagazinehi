@@ -9,7 +9,6 @@ import { InitialSetup } from './components/InitialSetup';
 import { PasswordExpiryModal } from './components/PasswordExpiryModal';
 import { LogoShowcase, StackedTilesLogo } from './components/logos/MosaicLogos';
 import { MagazineCard, holidayIssue } from './components/MagazineCard';
-import DesignMockupSelector from './components/DesignMockupSelector';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -23,31 +22,20 @@ export default function App() {
   const [showPasswordExpiry, setShowPasswordExpiry] = useState(false);
   const [passwordExpiryData, setPasswordExpiryData] = useState<{ daysRemaining: number; isExpired: boolean } | null>(null);
   const [showLogos, setShowLogos] = useState(false);
-  const [showMockups, setShowMockups] = useState(false);
 
   useEffect(() => {
     const handleHashChange = () => {
       console.log('[App] Hash changed to:', window.location.hash);
-      // Check if URL is for design mockups
-      if (window.location.pathname === '/mockups' || window.location.hash === '#mockups') {
-        console.log('[App] Showing mockups');
-        setShowMockups(true);
-        setShowLogos(false);
-        setLoading(false);
-        return;
-      }
       // Check if URL is for logo showcase
       if (window.location.pathname === '/logos' || window.location.hash === '#logos') {
         console.log('[App] Showing logos');
         setShowLogos(true);
-        setShowMockups(false);
         setLoading(false);
         return;
       }
       // Reset if hash is cleared
       if (!window.location.hash || window.location.hash === '#' || window.location.hash === '') {
         console.log('[App] Clearing special views');
-        setShowMockups(false);
         setShowLogos(false);
       }
     };
@@ -206,26 +194,6 @@ export default function App() {
   };
 
   // Design mockups mode
-  if (showMockups) {
-    return (
-      <div>
-        <DesignMockupSelector />
-        <div className="fixed top-4 left-4 z-[100]">
-          <button
-            onClick={() => {
-              setShowMockups(false);
-              window.history.pushState({}, '', '/');
-              checkSetupStatus();
-            }}
-            className="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-          >
-            ← Back to App
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   // Logo showcase mode
   if (showLogos) {
     return (
@@ -268,18 +236,186 @@ export default function App() {
   if (!user) {
     return (
       <div className="min-h-screen bg-white relative overflow-hidden">
-        {/* Neo-Brutalist Background Pattern */}
+        {/* Neo-Brutalist Background Pattern with Children's Artwork */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400 border-4 border-black rotate-12 brutal-shadow"></div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-400 border-4 border-black -rotate-12 brutal-shadow"></div>
-          <div className="absolute top-1/2 left-1/4 w-60 h-60 bg-pink-400 border-4 border-black rotate-45 brutal-shadow"></div>
-          <div className="absolute bottom-1/4 left-1/2 w-64 h-64 bg-purple-400 border-4 border-black -rotate-6 brutal-shadow"></div>
+          {/* Yellow square with stick figure drawing */}
+          <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400 border-4 border-black rotate-12 brutal-shadow overflow-hidden">
+            <svg className="absolute inset-0 w-full h-full p-8" viewBox="0 0 200 200" style={{ opacity: 0.4 }}>
+              {/* Stick figure family - child's drawing style */}
+              {/* Sun in corner */}
+              <circle cx="170" cy="30" r="15" fill="none" stroke="black" strokeWidth="3"/>
+              <line x1="170" y1="15" x2="170" y2="5" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
+              <line x1="185" y1="30" x2="195" y2="30" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
+              <line x1="182" y1="18" x2="189" y2="11" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
+              <line x1="182" y1="42" x2="189" y2="49" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
+              
+              {/* Tall figure (adult) */}
+              <circle cx="50" cy="60" r="12" fill="none" stroke="black" strokeWidth="3"/>
+              <line x1="50" y1="72" x2="50" y2="120" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="50" y1="85" x2="30" y2="105" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="50" y1="85" x2="70" y2="105" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="50" y1="120" x2="35" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="50" y1="120" x2="65" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              
+              {/* Medium figure (child) */}
+              <circle cx="100" cy="80" r="10" fill="none" stroke="black" strokeWidth="3"/>
+              <line x1="100" y1="90" x2="100" y2="125" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="100" y1="100" x2="85" y2="115" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="100" y1="100" x2="115" y2="115" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="100" y1="125" x2="88" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="100" y1="125" x2="112" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              
+              {/* Small figure (baby) */}
+              <circle cx="140" cy="95" r="8" fill="none" stroke="black" strokeWidth="3"/>
+              <line x1="140" y1="103" x2="140" y2="130" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="140" y1="113" x2="130" y2="125" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="140" y1="113" x2="150" y2="125" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="140" y1="130" x2="133" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="140" y1="130" x2="147" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              
+              {/* Grass line at bottom */}
+              <path d="M10 160 L30 165 L50 160 L70 165 L90 160 L110 165 L130 160 L150 165 L170 160 L190 165" 
+                    stroke="black" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          {/* Cyan square with watercolor painting style */}
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-400 border-4 border-black -rotate-12 brutal-shadow overflow-hidden">
+            <svg className="absolute inset-0 w-full h-full p-6" viewBox="0 0 200 200">
+              {/* Watercolor style blobs and shapes */}
+              {/* Blue watercolor blob */}
+              <ellipse cx="60" cy="50" rx="35" ry="30" fill="rgba(59, 130, 246, 0.3)" stroke="none"/>
+              <ellipse cx="70" cy="55" rx="28" ry="25" fill="rgba(59, 130, 246, 0.2)" stroke="none"/>
+              
+              {/* Purple watercolor blob */}
+              <ellipse cx="140" cy="70" rx="40" ry="35" fill="rgba(147, 51, 234, 0.25)" stroke="none"/>
+              <ellipse cx="135" cy="75" rx="32" ry="28" fill="rgba(147, 51, 234, 0.15)" stroke="none"/>
+              
+              {/* Pink/red watercolor blob */}
+              <ellipse cx="100" cy="130" rx="45" ry="40" fill="rgba(236, 72, 153, 0.3)" stroke="none"/>
+              <ellipse cx="110" cy="135" rx="38" ry="33" fill="rgba(236, 72, 153, 0.2)" stroke="none"/>
+              
+              {/* Yellow watercolor blob */}
+              <ellipse cx="50" cy="140" rx="30" ry="28" fill="rgba(250, 204, 21, 0.35)" stroke="none"/>
+              <ellipse cx="55" cy="145" rx="24" ry="22" fill="rgba(250, 204, 21, 0.25)" stroke="none"/>
+              
+              {/* Green watercolor blob */}
+              <ellipse cx="160" cy="140" rx="35" ry="32" fill="rgba(34, 197, 94, 0.3)" stroke="none"/>
+              <ellipse cx="165" cy="145" rx="28" ry="26" fill="rgba(34, 197, 94, 0.2)" stroke="none"/>
+              
+              {/* Orange watercolor blob */}
+              <ellipse cx="120" cy="40" rx="32" ry="28" fill="rgba(249, 115, 22, 0.3)" stroke="none"/>
+              <ellipse cx="125" cy="45" rx="26" ry="23" fill="rgba(249, 115, 22, 0.2)" stroke="none"/>
+              
+              {/* Paint brush strokes */}
+              <path d="M20 180 Q 50 175 80 180 T 140 180" stroke="rgba(0,0,0,0.15)" strokeWidth="8" fill="none" strokeLinecap="round"/>
+              <path d="M170 30 Q 150 60 160 90" stroke="rgba(0,0,0,0.12)" strokeWidth="6" fill="none" strokeLinecap="round"/>
+            </svg>
+          </div>
+          
+          {/* Pink square with Pete the Cat book style */}
+          <div className="absolute top-1/2 left-1/4 w-60 h-60 bg-pink-400 border-4 border-black rotate-45 brutal-shadow overflow-hidden">
+            <svg className="absolute inset-0 w-full h-full p-8" viewBox="0 0 150 150" style={{ opacity: 0.5 }}>
+              {/* Pete the Cat inspired drawing - simple blue cat */}
+              {/* Cat head */}
+              <ellipse cx="75" cy="60" rx="28" ry="25" fill="none" stroke="black" strokeWidth="3"/>
+              
+              {/* Ears */}
+              <path d="M50 50 L45 35 L55 45" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M100 50 L105 35 L95 45" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              
+              {/* Eyes - big and round like Pete */}
+              <circle cx="65" cy="58" r="6" fill="black"/>
+              <circle cx="85" cy="58" r="6" fill="black"/>
+              <circle cx="66" cy="56" r="2" fill="white"/>
+              <circle cx="86" cy="56" r="2" fill="white"/>
+              
+              {/* Nose */}
+              <path d="M75 65 L72 68 L75 70 L78 68 Z" fill="black"/>
+              
+              {/* Whiskers */}
+              <line x1="50" y1="65" x2="35" y2="63" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="50" y1="70" x2="35" y2="72" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="100" y1="65" x2="115" y2="63" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="100" y1="70" x2="115" y2="72" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              
+              {/* Smile */}
+              <path d="M68 72 Q 75 76 82 72" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"/>
+              
+              {/* Body */}
+              <ellipse cx="75" cy="100" rx="22" ry="28" fill="none" stroke="black" strokeWidth="3"/>
+              
+              {/* Legs - simple lines */}
+              <line x1="60" y1="125" x2="55" y2="140" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="70" y1="128" x2="68" y2="142" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="80" y1="128" x2="82" y2="142" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="90" y1="125" x2="95" y2="140" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              
+              {/* Tail - curvy */}
+              <path d="M95 95 Q 105 90 110 95 T 115 105" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              
+              {/* Buttons on shirt */}
+              <circle cx="75" cy="95" r="2" fill="black"/>
+              <circle cx="75" cy="105" r="2" fill="black"/>
+            </svg>
+          </div>
+          
+          {/* Purple square with children's art */}
+          <div className="absolute bottom-1/4 left-1/2 w-64 h-64 bg-purple-400 border-4 border-black -rotate-6 brutal-shadow overflow-hidden">
+            <svg className="absolute inset-0 w-full h-full p-8" viewBox="0 0 180 180" style={{ opacity: 0.35 }}>
+              {/* House drawing - classic children's style */}
+              {/* House body */}
+              <rect x="50" y="80" width="80" height="70" fill="none" stroke="black" strokeWidth="3"/>
+              
+              {/* Roof */}
+              <path d="M40 80 L90 40 L140 80" fill="none" stroke="black" strokeWidth="3" strokeLinejoin="round"/>
+              
+              {/* Door */}
+              <rect x="80" y="115" width="20" height="35" fill="none" stroke="black" strokeWidth="2.5"/>
+              <circle cx="95" cy="132" r="1.5" fill="black"/>
+              
+              {/* Windows */}
+              <rect x="60" y="95" width="15" height="15" fill="none" stroke="black" strokeWidth="2.5"/>
+              <line x1="67.5" y1="95" x2="67.5" y2="110" stroke="black" strokeWidth="2"/>
+              <line x1="60" y1="102.5" x2="75" y2="102.5" stroke="black" strokeWidth="2"/>
+              
+              <rect x="105" y="95" width="15" height="15" fill="none" stroke="black" strokeWidth="2.5"/>
+              <line x1="112.5" y1="95" x2="112.5" y2="110" stroke="black" strokeWidth="2"/>
+              <line x1="105" y1="102.5" x2="120" y2="102.5" stroke="black" strokeWidth="2"/>
+              
+              {/* Chimney */}
+              <rect x="110" y="50" width="12" height="25" fill="none" stroke="black" strokeWidth="2.5"/>
+              
+              {/* Smoke from chimney - curvy lines */}
+              <path d="M116 45 Q 120 40 118 35" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              <path d="M116 42 Q 112 37 114 32" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              
+              {/* Ground/grass */}
+              <line x1="30" y1="150" x2="150" y2="150" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+              
+              {/* Flowers */}
+              <circle cx="35" cy="145" r="4" fill="none" stroke="black" strokeWidth="2"/>
+              <line x1="35" y1="149" x2="35" y2="155" stroke="black" strokeWidth="2"/>
+              
+              <circle cx="145" cy="145" r="4" fill="none" stroke="black" strokeWidth="2"/>
+              <line x1="145" y1="149" x2="145" y2="155" stroke="black" strokeWidth="2"/>
+            </svg>
+          </div>
         </div>
 
         <div className="relative z-10 container mx-auto px-4 py-12">
           <div className="max-w-md mx-auto">
             {/* Header Section */}
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 relative">
+              {/* Decorative doodles around logo */}
+              <svg className="absolute top-0 left-8 opacity-30" width="40" height="40" viewBox="0 0 40 40">
+                <path d="M5 20 L15 10 L25 20 L35 10" stroke="black" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <svg className="absolute top-2 right-8 opacity-30" width="35" height="35" viewBox="0 0 35 35">
+                <circle cx="17.5" cy="17.5" r="12" stroke="black" strokeWidth="3" fill="none"/>
+                <circle cx="17.5" cy="17.5" r="5" fill="black"/>
+              </svg>
+              
               {/* Logo */}
               <div className="flex justify-center mb-6" onClick={handleLogoClick}>
                 <div className="bg-black p-4 border-4 border-black rotate-3 cursor-pointer brutal-shadow brutal-hover">
@@ -287,18 +423,36 @@ export default function App() {
                 </div>
               </div>
               
+              {/* Sparkles around title */}
+              <svg className="absolute left-4 top-28 opacity-40" width="25" height="25" viewBox="0 0 25 25">
+                <path d="M12.5 2 L14 10 L22 12.5 L14 15 L12.5 23 L11 15 L3 12.5 L11 10 Z" fill="black"/>
+              </svg>
+              <svg className="absolute right-6 top-32 opacity-40" width="20" height="20" viewBox="0 0 20 20">
+                <path d="M10 1 L11 8 L18 10 L11 12 L10 19 L9 12 L2 10 L9 8 Z" fill="black"/>
+              </svg>
+              
               {/* Title */}
               <h1 
                 onClick={handleLogoClick}
-                className="text-6xl mb-3 select-none cursor-pointer tracking-tight text-black font-black uppercase"
+                className="text-6xl mb-3 select-none cursor-pointer tracking-tight text-black font-black uppercase relative inline-block"
                 style={{
                   textShadow: '4px 4px 0px rgba(251, 191, 36, 1)',
                 }}
               >
                 MOSAIC
               </h1>
-              <div className="inline-block bg-yellow-400 px-4 py-2 border-4 border-black -rotate-1 brutal-shadow-sm mb-3">
+              
+              {/* Underline doodle */}
+              <svg className="mx-auto opacity-20 mb-3" width="200" height="12" viewBox="0 0 200 12">
+                <path d="M10 6 Q 50 2 100 6 T 190 6" stroke="black" strokeWidth="3" fill="none" strokeLinecap="round"/>
+              </svg>
+              
+              <div className="inline-block bg-yellow-400 px-4 py-2 border-4 border-black -rotate-1 brutal-shadow-sm mb-3 relative">
                 <p className="text-black text-sm font-black uppercase tracking-wider">Celebrating Student Creativity</p>
+                {/* Small arrow doodle */}
+                <svg className="absolute -right-8 top-1/2 -translate-y-1/2 opacity-40" width="25" height="20" viewBox="0 0 25 20">
+                  <path d="M2 10 L18 10 M18 10 L13 5 M18 10 L13 15" stroke="black" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
               <p className="text-gray-700 text-xs font-bold uppercase tracking-wide">Student & Teacher Publishing Platform</p>
               
@@ -320,7 +474,7 @@ export default function App() {
                 <Login onLogin={handleLogin} />
                 <button
                   onClick={() => setShowAdminLogin(false)}
-                  className="mt-6 w-full text-center text-gray-300 hover:text-white transition-colors text-sm"
+                  className="mt-6 w-full text-center bg-white border-4 border-black px-4 py-2 brutal-shadow-sm brutal-hover font-black uppercase text-sm text-black"
                 >
                   ← Back to Reader Login
                 </button>
@@ -341,17 +495,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Design Mockups Link */}
-            <div className="mt-8 pt-6 text-center">
-              <button
-                onClick={() => {
-                  window.location.hash = '#mockups';
-                }}
-                className="bg-cyan-400 text-black px-4 py-2 border-4 border-black brutal-shadow-sm brutal-hover font-black uppercase text-xs"
-              >
-                🎨 View Design Mockups
-              </button>
-            </div>
           </div>
         </div>
 
