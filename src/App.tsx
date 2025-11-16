@@ -1,3 +1,11 @@
+/**
+ * Mosaic Magazine HI - Main Application
+ * 
+ * SECRET BACKDOOR FOR ADMIN/EDITOR LOGIN:
+ * Navigate to /emoh (or #emoh) to access staff login
+ * Example: https://yourdomain.com/emoh
+ */
+
 import { useState, useEffect } from 'react';
 import { projectId, publicAnonKey } from './utils/supabase/info';
 import { Login } from './components/Login';
@@ -16,9 +24,6 @@ export default function App() {
   const [authToken, setAuthToken] = useState<string>('');
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [needsSetup, setNeedsSetup] = useState(false);
-  const [logoClickCount, setLogoClickCount] = useState(0);
-  const [showBackdoor, setShowBackdoor] = useState(false);
-  const [justUnlocked, setJustUnlocked] = useState(false);
   const [showPasswordExpiry, setShowPasswordExpiry] = useState(false);
   const [passwordExpiryData, setPasswordExpiryData] = useState<{ daysRemaining: number; isExpired: boolean } | null>(null);
   const [showLogos, setShowLogos] = useState(false);
@@ -29,36 +34,55 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const handleHashChange = () => {
-      console.log('[App] Hash changed to:', window.location.hash);
+    const handlePathChange = () => {
+      const pathname = window.location.pathname;
+      const hash = window.location.hash;
+      
+      console.log('[App] Path/Hash changed - pathname:', pathname, 'hash:', hash);
+      
+      // Check if URL is /emoh (secret backdoor for admin/editor login)
+      if (pathname === '/emoh' || hash === '#emoh') {
+        console.log('[Backdoor] /emoh detected - showing admin login');
+        setShowAdminLogin(true);
+        setLoading(false);
+        return;
+      }
+      
       // Check if URL is for logo showcase
-      if (window.location.pathname === '/logos' || window.location.hash === '#logos') {
+      if (pathname === '/logos' || hash === '#logos') {
         console.log('[App] Showing logos');
         setShowLogos(true);
         setLoading(false);
         return;
       }
-      // Reset if hash is cleared
-      if (!window.location.hash || window.location.hash === '#' || window.location.hash === '') {
+      
+      // Reset special views if hash is cleared
+      if (!hash || hash === '#' || hash === '') {
         console.log('[App] Clearing special views');
         setShowLogos(false);
+        setShowAdminLogin(false);
       }
     };
 
     // Check on initial load
-    console.log('[App] Initial load, current hash:', window.location.hash);
-    handleHashChange();
+    console.log('[App] Initial load, current pathname:', window.location.pathname);
+    handlePathChange();
     
-    // If not showing mockups/logos, check setup status
-    if (!window.location.hash || (!window.location.hash.includes('mockups') && !window.location.hash.includes('logos'))) {
+    // If not showing special views, check setup status
+    const pathname = window.location.pathname;
+    const hash = window.location.hash;
+    if (pathname !== '/emoh' && pathname !== '/logos' && hash !== '#emoh' && hash !== '#logos') {
       checkSetupStatus();
     }
 
     // Listen for hash changes
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', handlePathChange);
+    // Listen for popstate (back/forward navigation)
+    window.addEventListener('popstate', handlePathChange);
     
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('hashchange', handlePathChange);
+      window.removeEventListener('popstate', handlePathChange);
     };
   }, []);
 
@@ -175,27 +199,6 @@ export default function App() {
     setUser(null);
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-  };
-
-  const handleLogoClick = () => {
-    const newCount = logoClickCount + 1;
-    setLogoClickCount(newCount);
-    
-    if (newCount >= 5 && !showBackdoor) {
-      setShowBackdoor(true);
-      setJustUnlocked(true);
-      // Hide the unlock message after 3 seconds
-      setTimeout(() => setJustUnlocked(false), 3000);
-      // Reset counter after revealing
-      setTimeout(() => setLogoClickCount(0), 1000);
-    }
-    
-    // Reset counter if user stops clicking for 2 seconds
-    setTimeout(() => {
-      if (logoClickCount === newCount) {
-        setLogoClickCount(0);
-      }
-    }, 2000);
   };
 
   // Design mockups mode
@@ -422,9 +425,9 @@ export default function App() {
               </svg>
               
               {/* Logo */}
-              <div className="flex justify-center mb-6" onClick={handleLogoClick}>
-                <div className="bg-black p-4 border-4 border-black rotate-3 cursor-pointer brutal-shadow brutal-hover">
-                  <StackedTilesLogo size={80} className="cursor-pointer" />
+              <div className="flex justify-center mb-6">
+                <div className="bg-black p-4 border-4 border-black rotate-3 brutal-shadow">
+                  <StackedTilesLogo size={80} />
                 </div>
               </div>
               
@@ -438,8 +441,7 @@ export default function App() {
               
               {/* Title */}
               <h1 
-                onClick={handleLogoClick}
-                className="text-6xl mb-3 select-none cursor-pointer tracking-tight text-black font-black uppercase relative inline-block"
+                className="text-6xl mb-3 select-none tracking-tight text-black font-black uppercase relative inline-block"
                 style={{
                   textShadow: '4px 4px 0px rgba(251, 191, 36, 1)',
                 }}
@@ -460,31 +462,6 @@ export default function App() {
                 </svg>
               </div>
               <p className="text-gray-700 text-xs font-bold uppercase tracking-wide">Student & Teacher Publishing Platform</p>
-              
-              {/* Click progress indicator - only shows when clicking */}
-              {logoClickCount > 0 && logoClickCount < 5 && !showBackdoor && (
-                <div className="mt-4 animate-fade-in">
-                  <div className="inline-flex gap-2">
-                    {[...Array(5)].map((_, i) => (
-                      <div 
-                        key={i}
-                        className={`w-3 h-3 border-2 border-black ${i < logoClickCount ? 'bg-yellow-400' : 'bg-white'}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Unlock notification - only shows after 5 clicks */}
-              {justUnlocked && (
-                <div className="mt-4 animate-fade-in">
-                  <div className="inline-block bg-green-400 px-4 py-2 border-4 border-black rotate-1 brutal-shadow">
-                    <p className="text-black text-sm font-black uppercase">
-                      🔓 Admin Access Unlocked
-                    </p>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Login Forms */}
@@ -492,26 +469,20 @@ export default function App() {
               <div>
                 <Login onLogin={handleLogin} />
                 <button
-                  onClick={() => setShowAdminLogin(false)}
+                  onClick={() => {
+                    setShowAdminLogin(false);
+                    // Also clear the URL if they're going back to reader login
+                    if (window.location.pathname === '/emoh' || window.location.hash === '#emoh') {
+                      window.history.pushState({}, '', '/');
+                    }
+                  }}
                   className="mt-6 w-full text-center bg-white border-4 border-black px-4 py-2 brutal-shadow-sm brutal-hover font-black uppercase text-sm text-black"
                 >
                   ← Back to Reader Login
                 </button>
               </div>
             ) : (
-              <div>
-                <MagicLinkLogin onLogin={handleLogin} />
-                
-                {/* Hidden backdoor - only visible after 5 clicks */}
-                {showBackdoor && (
-                  <button
-                    onClick={() => setShowAdminLogin(true)}
-                    className="mt-6 w-full bg-purple-400 text-black px-6 py-3 border-4 border-black brutal-shadow brutal-hover font-black uppercase text-sm animate-fade-in -rotate-1"
-                  >
-                    🔑 Staff Access (Admin/Editor)
-                  </button>
-                )}
-              </div>
+              <MagicLinkLogin onLogin={handleLogin} />
             )}
 
           </div>
