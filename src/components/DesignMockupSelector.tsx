@@ -14,6 +14,21 @@ import MockupNeoBrutalism from './mockups/MockupNeoBrutalism';
 export default function DesignMockupSelector() {
   const [selectedMockup, setSelectedMockup] = React.useState(0);
 
+  console.log('[DesignMockupSelector] Component rendering');
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        handlePrevious();
+      } else if (e.key === 'ArrowRight') {
+        handleNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMockup]);
+
   const mockups = [
     {
       id: 0,
@@ -62,9 +77,6 @@ export default function DesignMockupSelector() {
     },
   ];
 
-  const currentMockup = mockups[selectedMockup];
-  const CurrentComponent = currentMockup.component;
-
   const handlePrevious = () => {
     setSelectedMockup((prev) => (prev === 0 ? mockups.length - 1 : prev - 1));
   };
@@ -72,6 +84,9 @@ export default function DesignMockupSelector() {
   const handleNext = () => {
     setSelectedMockup((prev) => (prev === mockups.length - 1 ? 0 : prev + 1));
   };
+
+  const currentMockup = mockups[selectedMockup];
+  const CurrentComponent = currentMockup.component;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">

@@ -26,19 +26,47 @@ export default function App() {
   const [showMockups, setShowMockups] = useState(false);
 
   useEffect(() => {
-    // Check if URL is for design mockups
-    if (window.location.pathname === '/mockups' || window.location.hash === '#mockups') {
-      setShowMockups(true);
-      setLoading(false);
-      return;
+    const handleHashChange = () => {
+      console.log('[App] Hash changed to:', window.location.hash);
+      // Check if URL is for design mockups
+      if (window.location.pathname === '/mockups' || window.location.hash === '#mockups') {
+        console.log('[App] Showing mockups');
+        setShowMockups(true);
+        setShowLogos(false);
+        setLoading(false);
+        return;
+      }
+      // Check if URL is for logo showcase
+      if (window.location.pathname === '/logos' || window.location.hash === '#logos') {
+        console.log('[App] Showing logos');
+        setShowLogos(true);
+        setShowMockups(false);
+        setLoading(false);
+        return;
+      }
+      // Reset if hash is cleared
+      if (!window.location.hash || window.location.hash === '#' || window.location.hash === '') {
+        console.log('[App] Clearing special views');
+        setShowMockups(false);
+        setShowLogos(false);
+      }
+    };
+
+    // Check on initial load
+    console.log('[App] Initial load, current hash:', window.location.hash);
+    handleHashChange();
+    
+    // If not showing mockups/logos, check setup status
+    if (!window.location.hash || (!window.location.hash.includes('mockups') && !window.location.hash.includes('logos'))) {
+      checkSetupStatus();
     }
-    // Check if URL is for logo showcase
-    if (window.location.pathname === '/logos' || window.location.hash === '#logos') {
-      setShowLogos(true);
-      setLoading(false);
-      return;
-    }
-    checkSetupStatus();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   const checkSetupStatus = async () => {
@@ -318,6 +346,19 @@ export default function App() {
                 )}
               </div>
             )}
+
+            {/* Design Mockups Link */}
+            <div className="mt-8 pt-6 border-t border-white/10 text-center">
+              <button
+                onClick={() => {
+                  window.location.hash = '#mockups';
+                }}
+                className="text-gray-400 hover:text-white text-sm transition-colors inline-flex items-center gap-2"
+              >
+                <span>🎨</span>
+                <span>View Design Mockups</span>
+              </button>
+            </div>
           </div>
         </div>
 
