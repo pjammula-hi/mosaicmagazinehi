@@ -108,15 +108,45 @@ export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProp
     }
   };
 
+  const handleCreateTestLogs = async () => {
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/admin/audit-logs/test`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        }
+      );
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setSuccess('Test audit logs created! Refresh the page to see them.');
+      } else {
+        setError(data.error || 'Failed to create test logs');
+      }
+    } catch (err) {
+      console.error('Error creating test logs:', err);
+      setError('Failed to create test logs');
+    }
+  };
+
   if (showAuditLogs) {
     return (
       <div className="min-h-screen bg-white">
         <div className="bg-gradient-to-r from-red-400 to-orange-400 border-b-4 border-black px-6 py-4">
           <div className="container mx-auto">
             <div className="flex items-center justify-between">
-              <BrutalButton onClick={() => setShowAuditLogs(false)} variant="primary" size="sm">
-                ← Back to Admin Panel
-              </BrutalButton>
+              <div className="flex gap-2">
+                <BrutalButton onClick={() => setShowAuditLogs(false)} variant="primary" size="sm">
+                  ← Back to Admin Panel
+                </BrutalButton>
+                <BrutalButton onClick={handleCreateTestLogs} variant="secondary" size="sm" icon={Zap}>
+                  Create Test Logs
+                </BrutalButton>
+              </div>
               <div 
                 className="w-12 h-12 bg-black border-4 border-black rotate-6 flex items-center justify-center cursor-pointer brutal-shadow-sm brutal-hover"
                 onClick={onLogout}
@@ -128,6 +158,16 @@ export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProp
           </div>
         </div>
         <div className="container mx-auto px-6 py-8">
+          {success && (
+            <BrutalAlert variant="success" className="mb-4">
+              {success}
+            </BrutalAlert>
+          )}
+          {error && (
+            <BrutalAlert variant="error" className="mb-4">
+              {error}
+            </BrutalAlert>
+          )}
           <AuditLogViewer token={authToken} />
         </div>
       </div>

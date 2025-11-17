@@ -1249,6 +1249,53 @@ app.post('/make-server-2c0f842e/admin/bulk-create-users', async (c) => {
   }
 });
 
+// Create test audit log (admin only) - FOR TESTING PURPOSES
+app.post('/make-server-2c0f842e/admin/audit-logs/test', async (c) => {
+  const authUser = await verifyAuth(c.req.raw);
+  
+  if (!authUser || authUser.role !== 'admin') {
+    return c.json({ error: 'Unauthorized. Admin access required.' }, 401);
+  }
+
+  try {
+    await createAuditLog('login_success', authUser.id, authUser.email, {
+      userName: authUser.fullName,
+      userRole: authUser.role,
+      passwordExpired: false,
+      daysRemaining: 90
+    }, c.req.raw, true);
+
+    await createAuditLog('login_failed', '', 'test@example.com', {
+      reason: 'invalid_credentials',
+      userName: 'Test User',
+      userRole: 'editor'
+    }, c.req.raw, false);
+
+    await createAuditLog('user_created', authUser.id, authUser.email, {
+      performedBy: {
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.fullName,
+        role: authUser.role
+      },
+      targetUser: {
+        id: 'test-123',
+        email: 'newuser@example.com',
+        name: 'New Test User',
+        role: 'reader'
+      }
+    }, c.req.raw, true);
+
+    return c.json({ 
+      success: true, 
+      message: 'Created 3 test audit log entries' 
+    });
+  } catch (error) {
+    console.error('[Create Test Audit Logs] Error:', error);
+    return c.json({ error: 'Failed to create test logs', details: String(error) }, 500);
+  }
+});
+
 // Get audit logs (admin only)
 app.get('/make-server-2c0f842e/admin/audit-logs', async (c) => {
   const authUser = await verifyAuth(c.req.raw);
@@ -1268,6 +1315,7 @@ app.get('/make-server-2c0f842e/admin/audit-logs', async (c) => {
     const limit = parseInt(c.req.query('limit') || '100');
     
     console.log('[Get Audit Logs] Total logs:', logs.length, 'Filters:', { filterType, filterEmail, startDate, endDate, limit });
+    console.log('[Get Audit Logs] Sample log (first):', logs.length > 0 ? JSON.stringify(logs[0]) : 'No logs found');
     
     // Filter by type
     if (filterType && filterType !== 'all') {
