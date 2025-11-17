@@ -204,16 +204,33 @@ async function verifyAnyAuth(request: Request, silent = false) {
 }
 
 // Helper to create audit log
-async function createAuditLog(action: string, userId: string, userEmail: string, details: any = {}) {
+async function createAuditLog(
+  type: string, 
+  userId: string, 
+  userEmail: string, 
+  details: any = {},
+  request?: Request,
+  success: boolean = true
+) {
   try {
     const logId = `audit:${Date.now()}-${crypto.randomUUID()}`;
+    
+    // Extract IP and User Agent from request if provided
+    const ipAddress = request?.headers.get('x-forwarded-for')?.split(',')[0].trim() 
+      || request?.headers.get('x-real-ip') 
+      || 'unknown';
+    const userAgent = request?.headers.get('user-agent') || 'unknown';
+    
     const auditLog = {
       id: logId,
-      action,
+      type,
+      email: userEmail,
       userId,
-      userEmail,
       timestamp: new Date().toISOString(),
-      details
+      ipAddress,
+      userAgent,
+      success,
+      ...details
     };
     await kv.set(logId, auditLog);
   } catch (error) {
@@ -324,6 +341,9 @@ app.post('/make-server-2c0f842e/login', async (c) => {
     const { email, password } = await c.req.json();
     
     if (!email || !password) {
+      await createAuditLog('login_failed', '', email || 'unknown', { 
+        reason: 'missing_credentials' 
+      }, c.req.raw, false);
       return c.json({ error: 'Email and password are required' }, 400);
     }
 
@@ -334,18 +354,31 @@ app.post('/make-server-2c0f842e/login', async (c) => {
     
     if (!user) {
       console.log('[Login] User not found in KV:', email);
+      await createAuditLog('login_failed', '', email, { 
+        reason: 'invalid_credentials' 
+      }, c.req.raw, false);
       return c.json({ error: 'Invalid credentials' }, 401);
     }
 
     // Check if user is admin or editor
     if (user.role !== 'admin' && user.role !== 'editor') {
       console.log('[Login] User role not authorized:', user.role);
+      await createAuditLog('login_failed', user.id, email, { 
+        reason: 'unauthorized_role',
+        userName: user.fullName,
+        userRole: user.role
+      }, c.req.raw, false);
       return c.json({ error: 'Unauthorized. Admin/Editor access only.' }, 401);
     }
 
     // Check if user is active
     if (!user.isActive) {
       console.log('[Login] User account is inactive:', email);
+      await createAuditLog('login_failed', user.id, email, { 
+        reason: 'inactive_account',
+        userName: user.fullName,
+        userRole: user.role
+      }, c.req.raw, false);
       return c.json({ error: 'Account is inactive. Please contact an administrator.' }, 401);
     }
 
@@ -357,11 +390,22 @@ app.post('/make-server-2c0f842e/login', async (c) => {
 
     if (authError) {
       console.error('[Login] Supabase auth error:', authError);
+      await createAuditLog('login_failed', user.id, email, { 
+        reason: 'authentication_failed',
+        userName: user.fullName,
+        userRole: user.role,
+        errorDetails: authError.message
+      }, c.req.raw, false);
       return c.json({ error: 'Invalid credentials' }, 401);
     }
 
     if (!authData.session) {
       console.error('[Login] No session returned from Supabase');
+      await createAuditLog('login_error', user.id, email, { 
+        reason: 'system_error',
+        userName: user.fullName,
+        userRole: user.role
+      }, c.req.raw, false);
       return c.json({ error: 'Failed to create session' }, 500);
     }
 
@@ -385,6 +429,14 @@ app.post('/make-server-2c0f842e/login', async (c) => {
 
     console.log('[Login] Login successful for:', email);
 
+    // Log successful login
+    await createAuditLog('login_success', user.id, email, { 
+      userName: user.fullName,
+      userRole: user.role,
+      passwordExpired,
+      daysRemaining
+    }, c.req.raw, true);
+
     return c.json({
       success: true,
       user,
@@ -395,6 +447,10 @@ app.post('/make-server-2c0f842e/login', async (c) => {
     });
   } catch (error) {
     console.error('[Login] Error:', error);
+    await createAuditLog('login_error', '', 'unknown', { 
+      reason: 'system_error',
+      errorDetails: String(error)
+    }, c.req.raw, false);
     return c.json({ error: 'Login failed', details: String(error) }, 500);
   }
 });
@@ -528,7 +584,10 @@ app.post('/make-server-2c0f842e/change-password', async (c) => {
     user.lastPasswordChange = now;
     await kv.set(`user:${user.email}`, user);
 
-    await createAuditLog('password_changed', user.id, user.email);
+    await createAuditLog('password_changed', user.id, user.email, {
+      userName: user.fullName,
+      userRole: user.role
+    }, c.req.raw, true);
 
     return c.json({ success: true, message: 'Password changed successfully' });
   } catch (error) {
@@ -650,7 +709,10 @@ app.post('/make-server-2c0f842e/reset-password', async (c) => {
     resetData.used = true;
     await kv.set(`reset:${token}`, resetData);
 
-    await createAuditLog('password_reset', user.id, user.email);
+    await createAuditLog('password_reset', user.id, user.email, {
+      userName: user.fullName,
+      userRole: user.role
+    }, c.req.raw, true);
 
     return c.json({ success: true, message: 'Password reset successfully' });
   } catch (error) {
@@ -823,7 +885,22 @@ app.post('/make-server-2c0f842e/admin/create-user', async (c) => {
     }
 
     await kv.set(`user:${email}`, user);
-    await createAuditLog('user_created', authUser.id, authUser.email, { createdUser: email, role });
+    await createAuditLog('user_created', authUser.id, authUser.email, { 
+      createdUser: email, 
+      role,
+      performedBy: {
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.fullName,
+        role: authUser.role
+      },
+      targetUser: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     console.log('[Create User] Successfully created user:', email, 'Role:', role);
 
@@ -919,8 +996,20 @@ app.put('/make-server-2c0f842e/admin/update-user', async (c) => {
 
     await createAuditLog('user_updated', authUser.id, authUser.email, { 
       updatedUser: user.email, 
-      changes: { fullName, role, emailChanged, passwordChanged: !!password } 
-    });
+      changes: { fullName, role, emailChanged, passwordChanged: !!password },
+      performedBy: {
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.fullName,
+        role: authUser.role
+      },
+      targetUser: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     return c.json({ success: true, user });
   } catch (error) {
@@ -962,8 +1051,21 @@ app.put('/make-server-2c0f842e/admin/toggle-user-status', async (c) => {
 
     await createAuditLog('user_status_changed', authUser.id, authUser.email, { 
       targetUser: user.email, 
-      isActive 
-    });
+      isActive,
+      action: isActive ? 'activated' : 'deactivated',
+      performedBy: {
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.fullName,
+        role: authUser.role
+      },
+      targetUser: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     return c.json({ success: true, user });
   } catch (error) {
@@ -1036,7 +1138,21 @@ app.delete('/make-server-2c0f842e/admin/delete-user', async (c) => {
     await kv.del(`user:${user.email}`);
     console.log('🗑️ [Delete User] Successfully deleted from KV store');
 
-    await createAuditLog('user_deleted', authUser.id, authUser.email, { deletedUser: user.email });
+    await createAuditLog('user_deleted', authUser.id, authUser.email, { 
+      deletedUser: user.email,
+      performedBy: {
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.fullName,
+        role: authUser.role
+      },
+      targetUser: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     console.log('🗑️ [Delete User] ✅ Success!');
     return c.json({ success: true, message: 'User deleted successfully' });
@@ -1117,8 +1233,14 @@ app.post('/make-server-2c0f842e/admin/bulk-create-users', async (c) => {
 
     await createAuditLog('bulk_users_created', authUser.id, authUser.email, { 
       successCount: results.success.length,
-      failedCount: results.failed.length
-    });
+      failedCount: results.failed.length,
+      performedBy: {
+        id: authUser.id,
+        email: authUser.email,
+        name: authUser.fullName,
+        role: authUser.role
+      }
+    }, c.req.raw, true);
 
     return c.json({ success: true, results });
   } catch (error) {
@@ -1136,10 +1258,50 @@ app.get('/make-server-2c0f842e/admin/audit-logs', async (c) => {
   }
 
   try {
-    const logs = await kv.getByPrefix('audit:');
+    let logs = await kv.getByPrefix('audit:');
+    
+    // Apply filters from query parameters
+    const filterType = c.req.query('type');
+    const filterEmail = c.req.query('email');
+    const startDate = c.req.query('startDate');
+    const endDate = c.req.query('endDate');
+    const limit = parseInt(c.req.query('limit') || '100');
+    
+    console.log('[Get Audit Logs] Total logs:', logs.length, 'Filters:', { filterType, filterEmail, startDate, endDate, limit });
+    
+    // Filter by type
+    if (filterType && filterType !== 'all') {
+      logs = logs.filter((log: any) => log.type === filterType);
+    }
+    
+    // Filter by email
+    if (filterEmail) {
+      logs = logs.filter((log: any) => 
+        log.email?.toLowerCase().includes(filterEmail.toLowerCase()) ||
+        log.performedBy?.email?.toLowerCase().includes(filterEmail.toLowerCase()) ||
+        log.targetUser?.email?.toLowerCase().includes(filterEmail.toLowerCase())
+      );
+    }
+    
+    // Filter by date range
+    if (startDate) {
+      const start = new Date(startDate);
+      logs = logs.filter((log: any) => new Date(log.timestamp) >= start);
+    }
+    
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999); // Include entire end date
+      logs = logs.filter((log: any) => new Date(log.timestamp) <= end);
+    }
     
     // Sort by timestamp descending
     logs.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    
+    // Apply limit
+    logs = logs.slice(0, limit);
+    
+    console.log('[Get Audit Logs] Returning', logs.length, 'filtered logs');
 
     return c.json({ logs });
   } catch (error) {
@@ -1434,8 +1596,14 @@ app.delete('/make-server-2c0f842e/submissions/:id', async (c) => {
 
     await createAuditLog('submission_deleted', user.id, user.email, { 
       submissionId,
-      title: submission.title 
-    });
+      title: submission.title,
+      performedBy: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     console.log('[Delete Submission] Deleted:', submissionId, 'by', user.email);
 
@@ -1527,8 +1695,14 @@ app.post('/make-server-2c0f842e/submissions/empty-trash', async (c) => {
     }
 
     await createAuditLog('trash_emptied', user.id, user.email, { 
-      count: trashedSubmissions.length 
-    });
+      count: trashedSubmissions.length,
+      performedBy: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     console.log('[Empty Trash] Deleted', trashedSubmissions.length, 'submissions by', user.email);
 
@@ -1567,8 +1741,14 @@ app.post('/make-server-2c0f842e/submissions/:id/send-email', async (c) => {
     await createAuditLog('email_sent', user.id, user.email, { 
       to: submission.authorEmail,
       submissionId,
-      submissionTitle: submission.title
-    });
+      submissionTitle: submission.title,
+      performedBy: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     return c.json({ 
       success: true, 
@@ -1707,8 +1887,14 @@ app.post('/make-server-2c0f842e/issues/:id/publish', async (c) => {
 
     await createAuditLog('issue_published', user.id, user.email, { 
       issueId,
-      title: issue.title 
-    });
+      title: issue.title,
+      performedBy: {
+        id: user.id,
+        email: user.email,
+        name: user.fullName,
+        role: user.role
+      }
+    }, c.req.raw, true);
 
     console.log('[Publish Issue] Published:', issueId, 'by', user.email);
 

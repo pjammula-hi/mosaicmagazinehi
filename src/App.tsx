@@ -31,9 +31,9 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.1.4 - Fix field name: is_trashed → isTrashed (camelCase!)
+  // BUILD VERSION: 1.2.0 - Comprehensive audit logging with IP tracking
   if (process.env.NODE_ENV === 'development') {
-    console.log('%c🚀 Mosaic Magazine App v1.1.4', 'color: orange; font-weight: bold; font-size: 16px;');
+    console.log('%c🚀 Mosaic Magazine App v1.2.0', 'color: purple; font-weight: bold; font-size: 16px;');
     console.log('Build timestamp:', new Date().toISOString());
   }
   
