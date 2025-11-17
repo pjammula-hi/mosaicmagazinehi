@@ -973,11 +973,8 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
   };
 
   const filteredSubmissions = submissions.filter(s => {
-    // Filter by view mode (inbox or trash)
-    if (viewMode === 'inbox' && s.status === 'deleted') return false;
-    if (viewMode === 'trash' && s.status !== 'deleted') return false;
-    
-    // Filter by status
+    // Backend now handles inbox/trash filtering via ?trash=true parameter
+    // Only filter by status here
     if (filterStatus !== 'all' && s.status !== filterStatus) return false;
     
     return true;

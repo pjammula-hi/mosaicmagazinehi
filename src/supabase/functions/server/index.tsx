@@ -1265,14 +1265,20 @@ app.get('/make-server-2c0f842e/submissions', async (c) => {
 
   try {
     let submissions = await kv.getByPrefix('submission:');
+    const showTrash = c.req.query('trash') === 'true';
+    
+    console.log(`[Get Submissions] Total: ${submissions.length}, ShowTrash: ${showTrash}, User: ${user.email}`);
 
     // Filter out trashed submissions (unless explicitly requesting trash)
-    const showTrash = c.req.query('trash') === 'true';
     if (!showTrash) {
-      submissions = submissions.filter((s: any) => !s.is_trashed);
+      const beforeCount = submissions.length;
+      submissions = submissions.filter((s: any) => !s.isTrashed);
+      console.log(`[Get Submissions] Filtered inbox: ${beforeCount} → ${submissions.length} (removed ${beforeCount - submissions.length} trashed)`);
     } else {
       // If showing trash, only show trashed items
-      submissions = submissions.filter((s: any) => s.is_trashed);
+      const beforeCount = submissions.length;
+      submissions = submissions.filter((s: any) => s.isTrashed === true);
+      console.log(`[Get Submissions] Filtered trash: ${beforeCount} → ${submissions.length} (showing only trashed)`);
     }
 
     // Filter based on user role
@@ -1285,6 +1291,7 @@ app.get('/make-server-2c0f842e/submissions', async (c) => {
     // Sort by creation date descending
     submissions.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+    console.log(`[Get Submissions] Returning ${submissions.length} submissions`);
     return c.json({ submissions });
   } catch (error) {
     console.error('[Get Submissions] Error:', error);
