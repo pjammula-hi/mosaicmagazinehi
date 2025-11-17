@@ -512,21 +512,36 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
         console.log('🗑️ Success:', data);
         
         // Close modal by resetting state (complete inline from closeModal)
-        setSelectedSubmission(null);
-        setEditorNotes('');
-        setSelectedStatus('');
-        setSelectedIssue('');
-        setPageNumber('');
-        setShortDescription('');
-        setIsEditMode(false);
-        setEditedSubmission(null);
-        setReplacementFile(null);
-        setModalPosition({ x: 0, y: 0 });
-        setIsSubmissionEditMode(false);
-        
-        fetchSubmissions();
-        onUpdate();
-        alert('Submission moved to trash');
+        try {
+          console.log('🗑️ Step 1: Resetting modal state...');
+          setSelectedSubmission(null);
+          setEditorNotes('');
+          setSelectedStatus('');
+          setSelectedIssue('');
+          setPageNumber('');
+          setShortDescription('');
+          setIsEditMode(false);
+          setEditedSubmission(null);
+          setReplacementFile(null);
+          
+          console.log('🗑️ Step 2: Resetting modal position...');
+          setModalPosition({ x: 0, y: 0 });
+          
+          console.log('🗑️ Step 3: Resetting submission edit mode...');
+          setIsSubmissionEditMode(false);
+          
+          console.log('🗑️ Step 4: Fetching submissions...');
+          fetchSubmissions();
+          
+          console.log('🗑️ Step 5: Calling onUpdate...');
+          onUpdate();
+          
+          console.log('🗑️ Step 6: Showing alert...');
+          alert('Submission moved to trash');
+        } catch (innerErr) {
+          console.error('❌ Error in success handler:', innerErr);
+          throw innerErr;
+        }
       } else {
         const error = await response.json();
         console.error('🗑️ Error response:', error);

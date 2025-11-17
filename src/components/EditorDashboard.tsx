@@ -245,7 +245,13 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
         <div>
           {activeTab === 'submissions' && (
             <div>
-              <EnhancedSubmissionManager authToken={authToken} />
+              <EnhancedSubmissionManager 
+                authToken={authToken} 
+                onUpdate={() => {
+                  // Refresh callback - component handles its own refresh
+                  console.log('[EditorDashboard] Submission update triggered');
+                }} 
+              />
             </div>
           )}
 

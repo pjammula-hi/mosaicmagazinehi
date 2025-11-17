@@ -31,9 +31,9 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.1.1 - Complete trash handler fix (all state setters)
+  // BUILD VERSION: 1.1.2 - ACTUAL FIX: onUpdate prop missing in EditorDashboard!
   if (process.env.NODE_ENV === 'development') {
-    console.log('%c🚀 Mosaic Magazine App v1.1.1', 'color: blue; font-weight: bold; font-size: 16px;');
+    console.log('%c🚀 Mosaic Magazine App v1.1.2', 'color: red; font-weight: bold; font-size: 16px;');
     console.log('Build timestamp:', new Date().toISOString());
   }
   
@@ -82,15 +82,19 @@ export default function App() {
       if ((!hash || hash === '#' || hash === '') && 
           !pathname.endsWith('/emoh') && 
           !pathname.endsWith('/logos')) {
-        console.log('[App] Clearing special views');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[App] Clearing special views');
+        }
         setShowLogos(false);
         setShowAdminLogin(false);
       }
     };
 
     // Check on initial load
-    console.log('[App] Initial load - pathname:', window.location.pathname, 'hash:', window.location.hash);
-    console.log('[App] Full URL:', window.location.href);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[App] Initial load - pathname:', window.location.pathname, 'hash:', window.location.hash);
+      console.log('[App] Full URL:', window.location.href);
+    }
     handlePathChange();
     
     // If not showing special views, check setup status
