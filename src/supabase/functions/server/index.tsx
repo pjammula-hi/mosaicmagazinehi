@@ -1266,6 +1266,15 @@ app.get('/make-server-2c0f842e/submissions', async (c) => {
   try {
     let submissions = await kv.getByPrefix('submission:');
 
+    // Filter out trashed submissions (unless explicitly requesting trash)
+    const showTrash = c.req.query('trash') === 'true';
+    if (!showTrash) {
+      submissions = submissions.filter((s: any) => !s.is_trashed);
+    } else {
+      // If showing trash, only show trashed items
+      submissions = submissions.filter((s: any) => s.is_trashed);
+    }
+
     // Filter based on user role
     if (user.role === 'student' || user.role === 'teacher') {
       // Students and teachers can only see their own submissions

@@ -94,7 +94,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
     fetchIssues();
     fetchContributorStatuses();
     fetchContentTypes();
-  }, []);
+  }, [viewMode]); // Re-fetch when switching between inbox and trash
 
   const fetchContributorStatuses = async () => {
     try {
@@ -167,8 +167,10 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
   const fetchSubmissions = async () => {
     setLoading(true);
     try {
+      // Add query parameter to show trash or inbox based on viewMode
+      const trashParam = viewMode === 'trash' ? '?trash=true' : '';
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/submissions`,
+        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/submissions${trashParam}`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
         }

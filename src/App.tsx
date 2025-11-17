@@ -31,9 +31,9 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.1.2 - ACTUAL FIX: onUpdate prop missing in EditorDashboard!
+  // BUILD VERSION: 1.1.3 - Filter trashed submissions from inbox view
   if (process.env.NODE_ENV === 'development') {
-    console.log('%c🚀 Mosaic Magazine App v1.1.2', 'color: red; font-weight: bold; font-size: 16px;');
+    console.log('%c🚀 Mosaic Magazine App v1.1.3', 'color: purple; font-weight: bold; font-size: 16px;');
     console.log('Build timestamp:', new Date().toISOString());
   }
   
