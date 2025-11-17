@@ -4,6 +4,8 @@
  * SECRET BACKDOOR FOR ADMIN/EDITOR LOGIN:
  * Navigate to /emoh (or #emoh) to access staff login
  * Example: https://yourdomain.com/emoh
+ * 
+ * Version: 1.0.1 - Fixed password validation crash
  */
 
 import { useState, useEffect } from 'react';

@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { LogIn, AlertCircle, Eye, EyeOff, Shield } from 'lucide-react';
-import { ForgotPassword } from './ForgotPassword';
 import { BrutalButton, BrutalInput, BrutalAlert } from './BrutalUI';
+
+// Lazy load ForgotPassword to avoid initialization errors
+const ForgotPassword = lazy(() => import('./ForgotPassword').then(module => ({ default: module.ForgotPassword })));
 
 interface LoginProps {
   onLogin: (token: string, user: any) => void;
@@ -66,7 +68,11 @@ export function Login({ onLogin }: LoginProps) {
   };
 
   if (showForgotPassword) {
-    return <ForgotPassword onBack={() => setShowForgotPassword(false)} />;
+    return (
+      <Suspense fallback={<div className="bg-white border-4 border-black p-8 brutal-shadow">Loading...</div>}>
+        <ForgotPassword onBack={() => setShowForgotPassword(false)} />
+      </Suspense>
+    );
   }
 
   return (
