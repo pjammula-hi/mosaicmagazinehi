@@ -5,24 +5,28 @@
  * Navigate to /emoh (or #emoh) to access staff login
  * Example: https://yourdomain.com/emoh
  * 
- * Version: 1.0.2 - Fixed validation with lazy loading and proper null handling
+ * Version: 1.0.3 - REBUILD FORCED - Fixed validation with lazy loading
+ * Build Date: 2025-11-17
  */
 
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { projectId, publicAnonKey } from './utils/supabase/info';
 import { Login } from './components/Login';
 import { MagicLinkLogin } from './components/MagicLinkLogin';
-import { AdminDashboard } from './components/AdminDashboard';
-import { EditorDashboard } from './components/EditorDashboard';
 import { ReaderDashboard } from './components/ReaderDashboard';
 import { LogoShowcase, StackedTilesLogo } from './components/logos/MosaicLogos';
 import { MagazineCard, holidayIssue } from './components/MagazineCard';
 
-// Lazy load components that use password validation to prevent early initialization errors
+// Lazy load components that use password validation or have complex dependencies to prevent early initialization errors
 const InitialSetup = lazy(() => import('./components/InitialSetup').then(m => ({ default: m.InitialSetup })));
 const PasswordExpiryModal = lazy(() => import('./components/PasswordExpiryModal').then(m => ({ default: m.PasswordExpiryModal })));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const EditorDashboard = lazy(() => import('./components/EditorDashboard').then(m => ({ default: m.EditorDashboard })));
 
 export default function App() {
+  // BUILD VERSION: 1.0.3 - Fixed dashboard lazy loading to prevent .length crash
+  console.log('🚀 Mosaic Magazine App v1.0.3 - Build timestamp:', new Date().toISOString());
+  
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [authToken, setAuthToken] = useState<string>('');
@@ -522,10 +526,26 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {user.role === 'admin' && (
-        <AdminDashboard user={user} authToken={authToken} onLogout={handleLogout} />
+        <Suspense fallback={
+          <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="bg-white border-4 border-black p-8 brutal-shadow">
+              <p className="text-black font-black">Loading Admin Dashboard...</p>
+            </div>
+          </div>
+        }>
+          <AdminDashboard user={user} authToken={authToken} onLogout={handleLogout} />
+        </Suspense>
       )}
       {user.role === 'editor' && (
-        <EditorDashboard user={user} authToken={authToken} onLogout={handleLogout} />
+        <Suspense fallback={
+          <div className="min-h-screen bg-white flex items-center justify-center">
+            <div className="bg-white border-4 border-black p-8 brutal-shadow">
+              <p className="text-black font-black">Loading Editor Dashboard...</p>
+            </div>
+          </div>
+        }>
+          <EditorDashboard user={user} authToken={authToken} onLogout={handleLogout} />
+        </Suspense>
       )}
       {(user.role === 'student' || user.role === 'teacher' || user.role === 'guardian') && (
         <ReaderDashboard user={user} authToken={authToken} onLogout={handleLogout} />

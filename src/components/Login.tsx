@@ -10,7 +10,10 @@ interface LoginProps {
   onLogin: (token: string, user: any) => void;
 }
 
+// Version 1.0.2 - Fixed validation crash with lazy loading
 export function Login({ onLogin }: LoginProps) {
+  console.log('🔐 Login component v1.0.2 loaded');
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
