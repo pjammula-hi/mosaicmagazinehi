@@ -145,6 +145,8 @@ export function UserManagement({ authToken, users, onRefresh, onSuccess, onError
 
   const handleDeleteUser = async (user: User) => {
     setLoading(true);
+    console.log('🗑️ Deleting user:', user.email, 'ID:', user.id);
+    
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/admin/delete-user`,
@@ -160,10 +162,19 @@ export function UserManagement({ authToken, users, onRefresh, onSuccess, onError
         }
       );
 
-      const data = await response.json();
+      console.log('🗑️ Delete response status:', response.status);
+      
+      let data;
+      try {
+        data = await response.json();
+        console.log('🗑️ Delete response data:', data);
+      } catch (parseError) {
+        console.error('Failed to parse delete response:', parseError);
+        throw new Error('Server returned invalid response');
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to delete user');
+        throw new Error(data.error || `Failed to delete user (${response.status})`);
       }
 
       onSuccess(`User ${user.fullName} deleted successfully`);
@@ -171,7 +182,7 @@ export function UserManagement({ authToken, users, onRefresh, onSuccess, onError
       setOpenMenuId(null);
       onRefresh();
     } catch (err: any) {
-      console.error('Delete user error:', err);
+      console.error('❌ Delete user error:', err);
       onError(err.message || 'Failed to delete user');
     } finally {
       setLoading(false);

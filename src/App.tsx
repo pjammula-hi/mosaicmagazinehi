@@ -37,8 +37,8 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.0.6 - PROP PASSING FIX - UserManagement component
-  console.log('%c🚀 Mosaic Magazine App v1.0.6 - PROP FIX DEPLOYED', 'color: blue; font-weight: bold; font-size: 16px;');
+  // BUILD VERSION: 1.0.8 - Fix trash endpoint HTTP method (PUT → POST)
+  console.log('%c🚀 Mosaic Magazine App v1.0.8 - TRASH FIX', 'color: green; font-weight: bold; font-size: 16px;');
   console.log('Build timestamp:', new Date().toISOString());
   
   const [user, setUser] = useState<any>(null);

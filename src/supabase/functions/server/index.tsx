@@ -974,14 +974,18 @@ app.put('/make-server-2c0f842e/admin/toggle-user-status', async (c) => {
 
 // Delete user (admin only)
 app.delete('/make-server-2c0f842e/admin/delete-user', async (c) => {
+  console.log('🗑️ [Delete User] Request received');
+  
   const authUser = await verifyAuth(c.req.raw);
   
   if (!authUser || authUser.role !== 'admin') {
+    console.log('🗑️ [Delete User] Unauthorized:', authUser?.email, authUser?.role);
     return c.json({ error: 'Unauthorized. Admin access required.' }, 401);
   }
 
   try {
     const { userId } = await c.req.json();
+    console.log('🗑️ [Delete User] Target user ID:', userId);
 
     if (!userId) {
       return c.json({ error: 'User ID is required' }, 400);
@@ -989,39 +993,55 @@ app.delete('/make-server-2c0f842e/admin/delete-user', async (c) => {
 
     // Find user by ID
     const allUsers = await kv.getByPrefix('user:');
+    console.log('🗑️ [Delete User] Total users in DB:', allUsers.length);
+    
     const user = allUsers.find((u: any) => u.id === userId);
+    console.log('🗑️ [Delete User] Found user:', user?.email);
 
     if (!user) {
+      console.log('🗑️ [Delete User] User not found with ID:', userId);
       return c.json({ error: 'User not found' }, 404);
     }
 
     // Don't allow deleting yourself
     if (user.email === authUser.email) {
+      console.log('🗑️ [Delete User] Cannot delete self');
       return c.json({ error: 'You cannot delete your own account' }, 400);
     }
 
     // Get the auth user
+    console.log('🗑️ [Delete User] Fetching from Supabase Auth...');
     const { data: { users }, error: listError } = await supabase.auth.admin.listUsers();
     if (listError) {
+      console.error('🗑️ [Delete User] Error listing users from Auth:', listError);
       throw listError;
     }
 
     const authUserToDelete = users.find(u => u.email === user.email);
     if (authUserToDelete) {
+      console.log('🗑️ [Delete User] Deleting from Supabase Auth:', authUserToDelete.id);
       const { error: deleteError } = await supabase.auth.admin.deleteUser(authUserToDelete.id);
       if (deleteError) {
-        console.error('[Delete User] Error deleting from Supabase:', deleteError);
+        console.error('🗑️ [Delete User] Error deleting from Supabase:', deleteError);
+        // Continue anyway to delete from KV store
+      } else {
+        console.log('🗑️ [Delete User] Successfully deleted from Supabase Auth');
       }
+    } else {
+      console.log('🗑️ [Delete User] User not found in Supabase Auth, skipping...');
     }
 
     // Delete from KV store
+    console.log('🗑️ [Delete User] Deleting from KV store:', `user:${user.email}`);
     await kv.del(`user:${user.email}`);
+    console.log('🗑️ [Delete User] Successfully deleted from KV store');
 
     await createAuditLog('user_deleted', authUser.id, authUser.email, { deletedUser: user.email });
 
+    console.log('🗑️ [Delete User] ✅ Success!');
     return c.json({ success: true, message: 'User deleted successfully' });
   } catch (error) {
-    console.error('[Delete User] Error:', error);
+    console.error('🗑️ [Delete User] ❌ Error:', error);
     return c.json({ error: 'Failed to delete user', details: String(error) }, 500);
   }
 });

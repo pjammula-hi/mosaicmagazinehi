@@ -494,27 +494,33 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
     }
 
     try {
+      console.log('🗑️ Moving submission to trash:', submissionId);
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/submissions/${submissionId}/trash`,
         {
-          method: 'PUT',
+          method: 'POST',  // ✅ Changed from PUT to POST to match server endpoint
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         }
       );
 
+      console.log('🗑️ Response status:', response.status);
+
       if (response.ok) {
+        const data = await response.json();
+        console.log('🗑️ Success:', data);
         closeModal();
         fetchSubmissions();
         onUpdate();
         alert('Submission moved to trash');
       } else {
         const error = await response.json();
+        console.error('🗑️ Error response:', error);
         alert(`Error: ${error.error || 'Failed to move to trash'}`);
       }
     } catch (err) {
-      console.error('Error moving to trash:', err);
+      console.error('❌ Error moving to trash:', err);
       alert('Failed to move to trash. Please try again.');
     }
   };
