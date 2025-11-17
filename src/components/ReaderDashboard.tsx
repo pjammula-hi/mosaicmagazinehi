@@ -40,7 +40,9 @@ export function ReaderDashboard({ user, authToken, onLogout }: ReaderDashboardPr
         }
       );
       const issuesData = await issuesRes.json();
-      const publishedIssues = issuesData.issues?.filter((i: any) => i.status === 'published').length || 0;
+      const publishedIssues = Array.isArray(issuesData.issues) 
+        ? issuesData.issues.filter((i: any) => i.status === 'published').length 
+        : 0;
 
       // Fetch my submissions
       const submissionsRes = await fetch(
@@ -50,7 +52,9 @@ export function ReaderDashboard({ user, authToken, onLogout }: ReaderDashboardPr
         }
       );
       const submissionsData = await submissionsRes.json();
-      const mySubmissions = submissionsData.submissions?.filter((s: any) => s.authorId === user.id).length || 0;
+      const mySubmissions = Array.isArray(submissionsData.submissions)
+        ? submissionsData.submissions.filter((s: any) => s.authorId === user.id).length
+        : 0;
 
       setStats({ publishedIssues, mySubmissions });
     } catch (err) {
@@ -143,7 +147,7 @@ export function ReaderDashboard({ user, authToken, onLogout }: ReaderDashboardPr
                 <div className="flex items-center gap-2 border-l-4 border-black pl-4">
                   <div className="inline-flex items-center gap-2 bg-white px-3 py-2 border-3 border-black">
                     <User className="w-4 h-4" strokeWidth={3} />
-                    <span className="text-xs font-black uppercase">{user.fullName}</span>
+                    <span className="text-xs font-black uppercase">{user?.fullName || user?.email || 'User'}</span>
                   </div>
                   <button
                     onClick={onLogout}
@@ -203,8 +207,8 @@ export function ReaderDashboard({ user, authToken, onLogout }: ReaderDashboardPr
             {/* User Info */}
             <div className="flex items-center gap-3">
               <div className="inline-block bg-white px-4 py-2 border-3 border-black -rotate-1">
-                <p className="text-sm font-black uppercase text-black">{user.fullName}</p>
-                <p className="text-xs font-bold uppercase text-gray-600">{user.role}</p>
+                <p className="text-sm font-black uppercase text-black">{user?.fullName || user?.email || 'User'}</p>
+                <p className="text-xs font-bold uppercase text-gray-600">{user?.role || 'reader'}</p>
               </div>
               <button
                 onClick={onLogout}

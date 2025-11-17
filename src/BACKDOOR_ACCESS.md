@@ -4,14 +4,19 @@
 
 To access the admin/editor login page (bypassing the public magic link login), use the secret URL path:
 
-### URL Format:
+### Production URL:
 ```
-https://yourdomain.com/emoh
+https://www.mosaicmagazinehi.com/emoh
 ```
 
-Or with hash:
+### Local Development:
 ```
-https://yourdomain.com/#emoh
+http://localhost:5173/emoh
+```
+
+Or with hash (works on any domain):
+```
+https://www.mosaicmagazinehi.com/#emoh
 ```
 
 ### How It Works:
@@ -27,5 +32,13 @@ It's "home" spelled backwards - a simple, memorable backdoor that's not obvious 
 Click the "← Back to Reader Login" button to return to the magic link login for students/teachers.
 
 ---
+
+## Troubleshooting
+
+If `/emoh` shows a 404 error:
+1. Try the hash version: `https://www.mosaicmagazinehi.com/#emoh`
+2. Make sure the `_redirects` file exists in the `/public` folder (for Netlify)
+3. Make sure `vercel.json` exists at the root (for Vercel)
+4. Redeploy your application after adding these files
 
 **Note:** This backdoor is for admin and editor accounts only. Students and teachers should continue using the magic link authentication on the home page.

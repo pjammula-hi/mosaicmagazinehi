@@ -28,9 +28,11 @@ export default function App() {
   const [passwordExpiryData, setPasswordExpiryData] = useState<{ daysRemaining: number; isExpired: boolean } | null>(null);
   const [showLogos, setShowLogos] = useState(false);
 
-  // Set browser tab title
+  // Set browser tab title and log backdoor info
   useEffect(() => {
     document.title = 'Mosaic Magazine HI';
+    console.log('%c🔐 Admin/Editor Access', 'color: purple; font-weight: bold; font-size: 14px;');
+    console.log('%cNavigate to: ' + window.location.origin + '/#emoh', 'color: blue; font-size: 12px;');
   }, []);
 
   useEffect(() => {
@@ -39,9 +41,11 @@ export default function App() {
       const hash = window.location.hash;
       
       console.log('[App] Path/Hash changed - pathname:', pathname, 'hash:', hash);
+      console.log('[App] Full URL:', window.location.href);
       
-      // Check if URL is /emoh (secret backdoor for admin/editor login)
-      if (pathname === '/emoh' || hash === '#emoh') {
+      // Check if URL is /emoh or #emoh (secret backdoor for admin/editor login)
+      // Support both /emoh and /#emoh for production compatibility
+      if (pathname === '/emoh' || pathname.endsWith('/emoh') || hash === '#emoh') {
         console.log('[Backdoor] /emoh detected - showing admin login');
         setShowAdminLogin(true);
         setLoading(false);
@@ -49,15 +53,17 @@ export default function App() {
       }
       
       // Check if URL is for logo showcase
-      if (pathname === '/logos' || hash === '#logos') {
+      if (pathname === '/logos' || pathname.endsWith('/logos') || hash === '#logos') {
         console.log('[App] Showing logos');
         setShowLogos(true);
         setLoading(false);
         return;
       }
       
-      // Reset special views if hash is cleared
-      if (!hash || hash === '#' || hash === '') {
+      // Reset special views if hash is cleared and not on special path
+      if ((!hash || hash === '#' || hash === '') && 
+          !pathname.endsWith('/emoh') && 
+          !pathname.endsWith('/logos')) {
         console.log('[App] Clearing special views');
         setShowLogos(false);
         setShowAdminLogin(false);
@@ -65,13 +71,14 @@ export default function App() {
     };
 
     // Check on initial load
-    console.log('[App] Initial load, current pathname:', window.location.pathname);
+    console.log('[App] Initial load - pathname:', window.location.pathname, 'hash:', window.location.hash);
+    console.log('[App] Full URL:', window.location.href);
     handlePathChange();
     
     // If not showing special views, check setup status
     const pathname = window.location.pathname;
     const hash = window.location.hash;
-    if (pathname !== '/emoh' && pathname !== '/logos' && hash !== '#emoh' && hash !== '#logos') {
+    if (!pathname.endsWith('/emoh') && !pathname.endsWith('/logos') && hash !== '#emoh' && hash !== '#logos') {
       checkSetupStatus();
     }
 

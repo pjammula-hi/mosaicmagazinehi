@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/emoh",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/logos",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
