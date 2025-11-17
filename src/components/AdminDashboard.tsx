@@ -15,7 +15,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProps) {
-  console.log('%c📊 AdminDashboard v1.0.5 - ARRAY FALLBACK FIX', 'color: orange; font-weight: bold; font-size: 14px;');
+  console.log('%c📊 AdminDashboard v1.0.6 - PASSING USERS PROP TO UserManagement', 'color: orange; font-weight: bold; font-size: 14px;');
   const [showUserForm, setShowUserForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [showAuditLogs, setShowAuditLogs] = useState(false);
@@ -386,7 +386,13 @@ export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProp
         {/* User Management */}
         <div>
           <h2 className="text-black text-xl font-black uppercase mb-6">ALL USERS</h2>
-          <UserManagement authToken={authToken} />
+          <UserManagement 
+            authToken={authToken} 
+            users={users} 
+            onRefresh={fetchUsers}
+            onSuccess={(msg) => setSuccess(msg)}
+            onError={(msg) => setError(msg)}
+          />
         </div>
       </div>
     </div>

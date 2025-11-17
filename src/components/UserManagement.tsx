@@ -34,7 +34,7 @@ interface UserManagementProps {
 
 export function UserManagement({ authToken, users, onRefresh, onSuccess, onError }: UserManagementProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>(users || []);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editForm, setEditForm] = useState({
     fullName: '',
@@ -48,17 +48,17 @@ export function UserManagement({ authToken, users, onRefresh, onSuccess, onError
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
-    setFilteredUsers(users);
+    setFilteredUsers(users || []);
   }, [users]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
-      setFilteredUsers(users);
+      setFilteredUsers(users || []);
       return;
     }
 
     const term = searchTerm.toLowerCase();
-    const filtered = users.filter(user => 
+    const filtered = (users || []).filter(user => 
       user.fullName.toLowerCase().includes(term) ||
       user.email.toLowerCase().includes(term) ||
       user.role.toLowerCase().includes(term)
@@ -482,7 +482,7 @@ export function UserManagement({ authToken, users, onRefresh, onSuccess, onError
 
       {filteredUsers.length > 0 && (
         <div className="mt-4 text-sm text-gray-600">
-          Showing {filteredUsers.length} of {users.length} user{users.length !== 1 ? 's' : ''}
+          Showing {filteredUsers.length} of {(users || []).length} user{(users || []).length !== 1 ? 's' : ''}
         </div>
       )}
     </div>
