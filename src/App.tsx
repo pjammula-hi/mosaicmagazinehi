@@ -5,20 +5,22 @@
  * Navigate to /emoh (or #emoh) to access staff login
  * Example: https://yourdomain.com/emoh
  * 
- * Version: 1.0.1 - Fixed password validation crash
+ * Version: 1.0.2 - Fixed validation with lazy loading and proper null handling
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { projectId, publicAnonKey } from './utils/supabase/info';
 import { Login } from './components/Login';
 import { MagicLinkLogin } from './components/MagicLinkLogin';
 import { AdminDashboard } from './components/AdminDashboard';
 import { EditorDashboard } from './components/EditorDashboard';
 import { ReaderDashboard } from './components/ReaderDashboard';
-import { InitialSetup } from './components/InitialSetup';
-import { PasswordExpiryModal } from './components/PasswordExpiryModal';
 import { LogoShowcase, StackedTilesLogo } from './components/logos/MosaicLogos';
 import { MagazineCard, holidayIssue } from './components/MagazineCard';
+
+// Lazy load components that use password validation to prevent early initialization errors
+const InitialSetup = lazy(() => import('./components/InitialSetup').then(m => ({ default: m.InitialSetup })));
+const PasswordExpiryModal = lazy(() => import('./components/PasswordExpiryModal').then(m => ({ default: m.PasswordExpiryModal })));
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -244,10 +246,20 @@ export default function App() {
   }
 
   if (needsSetup) {
-    return <InitialSetup onComplete={() => {
-      setNeedsSetup(false);
-      checkSetupStatus();
-    }} />;
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 flex items-center justify-center">
+          <div className="bg-white border-4 border-black p-8 brutal-shadow">
+            <p className="text-black font-black">Loading setup...</p>
+          </div>
+        </div>
+      }>
+        <InitialSetup onComplete={() => {
+          setNeedsSetup(false);
+          checkSetupStatus();
+        }} />
+      </Suspense>
+    );
   }
 
   if (!user) {
@@ -521,18 +533,20 @@ export default function App() {
 
       {/* Password Expiry Modal */}
       {showPasswordExpiry && passwordExpiryData && (
-        <PasswordExpiryModal
-          accessToken={authToken}
-          daysRemaining={passwordExpiryData.daysRemaining}
-          isExpired={passwordExpiryData.isExpired}
-          onPasswordChanged={() => {
-            setShowPasswordExpiry(false);
-            setPasswordExpiryData(null);
-          }}
-          onDismiss={passwordExpiryData.isExpired ? undefined : () => {
-            setShowPasswordExpiry(false);
-          }}
-        />
+        <Suspense fallback={<div />}>
+          <PasswordExpiryModal
+            accessToken={authToken}
+            daysRemaining={passwordExpiryData.daysRemaining}
+            isExpired={passwordExpiryData.isExpired}
+            onPasswordChanged={() => {
+              setShowPasswordExpiry(false);
+              setPasswordExpiryData(null);
+            }}
+            onDismiss={passwordExpiryData.isExpired ? undefined : () => {
+              setShowPasswordExpiry(false);
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

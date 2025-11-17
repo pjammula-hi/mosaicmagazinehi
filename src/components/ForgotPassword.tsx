@@ -335,3 +335,6 @@ export function ForgotPassword({ onBack }: ForgotPasswordProps) {
     </div>
   );
 }
+
+// Default export for lazy loading
+export default ForgotPassword;

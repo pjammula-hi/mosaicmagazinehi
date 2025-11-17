@@ -4,7 +4,7 @@ import { LogIn, AlertCircle, Eye, EyeOff, Shield } from 'lucide-react';
 import { BrutalButton, BrutalInput, BrutalAlert } from './BrutalUI';
 
 // Lazy load ForgotPassword to avoid initialization errors
-const ForgotPassword = lazy(() => import('./ForgotPassword').then(module => ({ default: module.ForgotPassword })));
+const ForgotPassword = lazy(() => import('./ForgotPassword'));
 
 interface LoginProps {
   onLogin: (token: string, user: any) => void;

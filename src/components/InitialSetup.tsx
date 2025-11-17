@@ -283,3 +283,6 @@ export function InitialSetup({ onComplete }: { onComplete: () => void }) {
     </div>
   );
 }
+
+// Default export for lazy loading
+export default InitialSetup;

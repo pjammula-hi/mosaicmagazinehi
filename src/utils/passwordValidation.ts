@@ -13,11 +13,11 @@ export interface PasswordValidation {
   errors: string[];
 }
 
-export function validatePassword(password: string): PasswordValidation {
+export function validatePassword(password: string | undefined | null): PasswordValidation {
   const errors: string[] = [];
 
-  // Handle undefined/null password
-  if (!password) {
+  // Handle undefined/null/empty password
+  if (!password || password === undefined || password === null || password === '') {
     return {
       isValid: false,
       errors: ['Password is required']
@@ -51,14 +51,14 @@ export function validatePassword(password: string): PasswordValidation {
   };
 }
 
-export function getPasswordStrength(password: string): {
+export function getPasswordStrength(password: string | undefined | null): {
   strength: 'weak' | 'medium' | 'strong';
   score: number;
 } {
   let score = 0;
 
-  // Handle undefined/null password
-  if (!password) {
+  // Handle undefined/null/empty password
+  if (!password || password === undefined || password === null || password === '') {
     return { strength: 'weak', score: 0 };
   }
 
