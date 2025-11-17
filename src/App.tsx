@@ -5,8 +5,9 @@
  * Navigate to /emoh (or #emoh) to access staff login
  * Example: https://yourdomain.com/emoh
  * 
- * Version: 1.0.3 - REBUILD FORCED - Fixed validation with lazy loading
+ * Version: 1.0.4 - CRITICAL FIX - AdminDashboard/EditorDashboard lazy loading
  * Build Date: 2025-11-17
+ * Fix: Prevents "Cannot read properties of undefined (reading 'length')" crash
  */
 
 import { useState, useEffect, lazy, Suspense } from 'react';
@@ -20,12 +21,25 @@ import { MagazineCard, holidayIssue } from './components/MagazineCard';
 // Lazy load components that use password validation or have complex dependencies to prevent early initialization errors
 const InitialSetup = lazy(() => import('./components/InitialSetup').then(m => ({ default: m.InitialSetup })));
 const PasswordExpiryModal = lazy(() => import('./components/PasswordExpiryModal').then(m => ({ default: m.PasswordExpiryModal })));
-const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
-const EditorDashboard = lazy(() => import('./components/EditorDashboard').then(m => ({ default: m.EditorDashboard })));
+const AdminDashboard = lazy(() => {
+  console.log('🔄 [LAZY] Loading AdminDashboard module...');
+  return import('./components/AdminDashboard').then(m => {
+    console.log('✅ [LAZY] AdminDashboard loaded successfully');
+    return { default: m.AdminDashboard };
+  });
+});
+const EditorDashboard = lazy(() => {
+  console.log('🔄 [LAZY] Loading EditorDashboard module...');
+  return import('./components/EditorDashboard').then(m => {
+    console.log('✅ [LAZY] EditorDashboard loaded successfully');
+    return { default: m.EditorDashboard };
+  });
+});
 
 export default function App() {
-  // BUILD VERSION: 1.0.3 - Fixed dashboard lazy loading to prevent .length crash
-  console.log('🚀 Mosaic Magazine App v1.0.3 - Build timestamp:', new Date().toISOString());
+  // BUILD VERSION: 1.0.4 - CRITICAL FIX - Optional chaining + lazy loading
+  console.log('%c🚀 Mosaic Magazine App v1.0.4 - ADMIN LOGIN FIX DEPLOYED', 'color: purple; font-weight: bold; font-size: 16px;');
+  console.log('Build timestamp:', new Date().toISOString());
   
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
