@@ -510,7 +510,18 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
       if (response.ok) {
         const data = await response.json();
         console.log('🗑️ Success:', data);
-        closeModal();
+        
+        // Close modal by resetting state
+        setSelectedSubmission(null);
+        setEditorNotes('');
+        setSelectedStatus('');
+        setSelectedIssue('');
+        setPageNumber('');
+        setShortDescription('');
+        setIsEditMode(false);
+        setEditedSubmission(null);
+        setReplacementFile(null);
+        
         fetchSubmissions();
         onUpdate();
         alert('Submission moved to trash');

@@ -15,7 +15,9 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProps) {
-  console.log('%c📊 AdminDashboard v1.0.6 - PASSING USERS PROP TO UserManagement', 'color: orange; font-weight: bold; font-size: 14px;');
+  if (process.env.NODE_ENV === 'development') {
+    console.log('📊 AdminDashboard loaded');
+  }
   const [showUserForm, setShowUserForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [showAuditLogs, setShowAuditLogs] = useState(false);

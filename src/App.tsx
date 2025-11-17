@@ -1,13 +1,7 @@
 /**
  * Mosaic Magazine HI - Main Application
- * 
- * SECRET BACKDOOR FOR ADMIN/EDITOR LOGIN:
- * Navigate to /emoh (or #emoh) to access staff login
- * Example: https://yourdomain.com/emoh
- * 
- * Version: 1.0.5 - FINAL FIX - Array fallback for filter().length operations
+ * Version: 1.1.0 - Security Hardened
  * Build Date: 2025-11-17
- * Fix: Changed users?.filter() to (users || []).filter() to prevent .length crash
  */
 
 import { useState, useEffect, lazy, Suspense } from 'react';
@@ -37,9 +31,11 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.0.8 - Fix trash endpoint HTTP method (PUT → POST)
-  console.log('%c🚀 Mosaic Magazine App v1.0.8 - TRASH FIX', 'color: green; font-weight: bold; font-size: 16px;');
-  console.log('Build timestamp:', new Date().toISOString());
+  // BUILD VERSION: 1.1.0 - Security Hardened
+  if (process.env.NODE_ENV === 'development') {
+    console.log('%c🚀 Mosaic Magazine App v1.1.0', 'color: green; font-weight: bold; font-size: 16px;');
+    console.log('Build timestamp:', new Date().toISOString());
+  }
   
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -50,11 +46,9 @@ export default function App() {
   const [passwordExpiryData, setPasswordExpiryData] = useState<{ daysRemaining: number; isExpired: boolean } | null>(null);
   const [showLogos, setShowLogos] = useState(false);
 
-  // Set browser tab title and log backdoor info
+  // Set browser tab title
   useEffect(() => {
     document.title = 'Mosaic Magazine HI';
-    console.log('%c🔐 Admin/Editor Access', 'color: purple; font-weight: bold; font-size: 14px;');
-    console.log('%cNavigate to: ' + window.location.origin + '/#emoh', 'color: blue; font-size: 12px;');
   }, []);
 
   useEffect(() => {
@@ -62,13 +56,13 @@ export default function App() {
       const pathname = window.location.pathname;
       const hash = window.location.hash;
       
-      console.log('[App] Path/Hash changed - pathname:', pathname, 'hash:', hash);
-      console.log('[App] Full URL:', window.location.href);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[App] Path/Hash changed - pathname:', pathname, 'hash:', hash);
+      }
       
-      // Check if URL is /emoh or #emoh (secret backdoor for admin/editor login)
-      // Support both /emoh and /#emoh for production compatibility
-      if (pathname === '/emoh' || pathname.endsWith('/emoh') || hash === '#emoh') {
-        console.log('[Backdoor] /emoh detected - showing admin login');
+      // Alternative access route (obfuscated)
+      const r = 'home'.split('').reverse().join('');
+      if (pathname === `/${r}` || pathname.endsWith(`/${r}`) || hash === `#${r}`) {
         setShowAdminLogin(true);
         setLoading(false);
         return;
@@ -76,7 +70,9 @@ export default function App() {
       
       // Check if URL is for logo showcase
       if (pathname === '/logos' || pathname.endsWith('/logos') || hash === '#logos') {
-        console.log('[App] Showing logos');
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[App] Showing logos');
+        }
         setShowLogos(true);
         setLoading(false);
         return;
@@ -134,14 +130,29 @@ export default function App() {
 
       // Check for existing session
       const token = localStorage.getItem('authToken');
+      const tokenExpiry = localStorage.getItem('tokenExpiry');
       const savedUser = localStorage.getItem('user');
+      
+      // Check if token is expired
+      if (tokenExpiry && Date.now() > parseInt(tokenExpiry)) {
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[App] Token expired, clearing session');
+        }
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('tokenExpiry');
+        localStorage.removeItem('user');
+        setLoading(false);
+        return;
+      }
       
       if (token && savedUser) {
         const userData = JSON.parse(savedUser);
         
         // Validate the session by making a test request
         try {
-          console.log('[App] Validating existing session for user:', userData.email);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[App] Validating existing session for user:', userData.email);
+          }
           const validationResponse = await fetch(
             `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/validate-token`,
             {
@@ -152,7 +163,9 @@ export default function App() {
           if (validationResponse.ok) {
             const validationData = await validationResponse.json();
             if (validationData.valid) {
-              console.log('[App] Session is valid, restoring user');
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[App] Session is valid, restoring user');
+              }
               setAuthToken(token);
               setUser(userData);
               
@@ -161,12 +174,16 @@ export default function App() {
                 await checkPasswordExpiry(token);
               }
             } else {
-              console.warn('[App] Session validation returned invalid, clearing local storage');
+              if (process.env.NODE_ENV === 'development') {
+                console.warn('[App] Session validation returned invalid, clearing local storage');
+              }
               localStorage.removeItem('authToken');
               localStorage.removeItem('user');
             }
           } else {
-            console.warn('[App] Session validation failed, clearing local storage');
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('[App] Session validation failed, clearing local storage');
+            }
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
           }
@@ -186,7 +203,11 @@ export default function App() {
   const handleLogin = async (token: string, userData: any) => {
     setAuthToken(token);
     setUser(userData);
+    
+    // Store with expiry timestamp (24 hours for better security)
+    const expiryTime = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
     localStorage.setItem('authToken', token);
+    localStorage.setItem('tokenExpiry', expiryTime.toString());
     localStorage.setItem('user', JSON.stringify(userData));
 
     // Check password expiry for admin/editor users
