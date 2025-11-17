@@ -16,6 +16,14 @@ export interface PasswordValidation {
 export function validatePassword(password: string): PasswordValidation {
   const errors: string[] = [];
 
+  // Handle undefined/null password
+  if (!password) {
+    return {
+      isValid: false,
+      errors: ['Password is required']
+    };
+  }
+
   if (password.length < 8) {
     errors.push('Password must be at least 8 characters long');
   }
@@ -48,6 +56,11 @@ export function getPasswordStrength(password: string): {
   score: number;
 } {
   let score = 0;
+
+  // Handle undefined/null password
+  if (!password) {
+    return { strength: 'weak', score: 0 };
+  }
 
   // Length
   if (password.length >= 8) score++;
