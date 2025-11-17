@@ -15,7 +15,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProps) {
-  console.log('%c📊 AdminDashboard v1.0.4 RENDERING', 'color: orange; font-weight: bold; font-size: 14px;');
+  console.log('%c📊 AdminDashboard v1.0.5 - ARRAY FALLBACK FIX', 'color: orange; font-weight: bold; font-size: 14px;');
   const [showUserForm, setShowUserForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [showAuditLogs, setShowAuditLogs] = useState(false);
@@ -161,10 +161,10 @@ export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProp
   // Calculate user stats safely - only when users array is populated
   const userStats = {
     total: users?.length || 0,
-    students: users?.filter(u => u.role === 'student').length || 0,
-    teachers: users?.filter(u => u.role === 'teacher').length || 0,
-    editors: users?.filter(u => u.role === 'editor').length || 0,
-    admins: users?.filter(u => u.role === 'admin').length || 0,
+    students: (users || []).filter(u => u.role === 'student').length,
+    teachers: (users || []).filter(u => u.role === 'teacher').length,
+    editors: (users || []).filter(u => u.role === 'editor').length,
+    admins: (users || []).filter(u => u.role === 'admin').length,
   };
 
   return (

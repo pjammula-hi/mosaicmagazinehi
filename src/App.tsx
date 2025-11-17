@@ -5,9 +5,9 @@
  * Navigate to /emoh (or #emoh) to access staff login
  * Example: https://yourdomain.com/emoh
  * 
- * Version: 1.0.4 - CRITICAL FIX - AdminDashboard/EditorDashboard lazy loading
+ * Version: 1.0.5 - FINAL FIX - Array fallback for filter().length operations
  * Build Date: 2025-11-17
- * Fix: Prevents "Cannot read properties of undefined (reading 'length')" crash
+ * Fix: Changed users?.filter() to (users || []).filter() to prevent .length crash
  */
 
 import { useState, useEffect, lazy, Suspense } from 'react';
@@ -37,8 +37,8 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.0.4 - CRITICAL FIX - Optional chaining + lazy loading
-  console.log('%c🚀 Mosaic Magazine App v1.0.4 - ADMIN LOGIN FIX DEPLOYED', 'color: purple; font-weight: bold; font-size: 16px;');
+  // BUILD VERSION: 1.0.5 - FINAL FIX - Array fallback for filter operations
+  console.log('%c🚀 Mosaic Magazine App v1.0.5 - FILTER FIX DEPLOYED', 'color: green; font-weight: bold; font-size: 16px;');
   console.log('Build timestamp:', new Date().toISOString());
   
   const [user, setUser] = useState<any>(null);
