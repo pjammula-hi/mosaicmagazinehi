@@ -511,7 +511,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
         const data = await response.json();
         console.log('🗑️ Success:', data);
         
-        // Close modal by resetting state
+        // Close modal by resetting state (complete inline from closeModal)
         setSelectedSubmission(null);
         setEditorNotes('');
         setSelectedStatus('');
@@ -521,6 +521,8 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
         setIsEditMode(false);
         setEditedSubmission(null);
         setReplacementFile(null);
+        setModalPosition({ x: 0, y: 0 });
+        setIsSubmissionEditMode(false);
         
         fetchSubmissions();
         onUpdate();

@@ -31,9 +31,9 @@ const EditorDashboard = lazy(() => {
 });
 
 export default function App() {
-  // BUILD VERSION: 1.1.0 - Security Hardened
+  // BUILD VERSION: 1.1.1 - Complete trash handler fix (all state setters)
   if (process.env.NODE_ENV === 'development') {
-    console.log('%c🚀 Mosaic Magazine App v1.1.0', 'color: green; font-weight: bold; font-size: 16px;');
+    console.log('%c🚀 Mosaic Magazine App v1.1.1', 'color: blue; font-weight: bold; font-size: 16px;');
     console.log('Build timestamp:', new Date().toISOString());
   }
   
