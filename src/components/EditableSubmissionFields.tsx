@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Check, Edit, Upload, FileText, Trash2, Image as ImageIcon } from 'lucide-react';
 import { projectId } from '../utils/supabase/info';
+import { fetchWithAuth } from '../utils/sessionManager';
 
 interface EditableSubmissionFieldsProps {
   submission: any;
@@ -50,7 +51,7 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
       formData.append('file', file);
       formData.append('type', file.type.startsWith('image/') ? 'image' : 'document');
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/upload-file`,
         {
           method: 'POST',
@@ -102,7 +103,7 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
         updateData.fileUrl = newFileUrl;
       }
 
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/submissions/${submission.id}`,
         {
           method: 'PUT',
@@ -241,8 +242,8 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
               <option value="guest">Guest</option>
             </select>
           ) : (
-            <p className="capitalize font-sans-modern">
-              {submission.contributorStatus === 'hi-staff' ? 'HI Staff' : (submission.contributorStatus || 'Not specified')}
+            <p className="font-sans-modern">
+              {formatContributorStatus(submission.contributorStatus)}
             </p>
           )}
         </div>
