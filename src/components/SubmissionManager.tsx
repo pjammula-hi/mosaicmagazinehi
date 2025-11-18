@@ -31,18 +31,23 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
   const [filterStatus, setFilterStatus] = useState('all');
   const [showManualUpload, setShowManualUpload] = useState(false);
   const [contentTypes, setContentTypes] = useState<Array<{ value: string; label: string }>>([]);
+  const [contributorStatuses, setContributorStatuses] = useState<Array<{ value: string; label: string }>>([]);
 
   const [manualSubmission, setManualSubmission] = useState({
     type: '',
     title: '',
     content: '',
-    fileUrl: ''
+    fileUrl: '',
+    authorName: '',
+    authorEmail: '',
+    contributorStatus: ''
   });
 
   useEffect(() => {
     fetchSubmissions();
     fetchIssues();
     fetchContentTypes();
+    fetchContributorStatuses();
   }, []);
 
   const fetchContentTypes = async () => {
@@ -76,6 +81,40 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
         { value: 'poem', label: 'Poem' }
       ]);
       setManualSubmission(prev => ({ ...prev, type: 'writing' }));
+    }
+  };
+
+  const fetchContributorStatuses = async () => {
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/contributor-statuses`,
+        {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.statuses) {
+        const statuses = data.statuses.map((s: any) => ({
+          value: s.value,
+          label: s.label
+        }));
+        setContributorStatuses(statuses);
+        
+        // Set first status as default for manual submission
+        if (statuses.length > 0 && !manualSubmission.contributorStatus) {
+          setManualSubmission(prev => ({ ...prev, contributorStatus: statuses[0].value }));
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching contributor statuses:', err);
+      // Fallback to default statuses
+      setContributorStatuses([
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' }
+      ]);
+      setManualSubmission(prev => ({ ...prev, contributorStatus: 'active' }));
     }
   };
 
@@ -170,7 +209,10 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
           type: contentTypes.length > 0 ? contentTypes[0].value : '', 
           title: '', 
           content: '', 
-          fileUrl: '' 
+          fileUrl: '',
+          authorName: '',
+          authorEmail: '',
+          contributorStatus: contributorStatuses.length > 0 ? contributorStatuses[0].value : ''
         });
         setShowManualUpload(false);
         fetchSubmissions();
@@ -197,6 +239,11 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
       published: 'bg-green-200 text-green-800'
     };
     return colors[status] || 'bg-gray-100 text-gray-700';
+  };
+
+  const getContributorStatusLabel = (value: string) => {
+    const status = contributorStatuses.find(s => s.value === value);
+    return status ? status.label : (value || 'Not Specified');
   };
 
   const filteredSubmissions = submissions.filter(s => 
@@ -289,6 +336,48 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
                 placeholder="https://..."
               />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-2 text-gray-700">Author Name</label>
+              <input
+                type="text"
+                value={manualSubmission.authorName}
+                onChange={(e) => setManualSubmission({ ...manualSubmission, authorName: e.target.value })}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-2 text-gray-700">Author Email</label>
+              <input
+                type="email"
+                value={manualSubmission.authorEmail}
+                onChange={(e) => setManualSubmission({ ...manualSubmission, authorEmail: e.target.value })}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm mb-2 text-gray-700">Contributor Status</label>
+              <select
+                value={manualSubmission.contributorStatus}
+                onChange={(e) => setManualSubmission({ ...manualSubmission, contributorStatus: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                required
+              >
+                {contributorStatuses.length === 0 ? (
+                  <option value="">Loading statuses...</option>
+                ) : (
+                  contributorStatuses.map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))
+                )}
+              </select>
             </div>
           </div>
 
@@ -389,7 +478,7 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
 
                 <div>
                   <p className="text-sm text-gray-600">Author</p>
-                  <p>{selectedSubmission.authorName} ({selectedSubmission.authorRole})</p>
+                  <p>{selectedSubmission.authorName} ({getContributorStatusLabel(selectedSubmission.contributorStatus)})</p>
                 </div>
 
                 <div>
