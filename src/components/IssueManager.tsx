@@ -123,15 +123,18 @@ export function IssueManager({ authToken, onUpdate }: IssueManagerProps) {
     }
 
     try {
+      console.log('[IssueManager] Publishing issue:', issueId);
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/issues/${issueId}/publish`,
         {
-          method: 'PUT',
+          method: 'POST',
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         }
       );
+
+      console.log('[IssueManager] Publish response status:', response.status);
 
       if (response.ok) {
         const result = await response.json();
@@ -148,9 +151,19 @@ export function IssueManager({ authToken, onUpdate }: IssueManagerProps) {
         // Show success message
         alert(`Issue published successfully! ${result.updatedSubmissions || 0} submissions updated to published status.`);
       } else {
-        const error = await response.json();
-        console.error('[IssueManager] Publish error:', error);
-        alert(`Failed to publish issue: ${error.error || 'Unknown error'}`);
+        // Try to parse error response
+        let errorMessage = 'Unknown error';
+        try {
+          const error = await response.json();
+          console.error('[IssueManager] Publish error:', error);
+          errorMessage = error.error || error.message || 'Unknown error';
+        } catch (parseErr) {
+          // If response is not JSON (e.g., HTML 404 page), get text
+          const text = await response.text();
+          console.error('[IssueManager] Non-JSON error response:', text);
+          errorMessage = `Server error (${response.status})`;
+        }
+        alert(`Failed to publish issue: ${errorMessage}`);
       }
     } catch (err) {
       console.error('[IssueManager] Error publishing issue:', err);
