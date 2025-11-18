@@ -260,7 +260,12 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
 
           {activeTab === 'issues' && (
             <div>
-              <IssueManager authToken={authToken} />
+              <IssueManager 
+                authToken={authToken} 
+                onUpdate={() => {
+                  console.log('[EditorDashboard] Issue update triggered');
+                }}
+              />
             </div>
           )}
 
