@@ -1587,13 +1587,14 @@ app.post('/make-server-2c0f842e/submissions', async (c) => {
       title,
       content: content || '',
       fileUrl: fileUrl || '',
-      authorEmail: authorEmail || user.email,
-      authorName: authorName || user.fullName,
+      authorEmail: authorEmail || '',
+      authorName: authorName || '',
       contributorStatus: contributorStatus || '',
       status: 'pending',
       createdAt: now,
       updatedAt: now,
-      isTrashed: false
+      isTrashed: false,
+      submittedBy: user.email
     };
 
     await kv.set(`submission:${submissionId}`, submission);

@@ -96,10 +96,10 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
       const data = await response.json();
 
       if (response.ok && data.statuses) {
-        const statuses = data.statuses.map((s: any) => ({
+        const statuses = data.statuses.map((s: any) => (({
           value: s.value,
           label: s.label
-        }));
+        })));
         setContributorStatuses(statuses);
         
         // Set first status as default for manual submission
@@ -114,7 +114,6 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
         { value: 'active', label: 'Active' },
         { value: 'inactive', label: 'Inactive' }
       ]);
-      setManualSubmission(prev => ({ ...prev, contributorStatus: 'active' }));
     }
   };
 
@@ -212,7 +211,7 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
           fileUrl: '',
           authorName: '',
           authorEmail: '',
-          contributorStatus: contributorStatuses.length > 0 ? contributorStatuses[0].value : ''
+          contributorStatus: ''
         });
         setShowManualUpload(false);
         fetchSubmissions();
@@ -344,8 +343,8 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                 type="text"
                 value={manualSubmission.authorName}
                 onChange={(e) => setManualSubmission({ ...manualSubmission, authorName: e.target.value })}
-                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                placeholder="Leave empty for anonymous"
               />
             </div>
 
@@ -355,8 +354,8 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                 type="email"
                 value={manualSubmission.authorEmail}
                 onChange={(e) => setManualSubmission({ ...manualSubmission, authorEmail: e.target.value })}
-                required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                placeholder="Leave empty for anonymous"
               />
             </div>
 
@@ -366,17 +365,13 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                 value={manualSubmission.contributorStatus}
                 onChange={(e) => setManualSubmission({ ...manualSubmission, contributorStatus: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
-                required
               >
-                {contributorStatuses.length === 0 ? (
-                  <option value="">Loading statuses...</option>
-                ) : (
-                  contributorStatuses.map((status) => (
-                    <option key={status.value} value={status.value}>
-                      {status.label}
-                    </option>
-                  ))
-                )}
+                <option value="">None</option>
+                {contributorStatuses.map((status) => (
+                  <option key={status.value} value={status.value}>
+                    {status.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -423,7 +418,9 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                     </div>
                   </td>
                   <td className="py-3 px-4">{submission.title}</td>
-                  <td className="py-3 px-4 text-gray-600 text-sm">{submission.authorName}</td>
+                  <td className="py-3 px-4 text-gray-600 text-sm">
+                    {submission.authorName || <span className="italic text-gray-400">Anonymous</span>}
+                  </td>
                   <td className="py-3 px-4">
                     <span className={`px-2 py-1 rounded text-xs ${getStatusColor(submission.status)}`}>
                       {submission.status}
@@ -478,7 +475,11 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
 
                 <div>
                   <p className="text-sm text-gray-600">Author</p>
-                  <p>{selectedSubmission.authorName} ({getContributorStatusLabel(selectedSubmission.contributorStatus)})</p>
+                  {selectedSubmission.authorName ? (
+                    <p>{selectedSubmission.authorName} ({getContributorStatusLabel(selectedSubmission.contributorStatus)})</p>
+                  ) : (
+                    <p className="italic text-gray-400">Anonymous</p>
+                  )}
                 </div>
 
                 <div>
