@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { fetchWithAuth } from '../utils/sessionManager';
 import { UserPlus, Users, LogOut, AlertCircle, Check, Upload, Shield, Eye, Zap, Star, Settings } from 'lucide-react';
 import { EditorDashboard } from './EditorDashboard';
 import { ReaderDashboard } from './ReaderDashboard';
@@ -41,7 +42,7 @@ export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProp
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/users`,
         {
           headers: {
@@ -72,7 +73,7 @@ export function AdminDashboard({ user, authToken, onLogout }: AdminDashboardProp
       }
 
       // Create user in our system
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/admin/create-user`,
         {
           method: 'POST',

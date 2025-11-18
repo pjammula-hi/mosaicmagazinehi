@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { fetchWithAuth } from '../utils/sessionManager';
 import { 
   FileText, 
   MessageSquare, 
@@ -47,19 +48,20 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
   const fetchStats = async () => {
     try {
       // Fetch submissions
-      const submissionsRes = await fetch(
+      const submissionsRes = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/submissions`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
         }
       );
+      
       const submissionsData = await submissionsRes.json();
       const pendingSubmissions = submissionsData.submissions?.filter(
         (s: any) => s.status === 'pending'
       ).length || 0;
 
       // Fetch pending comments
-      const commentsRes = await fetch(
+      const commentsRes = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/comments-pending`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
@@ -69,7 +71,7 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
       const pendingComments = commentsData.comments?.length || 0;
 
       // Fetch issues
-      const issuesRes = await fetch(
+      const issuesRes = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/issues`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
@@ -79,7 +81,7 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
       const totalIssues = issuesData.issues?.length || 0;
 
       // Fetch users for contributor count
-      const usersRes = await fetch(
+      const usersRes = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/users`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
@@ -92,7 +94,8 @@ export function EditorDashboard({ user, authToken, onLogout }: EditorDashboardPr
 
       setStats({ pendingSubmissions, pendingComments, totalIssues, totalContributors });
     } catch (err) {
-      console.error('Error fetching stats:', err);
+      console.error('[EditorDashboard] Error fetching stats:', err);
+      // Session expiry is handled by fetchWithAuth
     }
   };
 

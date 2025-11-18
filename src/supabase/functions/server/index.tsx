@@ -1307,6 +1307,30 @@ app.get('/make-server-2c0f842e/admin/audit-logs', async (c) => {
   try {
     let logs = await kv.getByPrefix('audit:');
     
+    // Transform old logs to new schema (action -> type, userEmail -> email)
+    logs = logs.map((log: any) => {
+      const transformed = { ...log };
+      
+      // Convert old field names to new ones
+      if (log.action && !log.type) {
+        transformed.type = log.action;
+        delete transformed.action;
+      }
+      
+      if (log.userEmail && !log.email) {
+        transformed.email = log.userEmail;
+        delete transformed.userEmail;
+      }
+      
+      // Ensure required fields exist with defaults
+      if (!transformed.type) transformed.type = 'unknown';
+      if (!transformed.ipAddress) transformed.ipAddress = 'unknown';
+      if (!transformed.userAgent) transformed.userAgent = 'unknown';
+      if (transformed.success === undefined) transformed.success = true;
+      
+      return transformed;
+    });
+    
     // Apply filters from query parameters
     const filterType = c.req.query('type');
     const filterEmail = c.req.query('email');

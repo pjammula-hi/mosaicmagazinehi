@@ -6,6 +6,7 @@
 
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { projectId, publicAnonKey } from './utils/supabase/info';
+import { registerLogoutCallback, checkSessionExpiry } from './utils/sessionManager';
 import { Login } from './components/Login';
 import { MagicLinkLogin } from './components/MagicLinkLogin';
 import { ReaderDashboard } from './components/ReaderDashboard';
@@ -49,6 +50,11 @@ export default function App() {
   // Set browser tab title
   useEffect(() => {
     document.title = 'Mosaic Magazine HI';
+  }, []);
+
+  // Register logout callback for session manager
+  useEffect(() => {
+    registerLogoutCallback(handleLogout);
   }, []);
 
   useEffect(() => {
@@ -252,8 +258,30 @@ export default function App() {
     setAuthToken('');
     setUser(null);
     localStorage.removeItem('authToken');
+    localStorage.removeItem('tokenExpiry');
     localStorage.removeItem('user');
   };
+
+  // Session monitor - check every 60 seconds if session has expired
+  useEffect(() => {
+    if (!user || !authToken) return;
+
+    const checkSession = () => {
+      if (checkSessionExpiry()) {
+        console.log('[SessionMonitor] Session expired, automatically logging out');
+        alert('Your session has expired. Please log in again.');
+        handleLogout();
+      }
+    };
+
+    // Check immediately
+    checkSession();
+
+    // Check every 60 seconds
+    const interval = setInterval(checkSession, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [user, authToken]);
 
   // Design mockups mode
   // Logo showcase mode

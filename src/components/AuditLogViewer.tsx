@@ -157,10 +157,10 @@ export function AuditLogViewer({ token }: AuditLogViewerProps) {
     const headers = ['Timestamp', 'Type', 'Email', 'User', 'IP Address', 'Status', 'Details'];
     const rows = logs.map(log => [
       new Date(log.timestamp).toLocaleString(),
-      log.type,
+      log.type || 'unknown',
       log.email || log.performedBy?.email || log.targetUser?.email || '-',
       log.userName || log.performedBy?.name || log.targetUser?.name || '-',
-      log.ipAddress,
+      log.ipAddress || 'unknown',
       log.success ? 'Success' : 'Failed',
       log.reason || log.errorDetails || '-'
     ]);
@@ -180,11 +180,12 @@ export function AuditLogViewer({ token }: AuditLogViewerProps) {
   };
 
   const getLogIcon = (log: AuditLog) => {
-    if (log.type.includes('login_success') || log.type.includes('magic_link_success')) return <CheckCircle className="w-5 h-5 text-green-500" />;
-    if (log.type.includes('login_failed') || log.type.includes('magic_link_failed')) return <XCircle className="w-5 h-5 text-red-500" />;
-    if (log.type.includes('user_created')) return <UserPlus className="w-5 h-5 text-blue-500" />;
-    if (log.type.includes('password')) return <Key className="w-5 h-5 text-yellow-500" />;
-    if (log.type.includes('user_status')) return <User className="w-5 h-5 text-purple-500" />;
+    const type = log.type || '';
+    if (type.includes('login_success') || type.includes('magic_link_success')) return <CheckCircle className="w-5 h-5 text-green-500" />;
+    if (type.includes('login_failed') || type.includes('magic_link_failed')) return <XCircle className="w-5 h-5 text-red-500" />;
+    if (type.includes('user_created')) return <UserPlus className="w-5 h-5 text-blue-500" />;
+    if (type.includes('password')) return <Key className="w-5 h-5 text-yellow-500" />;
+    if (type.includes('user_status')) return <User className="w-5 h-5 text-purple-500" />;
     return <Shield className="w-5 h-5 text-gray-500" />;
   };
 
@@ -468,14 +469,14 @@ export function AuditLogViewer({ token }: AuditLogViewerProps) {
 
                           <div className="flex items-center gap-2 text-gray-500">
                             <MapPin className="w-4 h-4" />
-                            <span>{log.ipAddress}</span>
+                            <span>{log.ipAddress || 'Unknown'}</span>
                           </div>
 
                           <div className="flex items-center gap-2 text-gray-500">
                             <Monitor className="w-4 h-4" />
-                            <span className="truncate" title={log.userAgent}>
-                              {log.userAgent.substring(0, 60)}
-                              {log.userAgent.length > 60 ? '...' : ''}
+                            <span className="truncate" title={log.userAgent || 'Unknown'}>
+                              {(log.userAgent || 'Unknown').substring(0, 60)}
+                              {(log.userAgent || '').length > 60 ? '...' : ''}
                             </span>
                           </div>
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { projectId } from '../utils/supabase/info';
+import { fetchWithAuth } from '../utils/sessionManager';
 import { 
   Upload, 
   Check, 
@@ -98,7 +99,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
 
   const fetchContributorStatuses = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/contributor-statuses`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
@@ -132,7 +133,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
 
   const fetchContentTypes = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/content-types`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
@@ -169,7 +170,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
     try {
       // Add query parameter to show trash or inbox based on viewMode
       const trashParam = viewMode === 'trash' ? '?trash=true' : '';
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/submissions${trashParam}`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
@@ -189,7 +190,7 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
   const fetchIssues = async () => {
     try {
       console.log('[EnhancedSubmissionManager] Fetching issues...');
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/issues`,
         {
           headers: { 'Authorization': `Bearer ${authToken}` }
