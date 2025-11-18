@@ -1572,7 +1572,7 @@ app.post('/make-server-2c0f842e/submissions', async (c) => {
   }
 
   try {
-    const { type, title, content, fileUrl } = await c.req.json();
+    const { type, title, content, fileUrl, contributorStatus, authorName, authorEmail } = await c.req.json();
 
     if (!type || !title) {
       return c.json({ error: 'Type and title are required' }, 400);
@@ -1587,8 +1587,9 @@ app.post('/make-server-2c0f842e/submissions', async (c) => {
       title,
       content: content || '',
       fileUrl: fileUrl || '',
-      authorEmail: user.email,
-      authorName: user.fullName,
+      authorEmail: authorEmail || user.email,
+      authorName: authorName || user.fullName,
+      contributorStatus: contributorStatus || '',
       status: 'pending',
       createdAt: now,
       updatedAt: now,

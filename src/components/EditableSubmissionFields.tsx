@@ -12,6 +12,12 @@ interface EditableSubmissionFieldsProps {
 }
 
 export function EditableSubmissionFields({ submission, authToken, onUpdate, onClose, onEditModeChange, onFileDetach }: EditableSubmissionFieldsProps) {
+  const formatContributorStatus = (status: string) => {
+    if (!status) return 'Not Specified';
+    if (status === 'hi-staff') return 'HI Staff';
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedData, setEditedData] = useState({
     title: submission.title,
