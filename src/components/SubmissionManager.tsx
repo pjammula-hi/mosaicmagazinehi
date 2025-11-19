@@ -53,6 +53,20 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
     fetchContributorStatuses();
   }, []);
 
+  useEffect(() => {
+    // Refresh contributor statuses when manual upload modal is opened
+    if (showManualUpload) {
+      fetchContributorStatuses();
+    }
+  }, [showManualUpload]);
+
+  useEffect(() => {
+    // Refresh contributor statuses when edit modal is opened
+    if (selectedSubmission) {
+      fetchContributorStatuses();
+    }
+  }, [selectedSubmission]);
+
   const fetchContentTypes = async () => {
     try {
       const response = await fetch(
@@ -112,11 +126,6 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
       }
     } catch (err) {
       console.error('Error fetching contributor statuses:', err);
-      // Fallback to default statuses
-      setContributorStatuses([
-        { value: 'active', label: 'Active' },
-        { value: 'inactive', label: 'Inactive' }
-      ]);
     }
   };
 
