@@ -1959,9 +1959,24 @@ app.post('/make-server-2c0f842e/issues/:id/publish', async (c) => {
 
     await kv.set(`issue:${issueId}`, issue);
 
+    // Update all submissions assigned to this issue to "published" status
+    const allSubmissions = await kv.getByPrefix('submission:');
+    let updatedCount = 0;
+    
+    for (const submission of allSubmissions) {
+      if (submission.issueId === issueId && submission.status === 'accepted') {
+        submission.status = 'published';
+        submission.publishedAt = new Date().toISOString();
+        await kv.set(`submission:${submission.id}`, submission);
+        updatedCount++;
+        console.log('[Publish Issue] Updated submission to published:', submission.id);
+      }
+    }
+
     await createAuditLog('issue_published', user.id, user.email, { 
       issueId,
       title: issue.title,
+      updatedSubmissions: updatedCount,
       performedBy: {
         id: user.id,
         email: user.email,
@@ -1970,9 +1985,9 @@ app.post('/make-server-2c0f842e/issues/:id/publish', async (c) => {
       }
     }, c.req.raw, true);
 
-    console.log('[Publish Issue] Published:', issueId, 'by', user.email);
+    console.log('[Publish Issue] Published:', issueId, 'by', user.email, '- Updated', updatedCount, 'submissions');
 
-    return c.json({ success: true, issue });
+    return c.json({ success: true, issue, updatedSubmissions: updatedCount });
   } catch (error) {
     console.error('[Publish Issue] Error:', error);
     return c.json({ error: 'Failed to publish issue', details: String(error) }, 500);
