@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ArrowLeft, Maximize2 } from 'lucide-react';
+import DOMPurify from 'dompurify';
 
 interface MagazinePageFlipperProps {
   pages: any[];
@@ -165,11 +166,24 @@ export function MagazinePageFlipper({ pages, onBack, issueName }: MagazinePageFl
                   </div>
                 )}
 
-                {/* HTML Content */}
+                {/* HTML Content - Sanitized to prevent XSS attacks */}
                 {currentPage.htmlContent && (
                   <div
                     className="prose prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: currentPage.htmlContent }}
+                    dangerouslySetInnerHTML={{ 
+                      __html: DOMPurify.sanitize(currentPage.htmlContent, {
+                        ALLOWED_TAGS: [
+                          'p', 'br', 'strong', 'em', 'u', 'b', 'i',
+                          'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                          'ul', 'ol', 'li',
+                          'a', 'img',
+                          'blockquote', 'pre', 'code',
+                          'table', 'thead', 'tbody', 'tr', 'th', 'td',
+                          'div', 'span'
+                        ],
+                        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id']
+                      })
+                    }}
                   />
                 )}
 

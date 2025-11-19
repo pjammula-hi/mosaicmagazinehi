@@ -80,6 +80,12 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 
   return (
     <style
+      /* Security Note: This is a safe use of dangerouslySetInnerHTML
+       * - Only generates CSS from developer-controlled config objects
+       * - CSS cannot execute JavaScript
+       * - No user input is involved
+       * Reviewed: 2025-11-19
+       */
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
