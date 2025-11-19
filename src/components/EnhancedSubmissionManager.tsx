@@ -97,6 +97,20 @@ export function EnhancedSubmissionManager({ authToken, onUpdate }: EnhancedSubmi
     fetchContentTypes();
   }, [viewMode]); // Re-fetch when switching between inbox and trash
 
+  useEffect(() => {
+    // Refresh contributor statuses when manual upload modal is opened
+    if (showManualUpload) {
+      fetchContributorStatuses();
+    }
+  }, [showManualUpload]);
+
+  useEffect(() => {
+    // Refresh contributor statuses when edit modal is opened
+    if (selectedSubmission) {
+      fetchContributorStatuses();
+    }
+  }, [selectedSubmission]);
+
   const fetchContributorStatuses = async () => {
     try {
       const response = await fetchWithAuth(
