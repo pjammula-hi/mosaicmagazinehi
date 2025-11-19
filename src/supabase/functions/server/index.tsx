@@ -467,38 +467,10 @@ app.get('/make-server-2c0f842e/validate-token', async (c) => {
   return c.json({ valid: true, user });
 });
 
-// Refresh token
-app.post('/make-server-2c0f842e/refresh-token', async (c) => {
-  const accessToken = c.req.header('Authorization')?.split(' ')[1];
-  
-  if (!accessToken) {
-    return c.json({ error: 'No token provided' }, 401);
-  }
-  
-  try {
-    // Use Supabase to refresh the session
-    const { data, error } = await supabaseAuth.auth.setSession({
-      access_token: accessToken,
-      refresh_token: '' // This will attempt to refresh if possible
-    });
-    
-    if (error || !data.session) {
-      console.error('[Refresh Token] Failed to refresh:', error);
-      return c.json({ error: 'Failed to refresh token', details: error?.message }, 401);
-    }
-    
-    console.log('[Refresh Token] Token refreshed successfully');
-    
-    return c.json({ 
-      success: true,
-      token: data.session.access_token,
-      user: data.user
-    });
-  } catch (error) {
-    console.error('[Refresh Token] Exception:', error);
-    return c.json({ error: 'Failed to refresh token', details: String(error) }, 500);
-  }
-});
+// Refresh token - REMOVED
+// This endpoint was not functional and is not needed.
+// Supabase handles token refresh automatically.
+// If manual refresh is needed in the future, implement with proper refresh token storage.
 
 // Check password expiry
 app.get('/make-server-2c0f842e/check-password-expiry', async (c) => {
@@ -1051,7 +1023,6 @@ app.put('/make-server-2c0f842e/admin/toggle-user-status', async (c) => {
     await kv.set(`user:${user.email}`, user);
 
     await createAuditLog('user_status_changed', authUser.id, authUser.email, { 
-      targetUser: user.email, 
       isActive,
       action: isActive ? 'activated' : 'deactivated',
       performedBy: {
@@ -1420,6 +1391,30 @@ app.post('/make-server-2c0f842e/upload-file', async (c) => {
     }
 
     console.log('[Upload File] Uploading file:', file.name, 'Type:', type, 'Size:', file.size);
+
+    // Validate file size
+    const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+    if (file.size > MAX_FILE_SIZE) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      return c.json({ 
+        error: `File too large. Maximum size is 25MB (your file is ${fileSizeMB}MB)` 
+      }, 400);
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    
+    if (!allowedTypes.includes(file.type)) {
+      const fileExt = file.name.split('.').pop()?.toUpperCase() || 'Unknown';
+      return c.json({ 
+        error: `Invalid file type: .${fileExt}. Allowed types: JPEG, PNG, GIF, PDF, DOC, DOCX` 
+      }, 400);
+    }
 
     // Create bucket name based on type
     const bucketName = `make-2c0f842e-${type}s`;
