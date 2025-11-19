@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Check, Edit, Upload, FileText, Trash2, Image as ImageIcon } from 'lucide-react';
-import { projectId } from '../utils/supabase/info';
+import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { fetchWithAuth } from '../utils/sessionManager';
 
 interface EditableSubmissionFieldsProps {
@@ -16,10 +16,12 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
   const formatContributorStatus = (status: string) => {
     if (!status) return 'Not Specified';
     if (status === 'hi-staff') return 'HI Staff';
+    if (status === 'design-team') return 'Design Team';
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
   const [isEditMode, setIsEditMode] = useState(false);
+  const [contributorStatuses, setContributorStatuses] = useState<Array<{ value: string; label: string }>>([]);
   const [editedData, setEditedData] = useState({
     title: submission.title,
     authorName: submission.authorName,
@@ -33,6 +35,41 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
   const [newFileUrl, setNewFileUrl] = useState('');
   const [documents, setDocuments] = useState(submission.documents || []);
   const [documentsToDelete, setDocumentsToDelete] = useState<string[]>([]);
+
+  // Fetch contributor statuses when component mounts
+  useEffect(() => {
+    fetchContributorStatuses();
+  }, []);
+
+  const fetchContributorStatuses = async () => {
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/contributor-statuses`,
+        {
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Contributor Statuses Response (EditableFields):', data);
+        const mappedStatuses = data.statuses.map((s: any) => ({ value: s.value, label: s.label }));
+        console.log('Mapped Contributor Statuses (EditableFields):', mappedStatuses);
+        setContributorStatuses(mappedStatuses);
+      }
+    } catch (err) {
+      console.error('Error fetching contributor statuses:', err);
+      // Fallback to default statuses if fetch fails
+      setContributorStatuses([
+        { value: 'student', label: 'Student' },
+        { value: 'teacher', label: 'Teacher' },
+        { value: 'hi-staff', label: 'HI Staff' },
+        { value: 'guest', label: 'Guest' }
+      ]);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -236,10 +273,9 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
               onChange={(e) => setEditedData({ ...editedData, contributorStatus: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 font-sans-modern"
             >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="hi-staff">HI Staff</option>
-              <option value="guest">Guest</option>
+              {contributorStatuses.map(status => (
+                <option key={status.value} value={status.value}>{status.label}</option>
+              ))}
             </select>
           ) : (
             <p className="font-sans-modern">
