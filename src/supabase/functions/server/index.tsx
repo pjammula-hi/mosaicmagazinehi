@@ -131,7 +131,8 @@ async function verifyAuth(request: Request, silent = false) {
     
     // Verify the user has admin or editor role
     if (userDetails.role !== 'admin' && userDetails.role !== 'editor') {
-      if (!silent) console.error('[verifyAuth] Insufficient permissions. User role:', userDetails.role);
+      // Silently reject students/teachers - this is expected when they hit admin endpoints
+      // Only log errors for unexpected roles
       return null;
     }
     

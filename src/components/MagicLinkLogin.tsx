@@ -21,12 +21,69 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
   useEffect(() => {
     // Listen for auth state changes (when user clicks magic link in email)
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('[MagicLink] Auth event:', event);
+      console.log('[MagicLink] Auth event:', event, 'Session:', session ? 'exists' : 'null');
       
       if (event === 'SIGNED_IN' && session) {
         console.log('[MagicLink] User signed in via magic link:', session.user.email);
+        setLoading(true);  // Show loading state during verification
+        
+        // Clean up the URL hash AFTER successful sign in
+        if (window.location.hash) {
+          console.log('[MagicLink] Cleaning up URL hash');
+          window.history.replaceState(null, '', window.location.pathname);
+        }
         
         // Verify user exists in our system and get their full profile
+        try {
+          console.log('[MagicLink] Verifying user in system...');
+          const response = await fetch(
+            `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/verify-magic-link-user`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${publicAnonKey}`
+              },
+              body: JSON.stringify({ 
+                email: session.user.email,
+                supabaseUserId: session.user.id
+              })
+            }
+          );
+
+          const data = await response.json();
+          console.log('[MagicLink] Verification response:', { ok: response.ok, status: response.status, data });
+
+          if (!response.ok) {
+            throw new Error(data.error || 'User not found in system');
+          }
+
+          console.log('[MagicLink] User verified successfully, calling onLogin...');
+          // Use Supabase session access token
+          onLogin(session.access_token, data.user);
+        } catch (err: any) {
+          console.error('[MagicLink] Error verifying user:', err);
+          setError(err.message || 'Failed to verify user');
+          setLoading(false);
+          // Sign out the user since they're not in our system
+          await supabase.auth.signOut();
+        }
+      }
+    });
+
+    // Check for existing session on mount (for when user clicks magic link and comes back)
+    const checkExistingSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log('[MagicLink] Existing session found on mount, verifying user...');
+        
+        // Clean up hash if present
+        if (window.location.hash) {
+          console.log('[MagicLink] Cleaning up URL hash from existing session');
+          window.history.replaceState(null, '', window.location.pathname);
+        }
+        
+        // Verify and log in
         try {
           const response = await fetch(
             `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/verify-magic-link-user`,
@@ -49,29 +106,17 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
             throw new Error(data.error || 'User not found in system');
           }
 
-          // Use Supabase session access token
+          console.log('[MagicLink] User verified from existing session, logging in...');
           onLogin(session.access_token, data.user);
         } catch (err: any) {
-          console.error('[MagicLink] Error verifying user:', err);
+          console.error('[MagicLink] Error verifying existing session:', err);
           setError(err.message || 'Failed to verify user');
-          // Sign out the user since they're not in our system
           await supabase.auth.signOut();
         }
       }
-    });
-
-    // Check for existing session on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        console.log('[MagicLink] Existing session found');
-        // Trigger the auth state change handler
-        supabase.auth.onAuthStateChange((event, session) => {
-          if (session && event === 'SIGNED_IN') {
-            // Will be handled by the listener above
-          }
-        });
-      }
-    });
+    };
+    
+    checkExistingSession();
 
     return () => {
       authListener.subscription.unsubscribe();
