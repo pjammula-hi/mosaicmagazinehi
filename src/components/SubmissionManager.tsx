@@ -111,18 +111,17 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
       );
 
       const data = await response.json();
+      console.log('Contributor Statuses Response:', data);
 
       if (response.ok && data.statuses) {
-        const statuses = data.statuses.map((s: any) => (({
+        const statuses = data.statuses.map((s: any) => ({
           value: s.value,
           label: s.label
-        })));
+        }));
+        console.log('Mapped Contributor Statuses:', statuses);
         setContributorStatuses(statuses);
-        
-        // Set first status as default for manual submission
-        if (statuses.length > 0 && !manualSubmission.contributorStatus) {
-          setManualSubmission(prev => ({ ...prev, contributorStatus: statuses[0].value }));
-        }
+      } else {
+        console.error('Failed to fetch contributor statuses:', data);
       }
     } catch (err) {
       console.error('Error fetching contributor statuses:', err);
