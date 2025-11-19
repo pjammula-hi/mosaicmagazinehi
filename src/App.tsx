@@ -6,12 +6,14 @@
 
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { projectId, publicAnonKey } from './utils/supabase/info';
+import { supabase } from './utils/supabase/client';
 import { registerLogoutCallback, checkSessionExpiry } from './utils/sessionManager';
 import { Login } from './components/Login';
 import { MagicLinkLogin } from './components/MagicLinkLogin';
 import { ReaderDashboard } from './components/ReaderDashboard';
 import { LogoShowcase, StackedTilesLogo } from './components/logos/MosaicLogos';
 import { MagazineCard, holidayIssue } from './components/MagazineCard';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Lazy load components that use password validation or have complex dependencies to prevent early initialization errors
 const InitialSetup = lazy(() => import('./components/InitialSetup').then(m => ({ default: m.InitialSetup })));
@@ -255,11 +257,25 @@ export default function App() {
   };
 
   const handleLogout = () => {
+    console.log('[App] Logging out user...');
+    
+    // Clear Supabase session
+    supabase.auth.signOut().then(() => {
+      console.log('[App] Supabase session cleared');
+    }).catch(err => {
+      console.error('[App] Error clearing Supabase session:', err);
+    });
+    
+    // Clear app state
     setAuthToken('');
     setUser(null);
+    
+    // Clear localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('tokenExpiry');
     localStorage.removeItem('user');
+    
+    console.log('[App] Logout complete');
   };
 
   // Session monitor - check every 60 seconds if session has expired

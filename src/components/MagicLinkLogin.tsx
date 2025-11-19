@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../utils/supabase/client';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { Mail, Check, AlertCircle, Sparkles } from 'lucide-react';
 import { BrutalButton, BrutalAlert } from './BrutalUI';
@@ -8,23 +8,25 @@ interface MagicLinkLoginProps {
   onLogin: (token: string, user: any) => void;
 }
 
-// Create Supabase client for auth
-const supabaseUrl = `https://${projectId}.supabase.co`;
-const supabase = createClient(supabaseUrl, publicAnonKey);
-
 export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [isProcessingAuth, setIsProcessingAuth] = useState(false); // Prevent race condition
 
   useEffect(() => {
-    // Listen for auth state changes (when user clicks magic link in email)
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('[MagicLink] Auth event:', event, 'Session:', session ? 'exists' : 'null');
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Skip if already processing to prevent race condition
+      if (isProcessingAuth) {
+        console.log('[MagicLink] Already processing auth, skipping duplicate call');
+        return;
+      }
       
       if (event === 'SIGNED_IN' && session) {
         console.log('[MagicLink] User signed in via magic link:', session.user.email);
+        setIsProcessingAuth(true);  // Set flag immediately
         setLoading(true);  // Show loading state during verification
         
         // Clean up the URL hash AFTER successful sign in
@@ -67,6 +69,8 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
           setLoading(false);
           // Sign out the user since they're not in our system
           await supabase.auth.signOut();
+        } finally {
+          setIsProcessingAuth(false);  // Reset flag
         }
       }
     });
@@ -119,7 +123,7 @@ export function MagicLinkLogin({ onLogin }: MagicLinkLoginProps) {
     checkExistingSession();
 
     return () => {
-      authListener.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, [onLogin]);
 

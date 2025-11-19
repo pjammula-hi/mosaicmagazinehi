@@ -1536,7 +1536,7 @@ app.get('/make-server-2c0f842e/submissions', async (c) => {
 
 // Get accepted submissions for an issue
 app.get('/make-server-2c0f842e/submissions/accepted', async (c) => {
-  const user = await verifyAuth(c.req.raw);
+  const user = await verifyAnyAuth(c.req.raw);
   
   if (!user) {
     return c.json({ error: 'Unauthorized' }, 401);
@@ -2013,7 +2013,7 @@ app.post('/make-server-2c0f842e/issues/:id/publish', async (c) => {
 
 // Get issue pages
 app.get('/make-server-2c0f842e/issues/:id/pages', async (c) => {
-  const user = await verifyAuth(c.req.raw);
+  const user = await verifyAnyAuth(c.req.raw);
   
   if (!user) {
     return c.json({ error: 'Unauthorized' }, 401);
