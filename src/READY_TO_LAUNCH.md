@@ -108,9 +108,15 @@ Your application is **solid and ready to go** after you configure email! I've co
 
 ---
 
-## 🚫 NO CRITICAL ISSUES REMAINING
+## ⚠️ CRITICAL BUG FOUND AND FIXED
 
-I found **zero critical bugs** in your code. The only blocker is email configuration, which you need to do in Supabase dashboard.
+**Issue**: Published content not visible in reader view  
+**Cause**: Backend wasn't saving `month`, `year`, `number`, `volume` fields  
+**Status**: ✅ **FIXED**
+
+See `/CRITICAL_BUG_FIX.md` for complete details.
+
+**Action Required**: After email setup, test that published issues are visible in reader view.
 
 ---
 

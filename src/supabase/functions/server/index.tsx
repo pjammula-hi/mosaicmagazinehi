@@ -1858,7 +1858,7 @@ app.post('/make-server-2c0f842e/issues', async (c) => {
   }
 
   try {
-    const { title, description, coverImage, theme } = await c.req.json();
+    const { title, description, coverImage, theme, month, year, number, volume, coverImageUrl } = await c.req.json();
 
     if (!title) {
       return c.json({ error: 'Title is required' }, 400);
@@ -1871,8 +1871,13 @@ app.post('/make-server-2c0f842e/issues', async (c) => {
       id: issueId,
       title,
       description: description || '',
-      coverImage: coverImage || '',
+      coverImage: coverImage || coverImageUrl || '',
+      coverImageUrl: coverImageUrl || coverImage || '',
       theme: theme || 'default',
+      month: month || new Date().getMonth() + 1,
+      year: year || new Date().getFullYear(),
+      number: number || '',
+      volume: volume || '',
       status: 'draft',
       createdAt: now,
       updatedAt: now,
@@ -1909,7 +1914,7 @@ app.put('/make-server-2c0f842e/issues/:id', async (c) => {
     }
 
     // Update allowed fields
-    const allowedFields = ['title', 'description', 'coverImage', 'theme', 'status'];
+    const allowedFields = ['title', 'description', 'coverImage', 'coverImageUrl', 'theme', 'status', 'month', 'year', 'number', 'volume'];
     
     for (const field of allowedFields) {
       if (updates[field] !== undefined) {
