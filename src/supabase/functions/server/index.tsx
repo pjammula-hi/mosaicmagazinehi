@@ -2172,11 +2172,14 @@ app.post('/make-server-2c0f842e/comments/:id/approve', async (c) => {
 // Get all contributor statuses
 app.get('/make-server-2c0f842e/contributor-statuses', async (c) => {
   try {
+    console.log('[Get Contributor Statuses] Fetching from database...');
     // Fetch all contributor statuses
     let statuses = await kv.getByPrefix('contributor-status:');
+    console.log('[Get Contributor Statuses] Found statuses:', statuses.length, statuses);
     
     // If no statuses exist, initialize with default statuses
     if (!statuses || statuses.length === 0) {
+      console.log('[Get Contributor Statuses] No statuses found, initializing defaults...');
       const defaultStatuses = [
         { id: 'status-1', value: 'student', label: 'Student', description: 'Current student contributor', order: 1 },
         { id: 'status-2', value: 'teacher', label: 'Teacher', description: 'Faculty member contributor', order: 2 },
@@ -2195,6 +2198,7 @@ app.get('/make-server-2c0f842e/contributor-statuses', async (c) => {
     // Sort by order
     statuses.sort((a: any, b: any) => a.order - b.order);
     
+    console.log('[Get Contributor Statuses] Returning statuses:', statuses);
     return c.json({ statuses });
   } catch (error) {
     console.error('[Get Contributor Statuses] Error:', error);
