@@ -22,6 +22,7 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [contributorStatuses, setContributorStatuses] = useState<Array<{ value: string; label: string }>>([]);
+  const [contentTypes, setContentTypes] = useState<Array<{ value: string; label: string }>>([]);
   const [editedData, setEditedData] = useState({
     title: submission.title,
     authorName: submission.authorName,
@@ -36,9 +37,10 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
   const [documents, setDocuments] = useState(submission.documents || []);
   const [documentsToDelete, setDocumentsToDelete] = useState<string[]>([]);
 
-  // Fetch contributor statuses when component mounts
+  // Fetch contributor statuses and content types when component mounts
   useEffect(() => {
     fetchContributorStatuses();
+    fetchContentTypes();
   }, []);
 
   const fetchContributorStatuses = async () => {
@@ -76,6 +78,55 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
         { value: 'teacher', label: 'Teacher' },
         { value: 'hi-staff', label: 'HI Staff' },
         { value: 'guest', label: 'Guest' }
+      ]);
+    }
+  };
+
+  const fetchContentTypes = async () => {
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-2c0f842e/content-types`,
+        {
+          headers: {
+            'Authorization': `Bearer ${publicAnonKey}`
+          }
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Content Types Response (EditableFields):', data);
+        const mappedTypes = data.types.map((t: any) => ({ value: t.value, label: t.label }));
+        console.log('Mapped Content Types (EditableFields):', mappedTypes);
+        setContentTypes(mappedTypes);
+      } else {
+        console.error('Failed to fetch content types (EditableFields):', response.status);
+        // Fallback to default types if fetch fails
+        setContentTypes([
+          { value: 'writing', label: 'Writing/Essay' },
+          { value: 'poem', label: 'Poetry' },
+          { value: 'story', label: 'Short Story' },
+          { value: 'photo', label: 'Photography' },
+          { value: 'art', label: 'Visual Art' },
+          { value: 'crafts', label: 'Crafts' },
+          { value: 'reflection', label: 'Reflection' },
+          { value: 'news', label: 'News Article' },
+          { value: 'opinion', label: 'Opinion Piece' }
+        ]);
+      }
+    } catch (err) {
+      console.error('Error fetching content types (EditableFields):', err);
+      // Fallback to default types if fetch fails
+      setContentTypes([
+        { value: 'writing', label: 'Writing/Essay' },
+        { value: 'poem', label: 'Poetry' },
+        { value: 'story', label: 'Short Story' },
+        { value: 'photo', label: 'Photography' },
+        { value: 'art', label: 'Visual Art' },
+        { value: 'crafts', label: 'Crafts' },
+        { value: 'reflection', label: 'Reflection' },
+        { value: 'news', label: 'News Article' },
+        { value: 'opinion', label: 'Opinion Piece' }
       ]);
     }
   };
@@ -301,15 +352,9 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
               onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 font-sans-modern"
             >
-              <option value="writing">Writing/Essay</option>
-              <option value="poem">Poetry</option>
-              <option value="story">Short Story</option>
-              <option value="photo">Photography</option>
-              <option value="art">Visual Art</option>
-              <option value="crafts">Crafts</option>
-              <option value="reflection">Reflection</option>
-              <option value="news">News Article</option>
-              <option value="opinion">Opinion Piece</option>
+              {contentTypes.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
             </select>
           ) : (
             <p className="capitalize font-sans-modern">{submission.type}</p>
