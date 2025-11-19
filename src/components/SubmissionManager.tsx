@@ -28,6 +28,9 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
   const [editorNotes, setEditorNotes] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedIssue, setSelectedIssue] = useState('');
+  const [editAuthorName, setEditAuthorName] = useState('');
+  const [editAuthorEmail, setEditAuthorEmail] = useState('');
+  const [editContributorStatus, setEditContributorStatus] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showManualUpload, setShowManualUpload] = useState(false);
   const [contentTypes, setContentTypes] = useState<Array<{ value: string; label: string }>>([]);
@@ -169,7 +172,10 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
           body: JSON.stringify({
             status: selectedStatus || selectedSubmission.status,
             editorNotes,
-            issueId: selectedIssue || selectedSubmission.issueId
+            issueId: selectedIssue || selectedSubmission.issueId,
+            authorName: editAuthorName || selectedSubmission.authorName,
+            authorEmail: editAuthorEmail || selectedSubmission.authorEmail,
+            contributorStatus: editContributorStatus || selectedSubmission.contributorStatus
           })
         }
       );
@@ -441,6 +447,9 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                         setEditorNotes(submission.editorNotes || '');
                         setSelectedStatus(submission.status);
                         setSelectedIssue(submission.issueId || '');
+                        setEditAuthorName(submission.authorName || '');
+                        setEditAuthorEmail(submission.authorEmail || '');
+                        setEditContributorStatus(submission.contributorStatus || '');
                       }}
                       className="p-2 text-purple-600 hover:bg-purple-50 rounded"
                     >
@@ -548,6 +557,44 @@ export function SubmissionManager({ authToken, onUpdate }: SubmissionManagerProp
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
                     placeholder="Add notes for the author..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700">Author Name</label>
+                  <input
+                    type="text"
+                    value={editAuthorName}
+                    onChange={(e) => setEditAuthorName(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                    placeholder="Leave empty for anonymous"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700">Author Email</label>
+                  <input
+                    type="email"
+                    value={editAuthorEmail}
+                    onChange={(e) => setEditAuthorEmail(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                    placeholder="Leave empty for anonymous"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-2 text-gray-700">Contributor Status</label>
+                  <select
+                    value={editContributorStatus}
+                    onChange={(e) => setEditContributorStatus(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600"
+                  >
+                    <option value="">None</option>
+                    {contributorStatuses.map((status) => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

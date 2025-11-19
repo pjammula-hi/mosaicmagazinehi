@@ -1627,7 +1627,7 @@ app.put('/make-server-2c0f842e/submissions/:id', async (c) => {
     }
 
     // Update allowed fields
-    const allowedFields = ['status', 'feedback', 'issueId', 'title', 'content', 'fileUrl', 'isTrashed', 'type'];
+    const allowedFields = ['status', 'feedback', 'issueId', 'title', 'content', 'fileUrl', 'isTrashed', 'type', 'authorName', 'authorEmail', 'contributorStatus'];
     
     for (const field of allowedFields) {
       if (updates[field] !== undefined) {
