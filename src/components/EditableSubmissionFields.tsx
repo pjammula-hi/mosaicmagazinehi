@@ -58,9 +58,18 @@ export function EditableSubmissionFields({ submission, authToken, onUpdate, onCl
         const mappedStatuses = data.statuses.map((s: any) => ({ value: s.value, label: s.label }));
         console.log('Mapped Contributor Statuses (EditableFields):', mappedStatuses);
         setContributorStatuses(mappedStatuses);
+      } else {
+        console.error('Failed to fetch contributor statuses (EditableFields):', response.status);
+        // Fallback to default statuses if fetch fails
+        setContributorStatuses([
+          { value: 'student', label: 'Student' },
+          { value: 'teacher', label: 'Teacher' },
+          { value: 'hi-staff', label: 'HI Staff' },
+          { value: 'guest', label: 'Guest' }
+        ]);
       }
     } catch (err) {
-      console.error('Error fetching contributor statuses:', err);
+      console.error('Error fetching contributor statuses (EditableFields):', err);
       // Fallback to default statuses if fetch fails
       setContributorStatuses([
         { value: 'student', label: 'Student' },
