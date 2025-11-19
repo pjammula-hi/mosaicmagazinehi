@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
-import { BookOpen, Plus, Eye, Edit, Send, Calendar } from 'lucide-react';
+import { BookOpen, Plus, Eye, Edit, Send, Calendar, BookOpenCheck } from 'lucide-react';
 import { IssueEditor } from './IssueEditor';
+import { MagazinePageBuilder } from './MagazinePageBuilder';
 
 interface IssueManagerProps {
   authToken: string;
@@ -15,6 +16,7 @@ export function IssueManager({ authToken, onUpdate }: IssueManagerProps) {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
   const [editingIssue, setEditingIssue] = useState<any>(null);
+  const [buildingPagesIssue, setBuildingPagesIssue] = useState<any>(null);
   
   const [newIssue, setNewIssue] = useState({
     title: '',
@@ -149,7 +151,24 @@ export function IssueManager({ authToken, onUpdate }: IssueManagerProps) {
         onUpdate();
         
         // Show success message
-        alert(`Issue published successfully! ${result.updatedSubmissions || 0} submissions updated to published status.`);
+        const updated = result.updatedSubmissions || 0;
+        const alreadyPublished = result.alreadyPublished || 0;
+        const total = result.totalPublished || 0;
+        
+        let message = 'Issue published successfully!';
+        if (total > 0) {
+          if (updated > 0 && alreadyPublished > 0) {
+            message += ` ${updated} submissions updated to published status, ${alreadyPublished} were already published. Total: ${total} published submissions.`;
+          } else if (updated > 0) {
+            message += ` ${updated} submissions updated to published status.`;
+          } else if (alreadyPublished > 0) {
+            message += ` ${alreadyPublished} submissions already published.`;
+          }
+        } else {
+          message += ' No submissions assigned to this issue.';
+        }
+        
+        alert(message);
       } else {
         // Try to parse error response
         let errorMessage = 'Unknown error';
@@ -377,6 +396,14 @@ export function IssueManager({ authToken, onUpdate }: IssueManagerProps) {
                     </button>
                   </div>
                   
+                  <button
+                    onClick={() => setBuildingPagesIssue(issue)}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                  >
+                    <BookOpenCheck className="w-4 h-4" />
+                    Build Pages
+                  </button>
+                  
                   {issue.status === 'draft' ? (
                     <button
                       onClick={() => handlePublishIssue(issue.id)}
@@ -495,6 +522,15 @@ export function IssueManager({ authToken, onUpdate }: IssueManagerProps) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Page Builder Modal */}
+      {buildingPagesIssue && (
+        <MagazinePageBuilder
+          issue={buildingPagesIssue}
+          authToken={authToken}
+          onClose={() => setBuildingPagesIssue(null)}
+        />
       )}
     </div>
   );
