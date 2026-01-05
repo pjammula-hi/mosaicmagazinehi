@@ -1,19 +1,14 @@
 {
-    "rewrites": [
+    "buildCommand": "echo 'Skipping build - serving static files'",
+    "outputDirectory": ".",
+    "routes": [
         {
-            "source": "/",
-            "destination": "/mosaic-magazine-mockup.html"
-        }
-    ],
-    "headers": [
+            "src": "/",
+            "dest": "/mosaic-magazine-mockup.html"
+        },
         {
-            "source": "/(.*)",
-            "headers": [
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=3600"
-                }
-            ]
+            "src": "/(.*)",
+            "dest": "/$1"
         }
     ]
 }
