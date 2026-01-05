@@ -6,6 +6,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
+import type { Database } from '../types/database.types'
 
 // Get environment variables (works in both Vite and Node.js)
 const supabaseUrl =
@@ -25,8 +26,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
     )
 }
 
-// Create and export the Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Create and export the typed Supabase client
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
 
 // Database connection info (for reference)
 export const dbConfig = {
@@ -41,5 +42,6 @@ export const dbConfig = {
         'iyic4XQBtC7seoRC',
 }
 
-// Export types for TypeScript (optional but recommended)
+// Export types for TypeScript
 export type { User, Session } from '@supabase/supabase-js'
+export type { Database } from '../types/database.types'
