@@ -1,6 +1,7 @@
 {
     "buildCommand": "echo 'Skipping build - serving static files'",
     "outputDirectory": ".",
+    "ignoreCommand": "exit 1",
     "routes": [
         {
             "src": "/",

@@ -1,0 +1,67 @@
+{
+    "templateVersion": "1.0",
+    "issue": {
+        "month": "",
+        "year": null,
+        "volume": null,
+        "issue_number": null,
+        "cover_image_url": "",
+        "publication_date": "",
+        "is_published": false
+    },
+    "folderStructure": {
+        "documents": "{month} {year}",
+        "files": [
+            "README.md",
+            "metadata.json",
+            "database-insert.sql"
+        ]
+    },
+    "defaultContent": {
+        "principalLetter": {
+            "title": "Letter from the Principal",
+            "excerpt": "Welcome to this month's issue of Mosaic Magazine...",
+            "content": ""
+        },
+        "categories": [
+            "Writing/Articles",
+            "Poetry",
+            "Art Gallery",
+            "Project Room",
+            "HI Clubs"
+        ]
+    },
+    "workflow": [
+        {
+            "step": 1,
+            "name": "Create Issue",
+            "description": "Run create-issue script or use admin panel",
+            "command": "npm run create-issue -- --month {month} --year {year}"
+        },
+        {
+            "step": 2,
+            "name": "Upload Assets",
+            "description": "Upload cover image and magazine pages to folder"
+        },
+        {
+            "step": 3,
+            "name": "Create Database Entry",
+            "description": "Run the generated SQL or use admin panel"
+        },
+        {
+            "step": 4,
+            "name": "Add Content",
+            "description": "Use admin panel to add articles, artwork, and principal's letter"
+        },
+        {
+            "step": 5,
+            "name": "Review",
+            "description": "Preview the issue before publishing"
+        },
+        {
+            "step": 6,
+            "name": "Publish",
+            "description": "Mark issue as published in admin panel"
+        }
+    ]
+}
