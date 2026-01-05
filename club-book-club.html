@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Mosaic Magazine - Writing and Articles">
+
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+  <!-- Android Chrome -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Microsoft -->
+  <meta name="msapplication-TileColor" content="#2563eb">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Book Club - Mosaic Magazine</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-content">
+        <div class="date">Vol XX - Issue #1 • January, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="container">
+      <div class="masthead-content">
+        <img src="images/hi_logo_blue.png" alt="Home Instruction Schools Logo" class="logo-image">
+        <div class="masthead-text">
+          <h1 class="logo">Mosaic</h1>
+          <p class="tagline">A Student Publication of <span class="school-name">Home Instruction
+              Schools</span></p>
+        </div>
+        <div style="width: 80px;"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="main-nav">
+    <div class="container">
+      <ul class="nav-list">
+        <li><a href="mosaic-magazine-mockup.html">Home</a></li>
+        <li><a href="writing-articles.html">Writing/Articles</a></li>
+        <li><a href="project-room.html">Project Room</a></li>
+        <li><a href="art-gallery.html">Art Gallery</a></li>
+        <li><a href="hi-clubs.html" class="active">HI Clubs</a></li>
+        <li><a href="student-opportunities.html">Student Opportunities</a></li>
+        <li><a href="teacher-page.html">Teacher Page</a></li>
+        <li><a href="issues.html">Issues</a></li>
+        <li><a href="mosaic-magazine-mockup.html#about">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <style>
+    /* Gallery Visible by Default */
+    #teacher-gallery {
+      display: block;
+      opacity: 1;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .section-subtitle {
+      font-family: var(--font-sans);
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-top: -10px;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+  </style>
+
+  <!-- CLUB SECTION -->
+  <section id="clubs" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Book Club</h2>
+        <p class="section-subtitle">January 2026</p>
+      </div>
+
+      <!-- Gallery (Image 42) -->
+      <div id="teacher-gallery">
+        <div class="section-header" style="margin-top: 0px;">
+          <h3 class="section-title" style="font-size: 1.8rem;">January Reading</h3>
+        </div>
+
+        <div class="project-grid" style="grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));">
+          <!-- Page 42 -->
+          <a href="documents/January 2026/42.jpg" target="_blank">
+            <img src="documents/January 2026/42.jpg" alt="Book Club Feature">
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <h2 class="footer-logo">MOSAIC</h2>
+        <p class="footer-text">Celebrating the creativity, resilience, and achievements of Home Instruction Schools
+          students</p>
+
+        <div class="footer-links">
+          <a href="mosaic-magazine-mockup.html#about">About Us</a>
+          <a href="mosaic-magazine-mockup.html#submit">Submit Your Work</a>
+          <a href="mosaic-magazine-mockup.html#contact">Contact</a>
+          <a href="mosaic-magazine-mockup.html#resources">Resources</a>
+          <a href="mosaic-magazine-mockup.html#privacy">Privacy Policy</a>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mosaic Magazine - Home Instruction Schools. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

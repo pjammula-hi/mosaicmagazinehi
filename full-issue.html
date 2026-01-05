@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Mosaic Magazine - Full Issue View">
+
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+    <!-- Android Chrome -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Microsoft -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Full Issue - Mosaic Magazine</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery and Turn.js -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+
+    <style>
+        /* Flipbook Styles */
+        .feature-cover-section {
+            text-align: center;
+            padding: 40px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-cover-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-cover-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-cover-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .click-hint {
+            margin-top: 20px;
+            font-family: var(--font-sans);
+            color: #666;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .flipbook-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .flipbook-container {
+            width: 960px;
+            height: 600px;
+            transition: opacity 0.5s;
+        }
+
+        .flipbook-container .page {
+            width: 480px;
+            height: 600px;
+            background-color: white;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .flipbook-container .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 10001;
+        }
+
+        .modal-controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: white;
+            color: black;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <div class="date">Vol XX - Issue #1 • January, 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-content">
+                <img src="images/hi_logo_blue.png" alt="Home Instruction Schools Logo" class="logo-image">
+                <div class="masthead-text">
+                    <h1 class="logo">Mosaic</h1>
+                    <p class="tagline">A Student Publication of <span class="school-name">Home Instruction
+                            Schools</span></p>
+                </div>
+                <div style="width: 80px;"></div> <!-- Spacer for visual balance -->
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="mosaic-magazine-mockup.html">Home</a></li>
+                <li><a href="writing-articles.html">Writing/Articles</a></li>
+                <li><a href="project-room.html">Project Room</a></li>
+                <li><a href="art-gallery.html">Art Gallery</a></li>
+                <li><a href="hi-clubs.html">HI Clubs</a></li>
+                <li><a href="student-opportunities.html">Student Opportunities</a></li>
+                <li><a href="teacher-page.html">Teacher Page</a></li>
+                <li><a href="issues.html">Issues</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- SECTION 1: LETTER FROM THE PRINCIPAL -->
+    <section class="section" style="padding-top: 60px; background-color: #fafafa;">
+        <div class="container">
+            <div class="featured-grid" style="grid-template-columns: 1fr;">
+                <a href="principal-letter.html" class="featured-main" style="height: 500px;">
+                    <img src="images/todd_original.png" alt="Principal Todd Alessandro" class="featured-image">
+                    <div class="featured-overlay">
+                        <span class="featured-category">From the Principal</span>
+                        <h2 class="featured-title">In the fractures, we find the genius.</h2>
+                        <p class="featured-excerpt">Welcome to Mosaic—a tribute to our history and a wide-open horizon
+                            for our
+                            future. This is your canvas for the infinite, where scattered pieces become the architecture
+                            of wonder.
+                        </p>
+                        <div class="featured-meta">Todd Alessandro, Principal • January 1, 2026</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: WRITING / ARTICLES -->
+    <section id="writing" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Writing / Articles</h2>
+            </div>
+
+            <div class="article-grid">
+                <!-- Poetry Art Collaboration (Newest) -->
+                <article class="article-card">
+                    <a href="article-poetry-collaboration.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/11.jpg" alt="Poetry Art Collaboration" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Writing | Collaboration</span>
+                            <h3 class="article-title">Poetry/Visual Art Collaboration Project</h3>
+                            <p class="article-excerpt">A meaningful collaboration between student poetry and teacher
+                                visual art.</p>
+                            <div class="article-meta">
+                                <span>Tamara Ahmed & Maura Kane</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Darling, Dearest, Dead (Newest) -->
+                <article class="article-card">
+                    <a href="article-darling-dead.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/10.jpg" alt="Article Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Writing | Poetry</span>
+                            <h3 class="article-title">Darling, Dearest, Dead</h3>
+                            <p class="article-excerpt">A poignant poem exploring grief and remembrance.</p>
+                            <div class="article-meta">
+                                <span>Tamara Ahmed</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Blue Bear (Newest) -->
+                <article class="article-card">
+                    <a href="article-blue-bear.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/7.jpg" alt="Article Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Writing | Articles</span>
+                            <h3 class="article-title">The Blue Bear Cookie</h3>
+                            <p class="article-excerpt">A creative piece exploring imagination and memory.</p>
+                            <div class="article-meta">
+                                <span>Annelise Catu</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Income Inequality -->
+                <article class="article-card">
+                    <a href="article-income-inequality.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/5.jpg" alt="Article Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Writing | Articles</span>
+                            <h3 class="article-title">The Role the Top 1% Play in Perpetuating Income Inequality</h3>
+                            <p class="article-excerpt">An insightful examination of economic structures and their impact
+                                on society.
+                            </p>
+                            <div class="article-meta">
+                                <span>Daniel Sepulveda</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: PROJECT ROOM -->
+    <section id="project-room" class="section" style="background-color: #f8f9fa;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Project Room</h2>
+            </div>
+
+            <div class="article-grid">
+                <!-- Lulu Paez Vargas -->
+                <article class="article-card">
+                    <a href="article-lulu-paez.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/20.jpg" alt="Project Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Project Room</span>
+                            <h3 class="article-title">Family Autumn / Family Holidays</h3>
+                            <p class="article-excerpt">Reflections on family traditions and seasonal moments.</p>
+                            <div class="article-meta">
+                                <span>Lulu Paez Vargas</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Jessica Niyanoz -->
+                <article class="article-card">
+                    <a href="article-jessica-niyanoz.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/18.jpg" alt="Project Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Project Room</span>
+                            <h3 class="article-title">Family Autumn / New Holidays / Celebrations</h3>
+                            <p class="article-excerpt">Exploring seasonal celebrations and family traditions.</p>
+                            <div class="article-meta">
+                                <span>Jessica Niyanoz</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Kaitlyn Coscia -->
+                <article class="article-card">
+                    <a href="article-kaitlyn-coscia.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/13.jpg" alt="Project Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Project Room</span>
+                            <h3 class="article-title">Coconut Custard Pie / Family Autumn</h3>
+                            <p class="article-excerpt">A collection of recipes and reflections.</p>
+                            <div class="article-meta">
+                                <span>Kaitlyn Coscia</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Ethan Mangar -->
+                <article class="article-card">
+                    <a href="article-ethan-mangar.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/22.jpg" alt="Project Cover" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Project Room</span>
+                            <h3 class="article-title">Holidays</h3>
+                            <p class="article-excerpt">Reflections on seasonal celebrations.</p>
+                            <div class="article-meta">
+                                <span>Ethan Mangar</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: ART GALLERY -->
+    <section id="student-work" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Art Gallery</h2>
+            </div>
+
+            <div class="article-grid">
+                <!-- Daniel Sepulveda -->
+                <article class="article-card">
+                    <a href="artwork-daniel-sepulveda.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/27.jpg" alt="Student Artwork" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Visual Arts</span>
+                            <h3 class="article-title">Student Artwork</h3>
+                            <p class="article-excerpt">Featured artwork from January 2026.</p>
+                            <div class="article-meta">
+                                <span>Daniel Sepulveda</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Teresa Tarbutton -->
+                <article class="article-card">
+                    <a href="artwork-teresa-tarbutton.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/28.jpg" alt="Student Artwork" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Visual Arts</span>
+                            <h3 class="article-title">Student Artwork</h3>
+                            <p class="article-excerpt">Featured artwork from January 2026.</p>
+                            <div class="article-meta">
+                                <span>Teresa Tarbutton</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: CLUBS -->
+    <section id="clubs" class="section" style="background-color: #f8f9fa;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">HI Clubs</h2>
+            </div>
+
+            <div class="article-grid">
+                <!-- Art Studio Card -->
+                <article class="article-card">
+                    <a href="club-art-studio.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/30.jpg" alt="Art Studio" class="article-image"
+                            style="object-fit: contain; background: #f5f5f5;">
+                        <div class="article-content">
+                            <span class="article-category">HI Clubs</span>
+                            <h3 class="article-title">Art Studio</h3>
+                            <p class="article-excerpt">Explore the creative works from our Art Studio members.</p>
+                            <div class="article-meta">
+                                <span>Art Club</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Book Club Card -->
+                <article class="article-card">
+                    <a href="club-book-club.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/42.jpg" alt="Book Club" class="article-image"
+                            style="object-fit: contain; background: #f5f5f5;">
+                        <div class="article-content">
+                            <span class="article-category">HI Clubs</span>
+                            <h3 class="article-title">Book Club</h3>
+                            <p class="article-excerpt">Featured selection and discussions from our Book Club.</p>
+                            <div class="article-meta">
+                                <span>Book Club</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Music Card -->
+                <article class="article-card">
+                    <a href="club-music.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/43.jpg" alt="Music" class="article-image"
+                            style="object-fit: contain; background: #f5f5f5;">
+                        <div class="article-content">
+                            <span class="article-category">HI Clubs</span>
+                            <h3 class="article-title">Music</h3>
+                            <p class="article-excerpt">Discover musical talents and explorations.</p>
+                            <div class="article-meta">
+                                <span>Music Club</span> • <span>January 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="hi-clubs.html" class="btn"
+                    style="background: black; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">View
+                    All Clubs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: STUDENT OPPORTUNITIES -->
+    <!-- SECTION 6: STUDENT OPPORTUNITIES -->
+    <section id="opportunities" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Student Opportunities</h2>
+                <p class="section-subtitle">Featured Resources • January 2026</p>
+            </div>
+
+            <!-- Feature Cover (Click to Open) -->
+            <div class="feature-cover-section" onclick="openBook('modal-opportunities', 'book-opportunities')">
+                <div class="feature-cover-wrapper">
+                    <img src="documents/January 2026/44.jpg" alt="Student Opportunities Cover"
+                        class="feature-cover-image">
+                </div>
+                <div class="click-hint">
+                    <i class="fas fa-book-open"></i> Click to read the flipbook
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="student-opportunities.html" class="btn"
+                    style="background: black; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">View
+                    Opportunities Page</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: TEACHER PAGE -->
+    <!-- SECTION 7: TEACHER PAGE -->
+    <section id="teachers" class="section" style="background-color: #f8f9fa;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Teacher Page</h2>
+                <p class="section-subtitle">Faculty Updates • January 2026</p>
+            </div>
+
+            <!-- Feature Cover (Click to Open) -->
+            <div class="feature-cover-section" onclick="openBook('modal-teachers', 'book-teachers')">
+                <div class="feature-cover-wrapper">
+                    <img src="documents/January 2026/50.jpg" alt="Teacher Page Cover" class="feature-cover-image">
+                </div>
+                <div class="click-hint">
+                    <i class="fas fa-book-open"></i> Click to read the flipbook
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="teacher-page.html" class="btn"
+                    style="background: black; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Visit
+                    Teacher Page</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: ISSUES -->
+    <section id="issues" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Issues</h2>
+            </div>
+
+            <div class="article-grid">
+                <!-- January 2026 Issue (Current) -->
+                <article class="article-card">
+                    <a href="mosaic-magazine-mockup.html" class="article-link-wrapper">
+                        <img src="documents/January 2026/1.jpg" alt="January 2026 Issue" class="article-image">
+                        <div class="article-content">
+                            <span class="article-category">Current Issue</span>
+                            <h3 class="article-title">January 2026</h3>
+                            <p class="article-excerpt">Vol XX - Issue #1. Featuring 54 artworks and Principal's Letter.
+                            </p>
+                            <div class="article-meta">
+                                <span>Published</span> • <span>Jan 2026</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Dec 2025 Issue -->
+                <article class="article-card">
+                    <a href="issues.html" class="article-link-wrapper">
+                        <!-- Placeholder color -->
+                        <div class="article-image"
+                            style="background-color: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-weight:bold;">
+                            COVER IMAGE
+                        </div>
+                        <div class="article-content">
+                            <span class="article-category" style="background: #94a3b8;">Archive</span>
+                            <h3 class="article-title">December 2025</h3>
+                            <p class="article-excerpt">Vol XIX - Issue #12. Winter celebrations and year-end review.</p>
+                            <div class="article-meta">
+                                <span>Archived</span> • <span>Dec 2025</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+
+                <!-- Nov 2025 Issue -->
+                <article class="article-card">
+                    <a href="issues.html" class="article-link-wrapper">
+                        <!-- Placeholder color -->
+                        <div class="article-image"
+                            style="background-color: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-weight:bold;">
+                            COVER IMAGE
+                        </div>
+                        <div class="article-content">
+                            <span class="article-category" style="background: #94a3b8;">Archive</span>
+                            <h3 class="article-title">November 2025</h3>
+                            <p class="article-excerpt">Vol XIX - Issue #11. Autumn creativity and student projects.</p>
+                            <div class="article-meta">
+                                <span>Archived</span> • <span>Nov 2025</span>
+                            </div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="issues.html" class="btn"
+                    style="background: black; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">View
+                    All Issues</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: ABOUT -->
+    <section id="about" class="section" style="background-color: #f8f9fa;">
+        <div class="container">
+
+
+            <div class="featured-grid" style="grid-template-columns: 1fr 1fr; gap: 40px; height: auto; margin:0;">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: 20px;">Celebrating
+                        Student Voices</h3>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #444; margin-bottom: 20px;">
+                        Mosaic Magazine is the proud student publication of Home Instruction Schools. We are dedicated
+                        to showcasing the incredible creativity, resilience, and diverse voices of our student body.
+                        Through writing, art, and projects, Mosaic serves as a platform for expression and connection.
+                    </p>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #444;">
+                        Our mission is to celebrate every student's unique journey and contribution to our community.
+                    </p>
+                </div>
+                <div
+                    style="border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;">
+                    <img src="documents/January 2026/3.jpg" alt="Mosaic Magazine Stack"
+                        style="width: 100%; height: auto; display: block;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* Ensure styles for this page from stylesheet are active, plus custom overrides */
+        .featured-main {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-category {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            align-self: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .featured-title {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 60px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 1), transparent);
+            color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+    </style>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h2 class="footer-logo">MOSAIC</h2>
+                <p class="footer-text">Celebrating the creativity, resilience, and achievements of Home Instruction
+                    Schools
+                    students</p>
+
+                <div class="footer-links">
+                    <a href="#about">About Us</a>
+                    <a href="#submit">Submit Your Work</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#resources">Resources</a>
+                    <a href="#privacy">Privacy Policy</a>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Mosaic Magazine - Home Instruction Schools. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: STUDENT OPPORTUNITIES -->
+    <div id="modal-opportunities" class="flipbook-modal">
+        <div class="modal-close" onclick="closeBook('modal-opportunities')">&times;</div>
+        <div id="book-opportunities" class="flipbook-container">
+            <!-- Page 1 (Cover) -->
+            <div class="page" style="background-image: url('documents/January 2026/44.jpg')">
+                <img src="documents/January 2026/44.jpg" draggable="false" alt="Page 1">
+            </div>
+            <div class="page"><img src="documents/January 2026/45.jpg" draggable="false" alt="Page 2"></div>
+            <div class="page"><img src="documents/January 2026/46.jpg" draggable="false" alt="Page 3"></div>
+            <div class="page"><img src="documents/January 2026/47.jpg" draggable="false" alt="Page 4"></div>
+            <div class="page"><img src="documents/January 2026/48.jpg" draggable="false" alt="Page 5"></div>
+            <!-- Page 6 (Back) -->
+            <div class="page"><img src="documents/January 2026/49.jpg" draggable="false" alt="Page 6"></div>
+        </div>
+        <div class="modal-controls">
+            <button class="control-btn" onclick="$('#book-opportunities').turn('previous')">Previous</button>
+            <button class="control-btn" onclick="$('#book-opportunities').turn('next')">Next</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: TEACHER PAGE -->
+    <div id="modal-teachers" class="flipbook-modal">
+        <div class="modal-close" onclick="closeBook('modal-teachers')">&times;</div>
+        <div id="book-teachers" class="flipbook-container">
+            <!-- Page 1 (Cover) -->
+            <div class="page" style="background-image: url('documents/January 2026/50.jpg')">
+                <img src="documents/January 2026/50.jpg" draggable="false" alt="Page 1">
+            </div>
+            <div class="page"><img src="documents/January 2026/51.jpg" draggable="false" alt="Page 2"></div>
+            <div class="page"><img src="documents/January 2026/52.jpg" draggable="false" alt="Page 3"></div>
+            <div class="page"><img src="documents/January 2026/53.jpg" draggable="false" alt="Page 4"></div>
+            <div class="page"><img src="documents/January 2026/54.jpg" draggable="false" alt="Page 5"></div>
+            <!-- End Page -->
+            <div class="page"
+                style="background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+                <h3 style="color: #666; font-family: var(--font-playfair); font-size: 2rem;">End</h3>
+            </div>
+        </div>
+        <div class="modal-controls">
+            <button class="control-btn" onclick="$('#book-teachers').turn('previous')">Previous</button>
+            <button class="control-btn" onclick="$('#book-teachers').turn('next')">Next</button>
+        </div>
+    </div>
+
+    <script>
+        function openBook(modalId, bookId) {
+            const modal = document.getElementById(modalId);
+            const book = $('#' + bookId);
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // Slight delay to ensure visibility before init
+            setTimeout(() => {
+                if (!book.data('initialized')) {
+                    book.turn({
+                        width: 960,
+                        height: 600,
+                        autoCenter: true,
+                        duration: 1000,
+                        gradients: true,
+                        acceleration: true
+                    });
+                    book.data('initialized', true);
+                }
+            }, 50);
+        }
+
+        function closeBook(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            // Check if any modal is open
+            const modals = document.querySelectorAll('.flipbook-modal');
+            modals.forEach(modal => {
+                if (modal.style.display === 'flex') {
+                    const bookId = modal.querySelector('.flipbook-container').id;
+                    if (e.keyCode == 37) $('#' + bookId).turn('previous');
+                    if (e.keyCode == 39) $('#' + bookId).turn('next');
+                    if (e.keyCode == 27) closeBook(modal.id);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

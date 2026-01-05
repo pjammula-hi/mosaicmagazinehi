@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Mosaic Magazine - Writing and Articles">
+
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+  <!-- Android Chrome -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Microsoft -->
+  <meta name="msapplication-TileColor" content="#2563eb">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Art Studio - Mosaic Magazine</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-content">
+        <div class="date">Vol XX - Issue #1 • January, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="container">
+      <div class="masthead-content">
+        <img src="images/hi_logo_blue.png" alt="Home Instruction Schools Logo" class="logo-image">
+        <div class="masthead-text">
+          <h1 class="logo">Mosaic</h1>
+          <p class="tagline">A Student Publication of <span class="school-name">Home Instruction
+              Schools</span></p>
+        </div>
+        <div style="width: 80px;"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="main-nav">
+    <div class="container">
+      <ul class="nav-list">
+        <li><a href="mosaic-magazine-mockup.html">Home</a></li>
+        <li><a href="writing-articles.html">Writing/Articles</a></li>
+        <li><a href="project-room.html">Project Room</a></li>
+        <li><a href="art-gallery.html">Art Gallery</a></li>
+        <li><a href="hi-clubs.html" class="active">HI Clubs</a></li>
+        <li><a href="student-opportunities.html">Student Opportunities</a></li>
+        <li><a href="teacher-page.html">Teacher Page</a></li>
+        <li><a href="issues.html">Issues</a></li>
+        <li><a href="mosaic-magazine-mockup.html#about">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- jQuery and Turn.js -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+
+  <style>
+    /* Cover Section Styles */
+    .feature-cover-section {
+      text-align: center;
+      padding: 40px 0;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-cover-section:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-cover-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 500px;
+      width: 100%;
+      border-radius: 4px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-cover-image {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .click-hint {
+      margin-top: 20px;
+      font-family: var(--font-sans);
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    /* Flipbook Modal Styles */
+    #flipbook-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #flipbook {
+      width: 960px;
+      height: 600px;
+      transition: opacity 0.5s;
+    }
+
+    #flipbook .page {
+      width: 480px;
+      height: 600px;
+      background-color: white;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    #flipbook .page img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 10001;
+    }
+
+    .modal-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid white;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.3s;
+    }
+
+    .control-btn:hover {
+      background: white;
+      color: black;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.6;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0.6;
+      }
+    }
+  </style>
+
+  <!-- CLUB SECTION -->
+  <section id="clubs" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Art Studio</h2>
+        <p class="section-subtitle">January 2026</p>
+      </div>
+
+      <!-- Feature Cover (Click to Open) -->
+      <div class="feature-cover-section" onclick="openFlipbook()">
+        <div class="feature-cover-wrapper">
+          <img src="documents/January 2026/30.jpg" alt="Art Studio Cover" class="feature-cover-image">
+        </div>
+        <div class="click-hint">
+          <i class="fas fa-book-open"></i> Click to read the flipbook
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLIPBOOK MODAL -->
+  <div id="flipbook-modal">
+    <div class="modal-close" onclick="closeFlipbook()">&times;</div>
+
+    <div id="flipbook">
+      <!-- Page 1 (Cover) -->
+      <div class="page" style="background-image: url('documents/January 2026/30.jpg')">
+        <img src="documents/January 2026/30.jpg" draggable="false" alt="Page 1">
+      </div>
+      <!-- Page 2 -->
+      <div class="page">
+        <img src="documents/January 2026/31.jpg" draggable="false" alt="Page 2">
+      </div>
+      <!-- Page 3 -->
+      <div class="page">
+        <img src="documents/January 2026/32.jpg" draggable="false" alt="Page 3">
+      </div>
+      <!-- Page 4 -->
+      <div class="page">
+        <img src="documents/January 2026/33.jpg" draggable="false" alt="Page 4">
+      </div>
+      <!-- Page 5 -->
+      <div class="page">
+        <img src="documents/January 2026/34.jpg" draggable="false" alt="Page 5">
+      </div>
+      <!-- Page 6 -->
+      <div class="page">
+        <img src="documents/January 2026/35.jpg" draggable="false" alt="Page 6">
+      </div>
+      <!-- Page 7 -->
+      <div class="page">
+        <img src="documents/January 2026/36.jpg" draggable="false" alt="Page 7">
+      </div>
+      <!-- Page 8 -->
+      <div class="page">
+        <img src="documents/January 2026/37.jpg" draggable="false" alt="Page 8">
+      </div>
+      <!-- Page 9 -->
+      <div class="page">
+        <img src="documents/January 2026/38.jpg" draggable="false" alt="Page 9">
+      </div>
+      <!-- Page 10 -->
+      <div class="page">
+        <img src="documents/January 2026/39.jpg" draggable="false" alt="Page 10">
+      </div>
+      <!-- Page 11 -->
+      <div class="page">
+        <img src="documents/January 2026/40.jpg" draggable="false" alt="Page 11">
+      </div>
+      <!-- Page 12 -->
+      <div class="page">
+        <img src="documents/January 2026/41.jpg" draggable="false" alt="Page 12">
+      </div>
+    </div>
+
+    <div class="modal-controls">
+      <button class="control-btn" onclick="$('#flipbook').turn('previous')">Previous</button>
+      <button class="control-btn" onclick="$('#flipbook').turn('next')">Next</button>
+    </div>
+  </div>
+
+  <script>
+    let flipbookInitialized = false;
+
+    function openFlipbook() {
+      const modal = document.getElementById('flipbook-modal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+      if (!flipbookInitialized) {
+        // Initialize turn.js
+        $('#flipbook').turn({
+          width: 960,
+          height: 600,
+          autoCenter: true,
+          duration: 1000,
+          gradients: true,
+          acceleration: true
+        });
+        flipbookInitialized = true;
+      }
+    }
+
+    function closeFlipbook() {
+      const modal = document.getElementById('flipbook-modal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function (e) {
+      if (document.getElementById('flipbook-modal').style.display === 'flex') {
+        if (e.keyCode == 37) $('#flipbook').turn('previous');
+        if (e.keyCode == 39) $('#flipbook').turn('next');
+        if (e.keyCode == 27) closeFlipbook();
+      }
+    });
+  </script>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <h2 class="footer-logo">MOSAIC</h2>
+        <p class="footer-text">Celebrating the creativity, resilience, and achievements of Home Instruction Schools
+          students</p>
+
+        <div class="footer-links">
+          <a href="mosaic-magazine-mockup.html#about">About Us</a>
+          <a href="mosaic-magazine-mockup.html#submit">Submit Your Work</a>
+          <a href="mosaic-magazine-mockup.html#contact">Contact</a>
+          <a href="mosaic-magazine-mockup.html#resources">Resources</a>
+          <a href="mosaic-magazine-mockup.html#privacy">Privacy Policy</a>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mosaic Magazine - Home Instruction Schools. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

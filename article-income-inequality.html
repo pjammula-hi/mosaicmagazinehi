@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Student Artwork - Mosaic Magazine">
+
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+    <!-- Android Chrome -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Microsoft -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Student Artwork - Mosaic Magazine</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .artwork-detail {
+            min-height: 100vh;
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: white;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #2c3e50;
+            color: white;
+        }
+
+        .artwork-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .artwork-image-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .artwork-image {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .artwork-info {
+            padding: 48px;
+        }
+
+        .artwork-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #2c3e50;
+            margin-bottom: 16px;
+        }
+
+        .artwork-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+        .meta-item i {
+            color: #3498db;
+        }
+
+        .artwork-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #34495e;
+            margin-bottom: 32px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .nav-btn i {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .artwork-info {
+                padding: 24px;
+            }
+
+            .artwork-title {
+                font-size: 1.8rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <div class="date">Vol XX - Issue #1 • January, 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-content">
+                <img src="images/hi_logo_blue.png" alt="Home Instruction Schools Logo" class="logo-image">
+                <div class="masthead-text">
+                    <h1 class="logo">Mosaic</h1>
+                    <p class="tagline">A Student Publication of <span class="school-name">Home Instruction
+                            Schools</span></p>
+                </div>
+                <div style="width: 80px;"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="mosaic-magazine-mockup.html">Home</a></li>
+                <li><a href="writing-articles.html">Writing/Articles</a></li>
+                <li><a href="project-room.html">Project Room</a></li>
+                <li><a href="art-gallery.html">Art Gallery</a></li>
+                <li><a href="hi-clubs.html">HI Clubs</a></li>
+                <li><a href="student-opportunities.html">Student Opportunities</a></li>
+                <li><a href="teacher-page.html">Teacher Page</a></li>
+                <li><a href="issues.html">Issues</a></li>
+                <li><a href="mosaic-magazine-mockup.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ARTICLE CONTENT -->
+    <article class="article-full">
+        <div class="container">
+            <div class="article-header">
+                <span class="article-category">Writing | Articles</span>
+                <h1 class="article-full-title">The Role the Top 1% Play in Perpetuating Income Inequality</h1>
+                <div class="article-meta-large">
+                    <span>Daniel Sepulveda &nbsp;•&nbsp; Teacher: David Lui &nbsp;•&nbsp; January 2026</span>
+                </div>
+            </div>
+
+            <div class="article-body">
+
+                <img src="documents/January 2026/5.jpg" alt="Income Inequality Illustration"
+                    class="article-inline-image">
+
+                <p class="lead-paragraph">The past 10 months have shown a change in attitude from the world’s elite,
+                    as they embrace unbridled corruption, enabled by the Trump Administration. Regulations ranging
+                    from those on motor vehicle fuel efficiency, A.I.-generated “content,” and the endangerment
+                    finding – which is the basis of all climate education and regulation – have been discarded or
+                    stripped to the bone, massively benefiting corporations and the top 1%. These loosened
+                    regulations and other freedoms bestowed to these conglomerates by the Trump Administration seem
+                    to be part of a transaction of-sorts. Where donations and other favours to the Trump Admin allow
+                    for these companies to have an easier time navigating the legal rabbit hole the Administration
+                    is digging.</p>
+
+                <p>Lessened regulations heavily effect the health and livelihood of the American people and
+                    necessitates swift action from progressives across the country in-order to prevent politicians
+                    ranging from centrist Democrats to far-right Republicans from overturning this and a multitude
+                    of other laws including civil and employment rights.</p>
+
+                <p>A prime role-model for current progressive action regarding employment rights would be New York
+                    City mayoral-elect Zohran Mamdani. As an assemblyman, Mamdani has previously shown solidarity
+                    with mistreated workers in 2021, following the swift inflation and devaluation of taxi
+                    medallions, leading to drivers being saddled with debt and some committing suicide as a result.
+                    These factors culminated into a 15-day hunger strike that Mamdani participated in along with the
+                    taxi drivers of his district. The strike resulted in partial debt relief for taxi drivers,
+                    saving them from the brink of economic ruin.</p>
+
+                <p>These actions extend to November 2025, with the now mayoral-elect showing support for the ongoing
+                    Starbucks boycotts, which are a result of the company consistently depriving employees of
+                    consistent schedules, guaranteed benefits, and shutting down hundreds of locations that have
+                    planned to unionize. Shortly before the boycotts, Starbucks paid a measly $35 million dollars to
+                    NYC employees affected by these measures, which amounts to 0.096% of the company’s 2024 salary.
+                    To show support for these affected employees, progressive politicians including Bernie Sanders
+                    and Zohran Mamdani picketed with these employees to raise awareness for their struggle. At a
+                    time where New York City Starbucks employees have a starting salary of $17.75 an hour in a city
+                    where workers need to make $66.62 to live ‘comfortably,’ solidarity such as this is essential
+                    in-order to lower the income gap and maintain financial security for millions of Americans.</p>
+
+                <div class="article-references">
+                    <h3>References</h3>
+                    <ul>
+                        <li><strong>Daly, M. (2025, July 29).</strong> Trump administration moves to repeal EPA rule
+                            that allows climate regulation. <em>PBS</em>.</li>
+                        <li><strong>DALY, M. (2025, December 3).</strong> Trump proposal would weaken vehicle mileage
+                            rules that limit air pollution. <em>AP News</em>.</li>
+                        <li><strong>Durbin, D. (2025, November 13).</strong> It’s one of Starbucks’ busiest days of the
+                            year, and workers just kicked off a 65-store U.S. strike. <em>PBS</em>.</li>
+                        <li><strong>Kang, C. (2025, December 11).</strong> Trump Moves to Stop States From Regulating AI
+                            With a New Executive Order. <em>The New York Times</em>.</li>
+                        <li><strong>Mamdani, Z. K. (2025, 12 4).</strong> More than 2,500 Starbucks workers are on
+                            strike... <em>Bluesky</em>.</li>
+                        <li><strong>Peltz, J., & Durbin, D. (2025, December 2).</strong> Starbucks to pay $35M to NYC
+                            workers in settlement as ongoing strike draws Mamdani and Sanders to picket line.
+                            <em>PBS</em>.
+                        </li>
+                        <li><strong>Politico. (2025, 04 10).</strong> Trump directs agencies to quietly repeal
+                            regulations — without public notice. <em>POLITICO</em>.</li>
+                        <li><strong>Rebekah Entralgo & Institute for Policy Studies. (2021, 11 12).</strong> NYC Taxi
+                            Drivers Took on Predatory Lenders — And Won. <em>Inequality.org</em>.</li>
+                        <li><strong>Weaver, S., & Meier, A. (2024, March 11).</strong> How much money you need to ‘live
+                            comfortably’ in NYC. <em>FOX 5 New York</em>.</li>
+                    </ul>
+                </div>
+
+                <div class="article-navigation">
+                    <a href="art-gallery.html" class="btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Student Work
+                    </a>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">Mosaic</div>
+                <div class="footer-copyright">
+                    &copy; 2026 Home Instruction Schools. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

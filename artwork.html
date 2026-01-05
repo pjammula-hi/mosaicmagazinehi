@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Student Artwork - Mosaic Magazine">
+
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+    <!-- Android Chrome -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Microsoft -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Student Artwork - Mosaic Magazine</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .artwork-detail {
+            min-height: 100vh;
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: white;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #2c3e50;
+            color: white;
+        }
+
+        .artwork-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .artwork-image-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .artwork-image {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .artwork-info {
+            padding: 48px;
+        }
+
+        .artwork-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #2c3e50;
+            margin-bottom: 16px;
+        }
+
+        .artwork-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+
+        .meta-item i {
+            color: #3498db;
+        }
+
+        .artwork-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #34495e;
+            margin-bottom: 32px;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .nav-btn i {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .artwork-info {
+                padding: 24px;
+            }
+
+            .artwork-title {
+                font-size: 1.8rem;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <div class="date">Vol XX - Issue #1 • January, 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MASTHEAD -->
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-content">
+                <img src="images/hi_logo_blue.png" alt="Home Instruction Schools Logo" class="logo-image">
+                <div class="masthead-text">
+                    <h1 class="logo">Mosaic</h1>
+                    <p class="tagline">A Student Publication of <span class="school-name">Home Instruction
+                            Schools</span></p>
+                </div>
+                <div style="width: 80px;"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="mosaic-magazine-mockup.html">Home</a></li>
+                <li><a href="mosaic-magazine-mockup.html#writing">Writing/Articles</a></li>
+                <li><a href="mosaic-magazine-mockup.html#project-room">Project Room</a></li>
+                <li><a href="art-gallery.html">Art Gallery</a></li>
+                <li><a href="hi-clubs.html">HI Clubs</a></li>
+                <li><a href="student-opportunities.html">Student Opportunities</a></li>
+                <li><a href="teacher-page.html">Teacher Page</a></li>
+                <li><a href="issues.html">Issues</a></li>
+                <li><a href="mosaic-magazine-mockup.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ARTWORK DETAIL -->
+    <section class="artwork-detail">
+        <div class="container">
+            <a href="mosaic-magazine-mockup.html" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Back to Gallery
+            </a>
+
+            <div class="artwork-container">
+                <div class="artwork-image-wrapper">
+                    <img id="artworkImage" src="" alt="Student Artwork" class="artwork-image">
+                </div>
+
+                <div class="artwork-info">
+                    <h1 id="artworkTitle" class="artwork-title">Loading...</h1>
+
+                    <div class="artwork-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-palette"></i>
+                            <span>Visual Arts</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>Student Artist</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>January 2026</span>
+                        </div>
+                    </div>
+
+                    <p id="artworkDescription" class="artwork-description">
+                        This piece is part of our January 2026 collection, showcasing the incredible talent and
+                        creativity of our students at Home Instruction Schools. Each artwork tells a unique story and
+                        reflects the individual artistic vision of its creator.
+                    </p>
+
+                    <div class="navigation-buttons">
+                        <a id="prevBtn" href="#" class="nav-btn">
+                            <i class="fas fa-chevron-left"></i>
+                            Previous Artwork
+                        </a>
+                        <a id="nextBtn" href="#" class="nav-btn">
+                            Next Artwork
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h2 class="footer-logo">MOSAIC</h2>
+                <p class="footer-text">Celebrating the creativity, resilience, and achievements of Home Instruction
+                    Schools
+                    students</p>
+
+                <div class="footer-links">
+                    <a href="mosaic-magazine-mockup.html">Gallery</a>
+                    <a href="principal-letter.html">Principal's Letter</a>
+                    <a href="#about">About Us</a>
+                    <a href="#contact">Contact</a>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Mosaic Magazine - Home Instruction Schools. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Artwork data
+        const artworks = [
+            { id: 1, title: 'Creative Expression', image: 'documents/January 2026/1.jpg' },
+            { id: 2, title: 'Artistic Vision', image: 'documents/January 2026/2.jpeg' },
+            { id: 3, title: 'Creative Work', image: 'documents/January 2026/3.jpg' },
+            { id: 4, title: 'Artistic Expression', image: 'documents/January 2026/4.jpeg' },
+            { id: 5, title: 'Student Creation', image: 'documents/January 2026/5.jpg' },
+            { id: 6, title: 'Creative Journey', image: 'documents/January 2026/6.jpg' },
+            { id: 7, title: 'Student Work', image: 'documents/January 2026/7.jpg' },
+            { id: 8, title: 'Student Work', image: 'documents/January 2026/8.jpg' },
+            { id: 9, title: 'Student Work', image: 'documents/January 2026/9.jpg' },
+            { id: 10, title: 'Student Work', image: 'documents/January 2026/10.jpg' },
+            { id: 11, title: 'Student Artwork', image: 'documents/January 2026/11.jpg' },
+            { id: 12, title: 'Student Artwork', image: 'documents/January 2026/12.jpg' },
+            { id: 13, title: 'Student Artwork', image: 'documents/January 2026/13.jpg' },
+            { id: 14, title: 'Student Creation', image: 'documents/January 2026/14.jpg' },
+            { id: 15, title: 'Artistic Vision', image: 'documents/January 2026/15.jpg' },
+            { id: 16, title: 'Creative Expression', image: 'documents/January 2026/16.jpg' },
+            { id: 17, title: 'Student Artwork', image: 'documents/January 2026/17.jpg' },
+            { id: 18, title: 'Creative Journey', image: 'documents/January 2026/18.jpg' },
+            { id: 19, title: 'Artistic Expression', image: 'documents/January 2026/19.jpg' },
+            { id: 20, title: 'Student Work', image: 'documents/January 2026/20.jpg' },
+            { id: 21, title: 'Creative Vision', image: 'documents/January 2026/21.jpg' },
+            { id: 22, title: 'Artistic Expression', image: 'documents/January 2026/22.jpg' },
+            { id: 23, title: 'Student Creation', image: 'documents/January 2026/23.jpg' },
+            { id: 24, title: 'Creative Work', image: 'documents/January 2026/24.jpg' },
+            { id: 25, title: 'Artistic Journey', image: 'documents/January 2026/25.jpg' },
+            { id: 26, title: 'Student Expression', image: 'documents/January 2026/26.jpg' },
+            { id: 27, title: 'Creative Work', image: 'documents/January 2026/27.jpg' },
+            { id: 28, title: 'Artistic Vision', image: 'documents/January 2026/28.jpg' },
+            { id: 29, title: 'Student Artwork', image: 'documents/January 2026/29.jpg' },
+            { id: 30, title: 'Creative Expression', image: 'documents/January 2026/30.jpg' },
+            { id: 31, title: 'Student Creation', image: 'documents/January 2026/31.jpg' },
+            { id: 32, title: 'Artistic Work', image: 'documents/January 2026/32.jpg' },
+            { id: 33, title: 'Creative Vision', image: 'documents/January 2026/33.jpg' },
+            { id: 34, title: 'Student Expression', image: 'documents/January 2026/34.jpg' },
+            { id: 35, title: 'Creative Journey', image: 'documents/January 2026/35.jpg' },
+            { id: 36, title: 'Artistic Expression', image: 'documents/January 2026/36.jpg' },
+            { id: 37, title: 'Student Creation', image: 'documents/January 2026/37.jpg' },
+            { id: 38, title: 'Student Work', image: 'documents/January 2026/38.jpg' },
+            { id: 39, title: 'Creative Expression', image: 'documents/January 2026/39.jpg' },
+            { id: 40, title: 'Artistic Vision', image: 'documents/January 2026/40.jpg' },
+            { id: 41, title: 'Student Artwork', image: 'documents/January 2026/41.jpg' },
+            { id: 42, title: 'Creative Work', image: 'documents/January 2026/42.jpg' },
+            { id: 43, title: 'Artistic Journey', image: 'documents/January 2026/43.jpg' },
+            { id: 44, title: 'Student Expression', image: 'documents/January 2026/44.jpg' },
+            { id: 45, title: 'Creative Vision', image: 'documents/January 2026/45.jpg' },
+            { id: 46, title: 'Artistic Expression', image: 'documents/January 2026/46.jpg' },
+            { id: 47, title: 'Student Work', image: 'documents/January 2026/47.jpg' },
+            { id: 48, title: 'Creative Expression', image: 'documents/January 2026/48.jpg' },
+            { id: 49, title: 'Artistic Journey', image: 'documents/January 2026/49.jpg' },
+            { id: 50, title: 'Student Artwork', image: 'documents/January 2026/50.jpg' },
+            { id: 51, title: 'Creative Work', image: 'documents/January 2026/51.jpg' },
+            { id: 52, title: 'Artistic Vision', image: 'documents/January 2026/52.jpg' },
+            { id: 53, title: 'Student Expression', image: 'documents/January 2026/53.jpg' },
+            { id: 54, title: 'Creative Journey', image: 'documents/January 2026/54.jpg' }
+        ];
+
+        // Get artwork ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const artworkId = parseInt(urlParams.get('id')) || 1;
+
+        // Find current artwork
+        const currentArtwork = artworks.find(a => a.id === artworkId);
+
+        if (currentArtwork) {
+            // Update page content
+            document.getElementById('artworkImage').src = currentArtwork.image;
+            document.getElementById('artworkTitle').textContent = currentArtwork.title;
+            document.title = `${currentArtwork.title} - Mosaic Magazine`;
+
+            // Setup navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (artworkId > 1) {
+                prevBtn.href = `artwork.html?id=${artworkId - 1}`;
+            } else {
+                prevBtn.classList.add('disabled');
+            }
+
+            if (artworkId < artworks.length) {
+                nextBtn.href = `artwork.html?id=${artworkId + 1}`;
+            } else {
+                nextBtn.classList.add('disabled');
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && artworkId > 1) {
+                    window.location.href = `artwork.html?id=${artworkId - 1}`;
+                } else if (e.key === 'ArrowRight' && artworkId < artworks.length) {
+                    window.location.href = `artwork.html?id=${artworkId + 1}`;
+                } else if (e.key === 'Escape') {
+                    window.location.href = 'mosaic-magazine-mockup.html';
+                }
+            });
+        } else {
+            // Artwork not found
+            document.getElementById('artworkTitle').textContent = 'Artwork Not Found';
+            document.getElementById('artworkDescription').textContent = 'The requested artwork could not be found.';
+        }
+    </script>
+
+</body>
+
+</html>

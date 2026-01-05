@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description"
+    content="Mosaic Magazine - Celebrating the creativity and achievements of Home Instruction Schools students">
+
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+  <!-- Android Chrome -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Microsoft -->
+  <meta name="msapplication-TileColor" content="#2563eb">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>Mosaic Magazine - Home Instruction Schools</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Homepage Layout Override -->
+  <link rel="stylesheet" href="homepage-layout-fix.css">
+
+  <style>
+    /* =========================================
+       STRICT HOMEPAGE LAYOUT FIXES
+       ========================================= */
+
+    /* 1. SECTION CONTAINER */
+    /* Clamp the height of the entire section to prevent footer push */
+    .featured-section {
+      padding: 0;
+      background-color: var(--background-light);
+      margin-bottom: 0 !important;
+      /* Remove external CSS margins */
+      margin-top: 0 !important;
+    }
+
+    /* 2. GRID CONTAINER */
+    /* Strictly 600px tall. Hidden overflow prevents ANY bleeding. */
+    /* 2. GRID CONTAINER */
+    /* Optimized height for professional layout */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      /* Left (66%), Right (33%) */
+      gap: 20px;
+      /* Increased gap for breathing room */
+      height: 450px !important;
+      /* Balanced height for all elements */
+      max-height: 450px !important;
+      overflow: hidden !important;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 968px) {
+      .featured-grid {
+        display: flex;
+        flex-direction: column;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+    }
+
+    /* 3. LEFT COLUMN: PRINCIPAL CARD */
+    .featured-main {
+      position: relative;
+      width: 100%;
+      height: 100% !important;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      border-radius: 0;
+      /* Remove border to eliminate box feeling */
+      overflow: hidden !important;
+      text-decoration: none;
+      color: inherit;
+      /* Organic gradient that blends seamlessly with sketch */
+      background: linear-gradient(135deg,
+          #0f172a 0%,
+          #1e293b 15%,
+          #334155 35%,
+          #475569 50%,
+          #64748b 65%,
+          #94a3b8 80%,
+          #cbd5e1 90%,
+          #e2e8f0 95%,
+          #f1f5f9 100%);
+      box-shadow: none;
+      /* Remove shadow for seamless look */
+      margin-bottom: 0 !important;
+      transition: none;
+      /* Remove transitions for static elegance */
+    }
+
+    .featured-main:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Principal Image */
+    .featured-image {
+      width: auto;
+      max-width: 100%;
+      margin-left: auto;
+      margin-right: 0;
+      /* Flush to right edge */
+      height: auto !important;
+      max-height: 450px;
+      object-fit: contain !important;
+      display: block;
+      transition: transform 0.5s ease;
+      mix-blend-mode: multiply;
+      /* Blends dark lines into gradient */
+      opacity: 0.95;
+      /* Slight transparency for organic feel */
+      filter: contrast(1.05) brightness(1.02);
+      /* Subtle enhancement */
+    }
+
+    .featured-main:hover .featured-image {
+      transform: scale(1.01);
+      /* Very subtle zoom */
+      opacity: 1;
+    }
+
+    /* 4. RIGHT COLUMN: SPLIT STACK */
+    .featured-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      /* Increased gap */
+      height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    /* TOP RIGHT: Magazine Cover (55%) */
+    .sidebar-cover-section {
+      flex: 1.2;
+      /* Slightly larger for cover prominence */
+      min-height: 0;
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .sidebar-cover-section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    }
+
+    .sidebar-cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain !important;
+      /* Show full cover */
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-cover-section:hover .sidebar-cover-image {
+      transform: scale(1.03);
+    }
+
+    /* BOTTOM RIGHT: TOC (45%) */
+    .trending-sidebar {
+      flex: 1;
+      min-height: 0;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toc-scroll-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .toc-scroll-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .toc-scroll-container::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 2px;
+    }
+
+    .toc-scroll-container::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 2px;
+    }
+
+    .toc-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .trending-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 16px 0;
+      color: #1e293b;
+      border-bottom: 2px solid var(--accent-gold);
+      padding-bottom: 8px;
+    }
+
+    .trending-item {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background-color 0.2s ease;
+    }
+
+    .trending-item:hover {
+      background-color: #f8fafc;
+    }
+
+    .trending-item:last-child {
+      border-bottom: none;
+    }
+
+    .page-number {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-gold), #d4a574);
+      color: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .toc-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toc-content h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+      color: #334155;
+      line-height: 1.3;
+    }
+
+    .toc-link {
+      color: #334155;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .toc-link:hover {
+      color: var(--accent-gold);
+    }
+
+    .toc-author {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 0 0;
+    }
+
+    .toc-list li {
+      font-size: 0.8rem;
+      padding: 3px 0;
+      color: #475569;
+    }
+
+    .toc-list li a {
+      color: #475569;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .toc-list li a:hover {
+      color: var(--accent-gold);
+    }
+
+    /* Gradient Overlay */
+    /* Clean, transparent overlay with white text */
+    .featured-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: none !important;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* Center text vertically */
+      align-items: flex-start;
+      /* Left align text */
+      text-align: left;
+      color: white;
+      /* Text White */
+    }
+
+    .featured-category {
+      background-color: var(--accent-gold);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    .featured-title {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+      line-height: 1.1;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      /* Restored shadow for legibility */
+      color: white;
+      max-width: 70%;
+      /* Prevent text from covering face */
+    }
+
+    .featured-excerpt {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      opacity: 0.95;
+      max-width: 60%;
+      /* Prevent text from covering face */
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+      /* Restored shadow */
+      color: white;
+    }
+
+    .featured-meta {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+
+    /* 4. RIGHT COLUMN: SPLIT STACK */
+    .featured-right {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100% !important;
+      /* Fill grid cell */
+      overflow: hidden !important;
+    }
+
+    /* TOP RIGHT: Magazine Cover (50%) */
+    .sidebar-cover-section {
+      flex: 1;
+      min-height: 0;
+      /* Allows shrinking in Flexbox */
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      background: #f5f5f5;
+      /* Light background for letterboxing */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-cover-image {
+      width: 100%;
+      height: 100% !important;
+      object-fit: contain !important;
+      /* Show full image */
+      object-position: center center;
+      display: block;
+    }
+
+    .cover-click-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.3s;
+    }
+
+    .sidebar-cover-section:hover .cover-click-overlay {
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+
+    /* BOTTOM RIGHT: Scrolling TOC (50%) */
+    .trending-sidebar {
+      flex: 1;
+      min-height: 0;
+      /* Allows shrinking */
+      background: white;
+      padding: 0;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden !important;
+      /* Crop overflow */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eee;
+    }
+
+    .toc-scroll-container {
+      height: 100%;
+      overflow-y: auto;
+      /* Enable Scroll INSIDE this box */
+      padding: 15px 15px;
+      scrollbar-width: thin;
+      /* Modern browsers */
+    }
+
+    /* Make the TOC compact */
+    .trending-title {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 4px;
+      display: inline-block;
+      color: #333;
+    }
+
+    .toc-content-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trending-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+      align-items: baseline;
+    }
+
+    .trending-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .page-number {
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      font-weight: 900;
+      color: var(--accent-color);
+      min-width: 20px;
+    }
+
+    .toc-content h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      color: #333;
+      line-height: 1.2;
+    }
+
+    .toc-list li {
+      font-size: 0.75rem;
+      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+
+    /* Reset text styles from external CSS */
+    .trending-item .toc-link,
+    .trending-item h4,
+    .trending-item p,
+    .trending-item li {
+      color: #333;
+      text-shadow: none;
+      font-weight: normal;
+    }
+
+    .toc-content h4 a {
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-content">
+        <div class="date">Vol XX - Issue #1 • January, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="container">
+      <div class="masthead-content">
+        <img src="images/hi_logo_blue.png" alt="Home Instruction Schools Logo" class="logo-image">
+        <div class="masthead-text">
+          <h1 class="logo">Mosaic</h1>
+          <p class="tagline">A Student Publication of <span class="school-name">Home Instruction Schools</span></p>
+        </div>
+        <div style="width: 80px;"></div> <!-- Spacer for visual balance -->
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="main-nav">
+    <div class="container">
+      <ul class="nav-list">
+        <li><a href="mosaic-magazine-mockup.html" class="active">Home</a></li>
+        <li><a href="writing-articles.html">Writing/Articles</a></li>
+        <li><a href="project-room.html">Project Room</a></li>
+        <li><a href="art-gallery.html">Art Gallery</a></li>
+        <li><a href="hi-clubs.html">HI Clubs</a></li>
+        <li><a href="student-opportunities.html">Student Opportunities</a></li>
+        <li><a href="teacher-page.html">Teacher Page</a></li>
+        <li><a href="issues.html">Issues</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- FEATURED SECTION -->
+  <section id="home" class="featured-section">
+    <div class="container">
+      <div class="featured-grid">
+
+        <!-- LEFT COLUMN: Principal's Letter -->
+        <a href="principal-letter.html" class="featured-main">
+          <img src="images/todd_artistic.png" alt="Principal Todd Alessandro" class="featured-image">
+          <div class="featured-overlay">
+            <span class="featured-category">From the Principal</span>
+            <h2 class="featured-title">In the fractures, we find the genius.</h2>
+            <p class="featured-excerpt">Welcome to Mosaic—a tribute to our history and a wide-open horizon for our
+              future. This is your canvas for the infinite...</p>
+            <div class="featured-meta">Todd Alessandro, Principal • January 1, 2026</div>
+          </div>
+        </a>
+
+        <!-- RIGHT COLUMN: Cover + TOC -->
+        <div class="featured-right">
+          <!-- Top: Magazine Cover (Link to Full Issue) -->
+          <a href="full-issue.html" class="sidebar-cover-section">
+            <img src="documents/January 2026/1.jpg" alt="Read Full Issue" class="sidebar-cover-image">
+
+          </a>
+
+          <!-- Bottom: Scrolling TOC -->
+          <aside class="trending-sidebar">
+            <div class="toc-scroll-container" id="toc-container">
+              <div class="toc-content-wrapper">
+                <!-- CONTENT START -->
+                <h3 class="trending-title">Table of Contents</h3>
+
+                <!-- Letter -->
+                <article class="trending-item">
+                  <div class="page-number">01</div>
+                  <div class="toc-content">
+                    <h4><a href="principal-letter.html" class="toc-link">Letter from the Principal</a></h4>
+                    <p class="toc-author">Todd Alessandro</p>
+                  </div>
+                </article>
+
+                <!-- Articles -->
+                <article class="trending-item">
+                  <div class="page-number">04</div>
+                  <div class="toc-content">
+                    <h4>Writing | Articles</h4>
+                    <ul class="toc-list">
+                      <li><a href="article-income-inequality.html" class="toc-link">The Role of the Top 1%</a></li>
+                      <li><a href="article-blue-bear.html" class="toc-link">The Blue Bear Cookie</a></li>
+                      <li><a href="article-darling-dead.html" class="toc-link">Darling, Dearest, Dead</a></li>
+                    </ul>
+                  </div>
+                </article>
+
+                <!-- Project Room -->
+                <article class="trending-item">
+                  <div class="page-number">13</div>
+                  <div class="toc-content">
+                    <h4>Project Room</h4>
+                    <ul class="toc-list">
+                      <li><a href="project-room.html" class="toc-link">Student Projects Collection</a></li>
+                    </ul>
+                  </div>
+                </article>
+
+                <!-- Art Gallery -->
+                <article class="trending-item">
+                  <div class="page-number">26</div>
+                  <div class="toc-content">
+                    <h4><a href="art-gallery.html" class="toc-link">Art Gallery</a></h4>
+                  </div>
+                </article>
+
+                <!-- Clubs -->
+                <article class="trending-item">
+                  <div class="page-number">30</div>
+                  <div class="toc-content">
+                    <h4><a href="hi-clubs.html" class="toc-link">HI Clubs</a></h4>
+                  </div>
+                </article>
+
+                <!-- Opportunities -->
+                <article class="trending-item">
+                  <div class="page-number">44</div>
+                  <div class="toc-content">
+                    <h4><a href="student-opportunities.html" class="toc-link">Student Opportunities</a></h4>
+                  </div>
+                </article>
+
+                <!-- Teacher Page -->
+                <article class="trending-item">
+                  <div class="page-number">50</div>
+                  <div class="toc-content">
+                    <h4><a href="teacher-page.html" class="toc-link">Teacher Page</a></h4>
+                  </div>
+                </article>
+                <!-- CONTENT END -->
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <h2 class="footer-logo">MOSAIC</h2>
+        <p class="footer-text">Celebrating the creativity, resilience, and achievements of Home Instruction Schools
+          students</p>
+
+        <div class="footer-links">
+          <a href="#about">About Us</a>
+          <a href="#submit">Submit Your Work</a>
+          <a href="#contact">Contact</a>
+          <a href="#resources">Resources</a>
+          <a href="#privacy">Privacy Policy</a>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2026 Mosaic Magazine - Home Instruction Schools. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // TOC Auto-Scroll Logic
+      const container = document.getElementById('toc-container');
+      if (container) {
+        const content = container.querySelector('.toc-content-wrapper');
+
+        // Clone content for seamless looping
+        const clone = content.cloneNode(true);
+        container.appendChild(clone);
+
+        let scrollPos = 0;
+        let isHovering = false;
+        const speed = 0.5; // Gentle scroll
+
+        function animateScroll() {
+          if (!isHovering) {
+            scrollPos += speed;
+            // If we've scrolled past the first set of content
+            if (scrollPos >= content.offsetHeight) {
+              scrollPos = 0;
+            }
+            container.scrollTop = scrollPos;
+          }
+          requestAnimationFrame(animateScroll);
+        }
+
+        // Start animation
+        requestAnimationFrame(animateScroll);
+
+        // Interaction
+        container.addEventListener('mouseenter', () => {
+          isHovering = true;
+          // Keep scrolling enabled for user interaction
+        });
+
+        container.addEventListener('mouseleave', () => {
+          isHovering = false;
+          // Sync scrollPos on exit
+          scrollPos = container.scrollTop;
+          // Normalize if needed
+          if (scrollPos >= content.offsetHeight) {
+            scrollPos = scrollPos % content.offsetHeight;
+            container.scrollTop = scrollPos;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

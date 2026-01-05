@@ -12,7 +12,7 @@ export const publicAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Validate that environment variables are set
 if (!projectId || !publicAnonKey) {
   throw new Error(
-    'Missing Supabase environment variables. ' +
-    'Please ensure VITE_SUPABASE_PROJECT_ID and VITE_SUPABASE_ANON_KEY are set in your .env file.'
+    `Missing Supabase environment variables. ` +
+    `Please ensure VITE_SUPABASE_PROJECT_ID and VITE_SUPABASE_ANON_KEY are set in your .env file.`
   );
 }

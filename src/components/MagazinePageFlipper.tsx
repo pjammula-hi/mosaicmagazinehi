@@ -15,7 +15,7 @@ export function MagazinePageFlipper({ pages, onBack, issueName }: MagazinePageFl
   const [fullscreen, setFullscreen] = useState(false);
 
   // Sort pages by page number
-  const sortedPages = [...pages].sort((a, b) => a.pageNumber - b.pageNumber);
+ const sortedPages = JSON.parse(JSON.stringify(pages)).sort((a, b) => a.pageNumber - b.pageNumber);
 
   const goToNextPage = () => {
     if (currentPageIndex < sortedPages.length - 1 && !isFlipping) {
