@@ -89,31 +89,13 @@
       align-items: flex-start;
       justify-content: flex-end;
       border-radius: 0;
-      /* Remove border to eliminate box feeling */
       overflow: hidden !important;
       text-decoration: none;
       color: inherit;
-      /* Organic gradient that blends seamlessly with sketch */
-      background: linear-gradient(135deg,
-          #0f172a 0%,
-          #1e293b 15%,
-          #334155 35%,
-          #475569 50%,
-          #64748b 65%,
-          #94a3b8 80%,
-          #cbd5e1 90%,
-          #e2e8f0 95%,
-          #f1f5f9 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       box-shadow: none;
-      /* Remove shadow for seamless look */
       margin-bottom: 0 !important;
       transition: none;
-      /* Remove transitions for static elegance */
-    }
-
-    .featured-main:hover {
-      transform: none;
-      box-shadow: none;
     }
 
     /* Principal Image */
@@ -122,24 +104,85 @@
       max-width: 100%;
       margin-left: auto;
       margin-right: 0;
-      /* Flush to right edge */
       height: auto !important;
       max-height: 450px;
       object-fit: contain !important;
       display: block;
       transition: transform 0.5s ease;
-      mix-blend-mode: multiply;
-      /* Blends dark lines into gradient */
       opacity: 0.95;
-      /* Slight transparency for organic feel */
-      filter: contrast(1.05) brightness(1.02);
-      /* Subtle enhancement */
     }
 
-    .featured-main:hover .featured-image {
-      transform: scale(1.01);
-      /* Very subtle zoom */
-      opacity: 1;
+    @media (max-width: 968px) {
+      .featured-grid {
+        display: flex;
+        flex-direction: column;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        gap: 0;
+        /* Remove gap */
+      }
+
+      .featured-main {
+        height: auto !important;
+        min-height: 400px;
+        /* Ensure space */
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+
+      .featured-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100% !important;
+        width: 100%;
+        max-height: none;
+        object-fit: cover !important;
+        opacity: 0.6;
+        /* Fade image for text readability */
+      }
+
+      .featured-overlay {
+        position: relative !important;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4)) !important;
+        padding: 30px 20px !important;
+      }
+
+      .featured-title {
+        font-size: 1.8rem !important;
+        max-width: 100% !important;
+      }
+
+      .featured-excerpt {
+        max-width: 100% !important;
+        font-size: 0.95rem !important;
+        -webkit-line-clamp: 3 !important;
+        line-clamp: 3 !important;
+      }
+
+      .featured-right {
+        gap: 0 !important;
+      }
+
+      .sidebar-cover-section,
+      .trending-sidebar {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border-bottom: 1px solid #eee;
+      }
+
+      .sidebar-cover-section {
+        height: 200px !important;
+        /* Fixed height for cover banner on mobile */
+        flex: none !important;
+      }
+
+      .trending-sidebar {
+        height: auto !important;
+        max-height: 400px !important;
+        /* Limit TOC height */
+      }
     }
 
     /* 4. RIGHT COLUMN: SPLIT STACK */

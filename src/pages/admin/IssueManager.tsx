@@ -2,9 +2,19 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Edit, Trash2, Eye, EyeOff, BookOpen } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import type { Database } from '../../types/database.types'
 
-type Issue = Database['public']['Tables']['issues']['Row']
+interface Issue {
+    id: string
+    month: string
+    year: number
+    volume: number | null
+    issue_number: number | null
+    cover_image_url: string | null
+    publication_date: string | null
+    is_published: boolean
+    created_at: string
+    updated_at: string
+}
 
 export default function IssueManager() {
     const [issues, setIssues] = React.useState<Issue[]>([])

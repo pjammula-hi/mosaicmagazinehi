@@ -32,6 +32,8 @@ export default function IssueForm() {
     }, [id])
 
     async function loadIssue() {
+        if (!id) return
+
         try {
             const { data, error } = await supabase
                 .from('issues')
@@ -62,10 +64,20 @@ export default function IssueForm() {
         setLoading(true)
 
         try {
-            if (isEditing) {
+            const issueData = {
+                month: formData.month,
+                year: formData.year,
+                volume: formData.volume,
+                issue_number: formData.issue_number,
+                cover_image_url: formData.cover_image_url || null,
+                publication_date: formData.publication_date || null,
+                is_published: formData.is_published,
+            }
+
+            if (isEditing && id) {
                 const { error } = await supabase
                     .from('issues')
-                    .update(formData)
+                    .update(issueData)
                     .eq('id', id)
 
                 if (error) throw error
@@ -73,7 +85,7 @@ export default function IssueForm() {
             } else {
                 const { error } = await supabase
                     .from('issues')
-                    .insert([formData])
+                    .insert([issueData])
 
                 if (error) throw error
                 toast.success('Issue created successfully!')
