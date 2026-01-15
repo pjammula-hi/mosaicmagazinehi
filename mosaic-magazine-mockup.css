@@ -184,10 +184,20 @@ h6 {
 }
 
 .masthead-text {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   text-align: center;
+  position: relative;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+@media (min-width: 969px) {
+  .masthead-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    width: auto;
+  }
 }
 
 .logo {
@@ -1069,14 +1079,7 @@ h6 {
     justify-content: center;
   }
 
-  .masthead-text {
-    position: relative;
-    left: auto;
-    transform: none;
-    margin: 1rem 0;
-    width: 100%;
-    top: auto;
-  }
+
 
   .logo-image {
     height: 60px;
