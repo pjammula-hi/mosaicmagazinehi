@@ -13,13 +13,10 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '../types/database.types'
 
 // Get environment variables from .env file
-const supabaseUrl =
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) ||
-    process.env.VITE_SUPABASE_URL
+// In Vite, import.meta.env is always defined, so we can access it directly
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL
 
-const supabaseAnonKey =
-    (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_ANON_KEY) ||
-    process.env.VITE_SUPABASE_ANON_KEY
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
 
 // SECURITY: Validate that required environment variables are present
 // Fail fast if credentials are missing - do NOT use hardcoded fallbacks
@@ -56,6 +53,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
         autoRefreshToken: true,
     }
 })
+
+// Export configuration for testing/debugging purposes
+export const dbConfig = {
+    url: supabaseUrl
+}
 
 // Export types for TypeScript
 export type { User, Session } from '@supabase/supabase-js'
