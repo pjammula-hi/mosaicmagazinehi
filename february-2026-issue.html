@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Mosaic Magazine - February 2026 - Full Issue">
+
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mosaic">
+
+    <!-- Android Chrome -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Microsoft -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>February 2026 Issue - Mosaic Magazine</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="mosaic-magazine-mockup.css">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery and Turn.js -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f0f2f5;
+            overflow: hidden;
+            /* Prevent body scroll when reading */
+        }
+
+        .flipbook-viewport {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .flipbook-container {
+            width: 960px;
+            /* Double page spread width */
+            height: 600px;
+            /* Aspect ratio roughly 3:4 per page */
+            transition: opacity 0.5s;
+        }
+
+        .flipbook-container .page {
+            width: 480px;
+            height: 600px;
+            background-color: white;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+            /* Paper shadow */
+        }
+
+        .flipbook-container .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Controls */
+        .controls-overlay {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: white;
+            color: black;
+        }
+
+        .return-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: white;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .return-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1000px) {
+            .flipbook-container {
+                width: 90vw;
+                height: 60vh;
+            }
+
+            .flipbook-container .page {
+                width: 45vw;
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Return to Issues -->
+    <a href="issues.html" class="return-btn">
+        <i class="fas fa-arrow-left"></i> Back to Issues
+    </a>
+
+    <!-- Flipbook Viewport -->
+    <div class="flipbook-viewport">
+        <div id="flipbook" class="flipbook-container">
+            <!-- Cover Page (1) -->
+            <div class="page" style="background-image: url('documents/February 2026/1.jpg')">
+                <img src="documents/February 2026/1.jpg" draggable="false" alt="Page 1">
+            </div>
+
+            <!-- Inside Pages (2-39) -->
+            <!-- Using simple loop logic for generating the HTML structure -->
+            <div class="page"><img src="documents/February 2026/2.jpg" draggable="false" alt="Page 2"></div>
+            <div class="page"><img src="documents/February 2026/3.jpg" draggable="false" alt="Page 3"></div>
+            <div class="page"><img src="documents/February 2026/4.jpg" draggable="false" alt="Page 4"></div>
+            <div class="page"><img src="documents/February 2026/5.jpg" draggable="false" alt="Page 5"></div>
+            <div class="page"><img src="documents/February 2026/6.jpg" draggable="false" alt="Page 6"></div>
+            <div class="page"><img src="documents/February 2026/7.jpg" draggable="false" alt="Page 7"></div>
+            <div class="page"><img src="documents/February 2026/8.jpg" draggable="false" alt="Page 8"></div>
+            <div class="page"><img src="documents/February 2026/9.jpg" draggable="false" alt="Page 9"></div>
+            <div class="page"><img src="documents/February 2026/10.jpg" draggable="false" alt="Page 10"></div>
+            <div class="page"><img src="documents/February 2026/11.jpg" draggable="false" alt="Page 11"></div>
+            <div class="page"><img src="documents/February 2026/12.jpg" draggable="false" alt="Page 12"></div>
+            <div class="page"><img src="documents/February 2026/13.jpg" draggable="false" alt="Page 13"></div>
+            <div class="page"><img src="documents/February 2026/14.jpg" draggable="false" alt="Page 14"></div>
+            <div class="page"><img src="documents/February 2026/15.jpg" draggable="false" alt="Page 15"></div>
+            <div class="page"><img src="documents/February 2026/16.jpg" draggable="false" alt="Page 16"></div>
+            <div class="page"><img src="documents/February 2026/17.jpg" draggable="false" alt="Page 17"></div>
+            <div class="page"><img src="documents/February 2026/18.jpg" draggable="false" alt="Page 18"></div>
+            <div class="page"><img src="documents/February 2026/19.jpg" draggable="false" alt="Page 19"></div>
+            <div class="page"><img src="documents/February 2026/20.jpg" draggable="false" alt="Page 20"></div>
+            <div class="page"><img src="documents/February 2026/21.jpg" draggable="false" alt="Page 21"></div>
+            <div class="page"><img src="documents/February 2026/22.jpg" draggable="false" alt="Page 22"></div>
+            <div class="page"><img src="documents/February 2026/23.jpg" draggable="false" alt="Page 23"></div>
+            <div class="page"><img src="documents/February 2026/24.jpg" draggable="false" alt="Page 24"></div>
+            <div class="page"><img src="documents/February 2026/25.jpg" draggable="false" alt="Page 25"></div>
+            <div class="page"><img src="documents/February 2026/26.jpg" draggable="false" alt="Page 26"></div>
+            <div class="page"><img src="documents/February 2026/27.jpg" draggable="false" alt="Page 27"></div>
+            <div class="page"><img src="documents/February 2026/28.jpg" draggable="false" alt="Page 28"></div>
+            <div class="page"><img src="documents/February 2026/29.jpg" draggable="false" alt="Page 29"></div>
+            <div class="page"><img src="documents/February 2026/30.jpg" draggable="false" alt="Page 30"></div>
+            <div class="page"><img src="documents/February 2026/31.jpg" draggable="false" alt="Page 31"></div>
+            <div class="page"><img src="documents/February 2026/32.jpg" draggable="false" alt="Page 32"></div>
+            <div class="page"><img src="documents/February 2026/33.jpg" draggable="false" alt="Page 33"></div>
+            <div class="page"><img src="documents/February 2026/34.jpg" draggable="false" alt="Page 34"></div>
+            <div class="page"><img src="documents/February 2026/35.jpg" draggable="false" alt="Page 35"></div>
+            <div class="page"><img src="documents/February 2026/36.jpg" draggable="false" alt="Page 36"></div>
+            <div class="page"><img src="documents/February 2026/37.jpg" draggable="false" alt="Page 37"></div>
+            <div class="page"><img src="documents/February 2026/38.jpg" draggable="false" alt="Page 38"></div>
+            <div class="page"><img src="documents/February 2026/39.jpg" draggable="false" alt="Page 39"></div>
+
+            <!-- Back Cover (40) -->
+            <div class="page" style="background-image: url('documents/February 2026/40.jpg')">
+                <img src="documents/February 2026/40.jpg" draggable="false" alt="Page 40">
+            </div>
+        </div>
+
+        <div class="controls-overlay">
+            <button class="control-btn" onclick="$('#flipbook').turn('previous')"><i class="fas fa-chevron-left"></i>
+                Prev</button>
+            <span style="color:white; align-self:center;">February 2026 | Vol 20 Issue 2</span>
+            <button class="control-btn" onclick="$('#flipbook').turn('next')">Next <i
+                    class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize Turn.js
+            $('#flipbook').turn({
+                width: 960,
+                height: 600,
+                autoCenter: true,
+                duration: 1000,
+                gradients: true,
+                acceleration: true,
+                display: 'double'
+            });
+
+            // Keyboard navigation
+            $(document).keydown(function (e) {
+                if (e.keyCode == 37) {
+                    $('#flipbook').turn('previous');
+                } else if (e.keyCode == 39) {
+                    $('#flipbook').turn('next');
+                }
+            });
+
+            // Responsive resizing
+            $(window).resize(function () {
+                // Simplified resize logic - reload to reset dimensions if needed
+                // or dynamic resize logic could go here
+            });
+        });
+    </script>
+</body>
+
+</html>
