@@ -38,75 +38,113 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 
     <style>
-        body {
-            background-color: #f0f2f5;
-            overflow: hidden;
-            /* Prevent body scroll when reading */
+        /* Cover Section Styles - Matches Teacher Page */
+        .feature-cover-section {
+            text-align: center;
+            padding: 80px 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 60vh;
+            justify-content: center;
         }
 
-        .flipbook-viewport {
-            width: 100vw;
-            height: 100vh;
+        .feature-cover-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-cover-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-cover-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .click-hint {
+            margin-top: 30px;
+            font-family: var(--font-sans);
+            color: #4b5563;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            gap: 10px;
+            animation: pulse 2s infinite;
+            font-weight: 500;
+        }
+
+        /* Flipbook Modal Styles */
+        #flipbook-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
             flex-direction: column;
         }
 
-        .flipbook-container {
+        #flipbook {
             width: 960px;
-            /* Double page spread width */
             height: 600px;
-            /* Aspect ratio roughly 3:4 per page */
             transition: opacity 0.5s;
         }
 
-        .flipbook-container .page {
+        #flipbook .page {
             width: 480px;
             height: 600px;
             background-color: white;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
-            /* Paper shadow */
         }
 
-        .flipbook-container .page img {
+        #flipbook .page img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-        /* Controls */
-        .controls-overlay {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 10001;
+        }
+
+        .modal-controls {
+            margin-top: 20px;
             display: flex;
             gap: 20px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(5px);
+            align-items: center;
         }
 
         .control-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 30px;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            font-family: var(--font-sans);
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .control-btn:hover {
@@ -114,35 +152,27 @@
             color: black;
         }
 
-        .return-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-            background: white;
-            color: black;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
 
-        .return-btn:hover {
-            transform: translateY(-2px);
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.6;
+            }
         }
 
         @media (max-width: 1000px) {
-            .flipbook-container {
+            #flipbook {
                 width: 90vw;
                 height: 60vh;
             }
 
-            .flipbook-container .page {
+            #flipbook .page {
                 width: 45vw;
                 height: 60vh;
             }
@@ -153,20 +183,37 @@
 <body>
 
     <!-- Return to Issues -->
-    <a href="issues.html" class="return-btn">
+    <a href="issues.html" class="return-btn"
+        style="position: fixed; top: 20px; left: 20px; z-index: 100; background: white; color: black; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px;">
         <i class="fas fa-arrow-left"></i> Back to Issues
     </a>
 
-    <!-- Flipbook Viewport -->
-    <div class="flipbook-viewport">
-        <div id="flipbook" class="flipbook-container">
-            <!-- Cover Page (1) -->
+    <!-- ISSUE COVER SECTION (Visible initially) -->
+    <section id="issue-cover" class="section">
+        <div class="container">
+            <div class="feature-cover-section" onclick="openFlipbook()">
+                <div class="feature-cover-wrapper">
+                    <img src="documents/February 2026/1.jpg" alt="February 2026 Issue Cover"
+                        class="feature-cover-image">
+                </div>
+                <div class="click-hint">
+                    <i class="fas fa-book-open"></i> Click to read the full issue
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLIPBOOK MODAL (Hidden initially) -->
+    <div id="flipbook-modal">
+        <div class="modal-close" onclick="closeFlipbook()">&times;</div>
+
+        <div id="flipbook">
+            <!-- Page 1 (Cover) -->
             <div class="page" style="background-image: url('documents/February 2026/1.jpg')">
                 <img src="documents/February 2026/1.jpg" draggable="false" alt="Page 1">
             </div>
 
             <!-- Inside Pages (2-39) -->
-            <!-- Using simple loop logic for generating the HTML structure -->
             <div class="page"><img src="documents/February 2026/2.jpg" draggable="false" alt="Page 2"></div>
             <div class="page"><img src="documents/February 2026/3.jpg" draggable="false" alt="Page 3"></div>
             <div class="page"><img src="documents/February 2026/4.jpg" draggable="false" alt="Page 4"></div>
@@ -212,42 +259,50 @@
             </div>
         </div>
 
-        <div class="controls-overlay">
+        <div class="modal-controls">
             <button class="control-btn" onclick="$('#flipbook').turn('previous')"><i class="fas fa-chevron-left"></i>
                 Prev</button>
-            <span style="color:white; align-self:center;">February 2026 | Vol 20 Issue 2</span>
+            <span style="color:white; font-weight:600;">February 2026</span>
             <button class="control-btn" onclick="$('#flipbook').turn('next')">Next <i
                     class="fas fa-chevron-right"></i></button>
         </div>
     </div>
 
     <script>
-        $(document).ready(function () {
-            // Initialize Turn.js
-            $('#flipbook').turn({
-                width: 960,
-                height: 600,
-                autoCenter: true,
-                duration: 1000,
-                gradients: true,
-                acceleration: true,
-                display: 'double'
-            });
+        let flipbookInitialized = false;
 
-            // Keyboard navigation
-            $(document).keydown(function (e) {
-                if (e.keyCode == 37) {
-                    $('#flipbook').turn('previous');
-                } else if (e.keyCode == 39) {
-                    $('#flipbook').turn('next');
-                }
-            });
+        function openFlipbook() {
+            const modal = document.getElementById('flipbook-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
 
-            // Responsive resizing
-            $(window).resize(function () {
-                // Simplified resize logic - reload to reset dimensions if needed
-                // or dynamic resize logic could go here
-            });
+            if (!flipbookInitialized) {
+                $('#flipbook').turn({
+                    width: 960,
+                    height: 600,
+                    autoCenter: true,
+                    duration: 1000,
+                    gradients: true,
+                    acceleration: true,
+                    display: 'double'
+                });
+                flipbookInitialized = true;
+            }
+        }
+
+        function closeFlipbook() {
+            const modal = document.getElementById('flipbook-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            if (document.getElementById('flipbook-modal').style.display === 'flex') {
+                if (e.keyCode == 37) $('#flipbook').turn('previous');
+                if (e.keyCode == 39) $('#flipbook').turn('next');
+                if (e.keyCode == 27) closeFlipbook();
+            }
         });
     </script>
 </body>

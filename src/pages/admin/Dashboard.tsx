@@ -1,166 +1,119 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Plus, BookOpen, FileText, Users, TrendingUp } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
 
-export default function Dashboard() {
-    const [stats, setStats] = React.useState({
-        totalIssues: 0,
-        publishedIssues: 0,
-        totalArticles: 0,
-        totalAuthors: 0,
-    })
-    const [loading, setLoading] = React.useState(true)
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BookOpen, FileText, Users, TrendingUp } from 'lucide-react';
 
-    React.useEffect(() => {
-        loadStats()
-    }, [])
-
-    async function loadStats() {
-        try {
-            const [issues, publishedIssues, articles, authors] = await Promise.all([
-                supabase.from('issues').select('id', { count: 'exact', head: true }),
-                supabase.from('issues').select('id', { count: 'exact', head: true }).eq('is_published', true),
-                supabase.from('articles').select('id', { count: 'exact', head: true }),
-                supabase.from('authors').select('id', { count: 'exact', head: true }),
-            ])
-
-            setStats({
-                totalIssues: issues.count || 0,
-                publishedIssues: publishedIssues.count || 0,
-                totalArticles: articles.count || 0,
-                totalAuthors: authors.count || 0,
-            })
-        } catch (error) {
-            console.error('Error loading stats:', error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const statCards = [
-        { name: 'Total Issues', value: stats.totalIssues, icon: BookOpen, color: 'bg-blue-500' },
-        { name: 'Published Issues', value: stats.publishedIssues, icon: TrendingUp, color: 'bg-green-500' },
-        { name: 'Total Articles', value: stats.totalArticles, icon: FileText, color: 'bg-purple-500' },
-        { name: 'Total Authors', value: stats.totalAuthors, icon: Users, color: 'bg-orange-500' },
-    ]
+const Dashboard = () => {
+    // Mock data for the chart
+    const data = [
+        { name: 'Sep', articles: 4 },
+        { name: 'Oct', articles: 12 },
+        { name: 'Nov', articles: 8 },
+        { name: 'Dec', articles: 15 },
+        { name: 'Jan', articles: 22 },
+        { name: 'Feb', articles: 10 },
+    ];
 
     return (
-        <div className="p-8">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p className="mt-2 text-gray-600">Welcome to Mosaic Magazine CMS</p>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Link
-                    to="/admin/issues/new"
-                    className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl"
-                >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Create New Issue
-                </Link>
-                <Link
-                    to="/admin/articles/new"
-                    className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg hover:shadow-xl"
-                >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Create New Article
-                </Link>
-                <Link
-                    to="/admin/media"
-                    className="flex items-center justify-center px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl"
-                >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Upload Media
-                </Link>
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-4xl font-black mb-2 uppercase tracking-wide">Dashboard</h1>
+                    <p className="text-gray-600 font-medium">Welcome back, Admin. Here's what's happening.</p>
+                </div>
+                <button className="bg-black text-white px-6 py-3 rounded-lg font-bold shadow-[4px_4px_0px_0px_gray] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_gray] active:translate-x-[0px] active:translate-y-[0px] active:shadow-none transition-all">
+                    + New Issue
+                </button>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {statCards.map((stat) => {
-                    const Icon = stat.icon
-                    return (
-                        <div key={stat.name} className="bg-white rounded-lg shadow p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-                                    <p className="mt-2 text-3xl font-bold text-gray-900">
-                                        {loading ? '...' : stat.value}
-                                    </p>
-                                </div>
-                                <div className={`${stat.color} p-3 rounded-lg`}>
-                                    <Icon className="w-6 h-6 text-white" />
-                                </div>
-                            </div>
-                        </div>
-                    )
-                })}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard title="Issues Published" value="12" icon={<BookOpen size={24} />} color="bg-cyan-200" />
+                <StatCard title="Total Articles" value="156" icon={<FileText size={24} />} color="bg-green-200" />
+                <StatCard title="Active Authors" value="45" icon={<Users size={24} />} color="bg-purple-200" />
+                <StatCard title="Monthly Views" value="2.4k" icon={<TrendingUp size={24} />} color="bg-orange-200" />
             </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white rounded-lg shadow">
-                <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="text-lg font-semibold text-gray-900">Getting Started</h2>
-                </div>
-                <div className="p-6">
-                    <div className="space-y-4">
-                        <div className="flex items-start">
-                            <div className="flex-shrink-0">
-                                <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
-                                    <span className="text-sm font-medium text-blue-600">1</span>
-                                </div>
-                            </div>
-                            <div className="ml-4">
-                                <h3 className="text-sm font-medium text-gray-900">Create your first issue</h3>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Click "Create New Issue" to set up your first magazine issue
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-start">
-                            <div className="flex-shrink-0">
-                                <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
-                                    <span className="text-sm font-medium text-blue-600">2</span>
-                                </div>
-                            </div>
-                            <div className="ml-4">
-                                <h3 className="text-sm font-medium text-gray-900">Add authors</h3>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Go to Authors section to add student profiles
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-start">
-                            <div className="flex-shrink-0">
-                                <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
-                                    <span className="text-sm font-medium text-blue-600">3</span>
-                                </div>
-                            </div>
-                            <div className="ml-4">
-                                <h3 className="text-sm font-medium text-gray-900">Create articles</h3>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Start adding articles to your issue
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-start">
-                            <div className="flex-shrink-0">
-                                <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
-                                    <span className="text-sm font-medium text-blue-600">4</span>
-                                </div>
-                            </div>
-                            <div className="ml-4">
-                                <h3 className="text-sm font-medium text-gray-900">Publish your issue</h3>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    When ready, publish your issue to make it live
-                                </p>
-                            </div>
-                        </div>
+            {/* Main Content Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                {/* Chart Section */}
+                <div className="lg:col-span-2 bg-white border-4 border-black p-6 rounded-xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                    <h2 className="text-2xl font-black mb-6 uppercase flex items-center gap-3">
+                        <TrendingUp size={28} />
+                        Submission Activity
+                    </h2>
+                    <div className="h-80 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={data}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip
+                                    contentStyle={{ border: '3px solid black', borderRadius: '8px', boxShadow: '4px 4px 0px 0px black' }}
+                                    cursor={{ fill: '#f3f4f6' }}
+                                />
+                                <Bar dataKey="articles" fill="#000" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
+                </div>
+
+                {/* Recent Activity Feed */}
+                <div className="bg-white border-4 border-black p-6 rounded-xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                    <h2 className="text-2xl font-black mb-6 uppercase">Recent Activity</h2>
+                    <div className="space-y-4">
+                        <ActivityItem
+                            user="Todd Alessandro"
+                            action="published letter"
+                            target="Feb 2026 Issue"
+                            time="2h ago"
+                        />
+                        <ActivityItem
+                            user="Daniel Sepulveda"
+                            action="submitted artwork"
+                            target="Blue Horizons"
+                            time="4h ago"
+                        />
+                        <ActivityItem
+                            user="System"
+                            action="created draft"
+                            target="March 2026 Issue"
+                            time="1d ago"
+                        />
+                        <ActivityItem
+                            user="Sarah Editor"
+                            action="approved article"
+                            target="Why We Write"
+                            time="1d ago"
+                        />
+                    </div>
+                    <button className="w-full mt-6 py-2 border-2 border-black font-bold hover:bg-gray-100 rounded-lg">
+                        View All History
+                    </button>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
+
+const StatCard = ({ title, value, icon, color }: { title: string, value: string, icon: any, color: string }) => (
+    <div className={`${color} border-4 border-black p-6 rounded-xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col justify-between h-32 hover:-translate-y-1 transition-transform`}>
+        <div className="flex justify-between items-start">
+            <span className="font-bold text-gray-800 uppercase text-sm tracking-wider">{title}</span>
+            <div className="p-2 bg-white border-2 border-black rounded-lg">{icon}</div>
+        </div>
+        <span className="text-4xl font-black">{value}</span>
+    </div>
+);
+
+const ActivityItem = ({ user, action, target, time }: { user: string, action: string, target: string, time: string }) => (
+    <div className="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+        <p className="text-sm">
+            <span className="font-bold">{user}</span> {action} <span className="font-bold text-blue-600">"{target}"</span>
+        </p>
+        <span className="text-xs text-gray-400 font-bold uppercase">{time}</span>
+    </div>
+);
+
+export default Dashboard;
