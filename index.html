@@ -57,9 +57,11 @@
     /* Strictly 600px tall. Hidden overflow prevents ANY bleeding. */
     /* 2. GRID CONTAINER */
     /* Optimized height for professional layout */
+    /* 2. GRID CONTAINER */
+    /* Optimized height for professional layout */
     .featured-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 2fr 1fr !important;
       /* Left (66%), Right (33%) */
       gap: 20px;
       /* Increased gap for breathing room */
@@ -74,6 +76,7 @@
       .featured-grid {
         display: flex;
         flex-direction: column;
+        grid-template-columns: 1fr !important;
         height: auto !important;
         max-height: none !important;
         overflow: visible !important;
@@ -187,7 +190,7 @@
 
     /* 4. RIGHT COLUMN: SPLIT STACK */
     .featured-right {
-      display: flex;
+      display: flex !important;
       flex-direction: column;
       gap: 20px;
       /* Increased gap */
