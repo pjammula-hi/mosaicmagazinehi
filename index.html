@@ -485,42 +485,60 @@
     }
 
 
-    /* BOTTOM RIGHT: Scrolling TOC (50%) */
+    /* BOTTOM RIGHT: Scrolling TOC (50%) - Yellow Topographic Design */
     .trending-sidebar {
       flex: 1;
       min-height: 0;
-      /* Allows shrinking */
-      background: white;
+      /* Yellow Background */
+      background-color: #dbe336;
+      /* Subtle Texture Pattern */
+      background-image: radial-gradient(#c2c92e 15%, transparent 16%), radial-gradient(#c2c92e 15%, transparent 16%);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+
       padding: 0;
       position: relative;
       border-radius: 8px;
       overflow: hidden !important;
-      /* Crop overflow */
+      border: none;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      border: 1px solid #eee;
     }
 
     .toc-scroll-container {
       height: 100%;
       overflow-y: auto;
-      /* Enable Scroll INSIDE this box */
-      padding: 15px 15px;
+      padding: 25px 25px;
       scrollbar-width: thin;
-      /* Modern browsers */
+      /* Custom Scrollbar for the yellow theme */
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
     }
 
-    /* Make the TOC compact */
+    .toc-scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .toc-scroll-container::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    /* Title 'Table of Contents' */
     .trending-title {
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-      border-bottom: 2px solid var(--accent-color);
-      padding-bottom: 4px;
-      display: inline-block;
-      color: #333;
+      font-family: 'Courier New', Courier, monospace;
+      /* Typewriter Slab Look */
+      font-size: 2.0rem;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -1px;
+      margin-bottom: 30px;
+      margin-top: 0;
+      border-bottom: 3px solid #1a1a1a;
+      padding-bottom: 5px;
+      display: block;
+      /* Full width */
+      color: #1a1a1a;
+      line-height: 1.1;
+      width: 100%;
     }
 
     .toc-content-wrapper {
@@ -528,54 +546,89 @@
       flex-direction: column;
     }
 
+    /* Item Layout */
     .trending-item {
       display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #f0f0f0;
-      align-items: baseline;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 0;
+      border-bottom: none;
+      align-items: flex-start;
     }
 
     .trending-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
+      margin-bottom: 20px;
     }
 
+    /* Page Number: '04' */
     .page-number {
-      font-family: var(--font-serif);
-      font-size: 0.9rem;
-      font-weight: 900;
-      color: var(--accent-color);
-      min-width: 20px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      background: none;
+      /* Removed box */
+      min-width: 45px;
+      line-height: 0.9;
+      padding: 0;
+      flex-shrink: 0;
     }
 
+    .toc-content {
+      flex: 1;
+      min-width: 0;
+      border-left: 2px solid #1a1a1a;
+      /* Vertical Divider */
+      padding-left: 15px;
+      padding-top: 2px;
+    }
+
+    /* Section Headers */
     .toc-content h4 {
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 2px;
-      color: #333;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+      font-weight: 900;
+      /* Extra Bold */
+      margin: 0 0 8px 0;
+      color: #1a1a1a;
       line-height: 1.2;
     }
 
-    .toc-list li {
-      font-size: 0.75rem;
-      margin-bottom: 2px;
-      line-height: 1.3;
-    }
-
-    /* Reset text styles from external CSS */
-    .trending-item .toc-link,
-    .trending-item h4,
-    .trending-item p,
-    .trending-item li {
-      color: #333;
-      text-shadow: none;
-      font-weight: normal;
-    }
-
     .toc-content h4 a {
-      font-weight: 700;
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+
+    .toc-content h4 a:hover {
+      text-decoration: underline;
+    }
+
+    /* List Items */
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-list li {
+      font-family: 'Inter', sans-serif;
+      /* Contrast font */
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.3;
+      color: #333;
+    }
+
+    .toc-list li a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .toc-author {
+      color: #555;
+      font-weight: 400;
+      font-size: 0.8rem;
     }
   </style>
 </head>
@@ -654,58 +707,67 @@
                 <!-- CONTENT START -->
                 <h3 class="trending-title">Table of Contents</h3>
 
-                <!-- Letter -->
-                <article class="trending-item">
-                  <div class="page-number">01</div>
-                  <div class="toc-content">
-                    <h4><a href="principal-letter.html" class="toc-link">Letter from the Principal</a></h4>
-                    <p class="toc-author">Todd Alessandro</p>
-                  </div>
-                </article>
-
-                <!-- Articles -->
+                <!-- Writing | Articles -->
                 <article class="trending-item">
                   <div class="page-number">04</div>
                   <div class="toc-content">
-                    <h4>Writing | Articles</h4>
+                    <h4><a href="writing-articles.html" class="toc-link">Writing | Articles</a></h4>
                     <ul class="toc-list">
-                      <li><a href="article-income-inequality.html" class="toc-link">The Role of the Top 1%</a></li>
-                      <li><a href="article-blue-bear.html" class="toc-link">The Blue Bear Cookie</a></li>
-                      <li><a href="article-darling-dead.html" class="toc-link">Darling, Dearest, Dead</a></li>
+                      <li>What I learned about Martin Luther King <span class="toc-author">- Rashid Al Afasy</span></li>
+                      <li>Fact Austin <span class="toc-author">- Tekwan Wiggins</span></li>
                     </ul>
                   </div>
                 </article>
 
                 <!-- Project Room -->
                 <article class="trending-item">
-                  <div class="page-number">13</div>
+                  <div class="page-number">09</div>
                   <div class="toc-content">
-                    <h4>Project Room</h4>
+                    <h4><a href="project-room.html" class="toc-link">Project Room</a></h4>
                     <ul class="toc-list">
-                      <li><a href="project-room.html" class="toc-link">Student Projects Collection</a></li>
+                      <li>Vision Board - Barbara Pemberton</li>
+                      <li>Martin Luther King - Kylie Jackson</li>
+                      <li>My Family - Takwan Wiggins</li>
+                      <li>Vision Board for 2026 - Barbara Pemberton</li>
+                      <li>Martin Luther King - Lurose Paez Vargas / Kaitlyn Coscio / Jessica Niyazov</li>
+                      <li>Valentines Day - Kaitlyn Coscio</li>
+                      <li><a href="article-luis-gutierrez.html" class="toc-link">From Data to Discovery - Luis
+                          Gutierrez</a></li>
                     </ul>
                   </div>
                 </article>
 
                 <!-- Art Gallery -->
                 <article class="trending-item">
-                  <div class="page-number">26</div>
+                  <div class="page-number">17</div>
                   <div class="toc-content">
                     <h4><a href="art-gallery.html" class="toc-link">Art Gallery</a></h4>
+                    <ul class="toc-list">
+                      <li>Barbara Pemberton</li>
+                      <li>Katelyn Kelly</li>
+                      <li>Violet Waite</li>
+                      <li>Serena Reardon</li>
+                    </ul>
                   </div>
                 </article>
 
-                <!-- Clubs -->
+                <!-- HI Clubs -->
                 <article class="trending-item">
-                  <div class="page-number">30</div>
+                  <div class="page-number">23</div>
                   <div class="toc-content">
-                    <h4><a href="hi-clubs.html" class="toc-link">HI Clubs</a></h4>
+                    <h4><a href="hi-clubs.html" class="toc-link">HI Clubs and Activities</a></h4>
+                    <ul class="toc-list">
+                      <li><a href="club-art-studio.html" class="toc-link">Art Studio</a></li>
+                      <li><a href="club-book-club.html" class="toc-link">Book Club</a></li>
+                      <li><a href="club-music.html" class="toc-link">Music</a></li>
+                      <li>The Alliance</li>
+                    </ul>
                   </div>
                 </article>
 
-                <!-- Opportunities -->
+                <!-- Student Opportunities -->
                 <article class="trending-item">
-                  <div class="page-number">44</div>
+                  <div class="page-number">34</div>
                   <div class="toc-content">
                     <h4><a href="student-opportunities.html" class="toc-link">Student Opportunities</a></h4>
                   </div>
@@ -713,7 +775,7 @@
 
                 <!-- Teacher Page -->
                 <article class="trending-item">
-                  <div class="page-number">50</div>
+                  <div class="page-number">40</div>
                   <div class="toc-content">
                     <h4><a href="teacher-page.html" class="toc-link">Teacher Page</a></h4>
                   </div>
