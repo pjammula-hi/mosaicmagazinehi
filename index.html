@@ -59,10 +59,12 @@
     /* Optimized height for professional layout */
     /* 2. GRID CONTAINER */
     /* Optimized height for professional layout */
+    /* 2. GRID CONTAINER */
+    /* Optimized height for professional layout */
     .featured-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr !important;
-      /* Left (66%), Right (33%) */
+      grid-template-columns: 1fr 1fr 1fr !important;
+      /* Three equal columns */
       gap: 20px;
       /* Increased gap for breathing room */
       height: 450px !important;
@@ -190,12 +192,8 @@
 
     /* 4. RIGHT COLUMN: SPLIT STACK */
     .featured-right {
-      display: flex !important;
-      flex-direction: column;
-      gap: 20px;
-      /* Increased gap */
-      height: 100% !important;
-      overflow: hidden !important;
+      display: contents !important;
+      /* Allows children to be grid items */
     }
 
     /* TOP RIGHT: Magazine Cover (55%) */
